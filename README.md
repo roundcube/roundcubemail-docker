@@ -60,11 +60,11 @@ files - check for valid PHP syntax - when starting the Docker container:
 docker run -v ./config/:/var/roundcube/config/ -d roundcube/roundcubemail
 ```
 
-Check our wiki for a reference of [Roundcube config options](https://github.com/roundcube/roundcubemail/wiki/Configuration).
+Check the Roundcube Webmail wiki for a reference of [Roundcube config options](https://github.com/roundcube/roundcubemail/wiki/Configuration).
 
 ## Building a Docker image
 
-Use the `Dockerfile` in this directory to build your own Docker image.
+Use the `Dockerfile` in this repository to build your own Docker image.
 It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.1-apache` Docker image.
 
 Build it from this directory with
