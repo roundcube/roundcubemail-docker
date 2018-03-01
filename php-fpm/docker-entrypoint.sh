@@ -53,7 +53,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_SMTP_SERVER:=localhost}"
   : "${ROUNDCUBEMAIL_SMTP_PORT:=587}"
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
-  : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
+  : "${ROUNDCUBEMAIL_TEMP_DIR:=/var/www/html/temp}"
 
   if [ ! -e config/config.inc.php ]; then
     ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
