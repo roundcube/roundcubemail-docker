@@ -7,7 +7,6 @@ RUN set -ex; \
 	savedAptMark="$(apt-mark showmanual)"; \
 	\
 	apt-get install -y --no-install-recommends \
-		libfreetype6-dev \
 		libicu-dev \
 		libjpeg62-turbo-dev \
 		libldap2-dev \
