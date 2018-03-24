@@ -1,0 +1,31 @@
+dist: trusty
+sudo: required
+
+services: docker
+
+language: bash
+
+branches:
+  only:
+    - master
+
+before_script:
+  - env | sort
+  - image="roundcube/roundcubemail:${VERSION}${VARIANT:+-$VARIANT}"
+  - dir="php-${VARIANT}"
+
+script:
+  - travis_retry docker build -t "$image" "$dir"
+
+after_script:
+  - docker images
+  - docker run -d "$image" "$dir"
+  - docker ps
+  - docker logs "$image"
+
+notifications:
+  email: false
+
+env: # Environments
+    - VERSION=1.3.4 VARIANT=fpm
+    - VERSION=1.3.4 VARIANT=apache

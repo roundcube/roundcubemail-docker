@@ -1,3 +1,8 @@
+
+[![Build Status](https://travis-ci.org/roundcube/roundcubemail-docker.svg)](https://travis-ci.org/roundcube/roundcubemail-docker)
+[![Docker Automated buid](https://img.shields.io/docker/build/roundcube/roundcubemail-docker.svg)](https://hub.docker.com/r/roundcube/roundcubemail-docker/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/roundcube/roundcubemail-docker.svg)](https://hub.docker.com/r/roundcube/roundcubemail-docker/)
+
 # Running Roundcube in a Docker Container
 
 The simplest method is to run the official image:
