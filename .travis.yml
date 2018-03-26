@@ -11,6 +11,7 @@ branches:
 
 before_script:
   - env | sort
+  - name="roundcubemail"
   - image="roundcube/roundcubemail:${VERSION}${VARIANT:+-$VARIANT}"
   - dir="php-${VARIANT}"
 
@@ -19,9 +20,9 @@ script:
 
 after_script:
   - docker images
-  - docker run -d "$image" "$dir"
+  - docker run --name "$name" -d "$image" "$dir"
   - docker ps
-  - docker logs "$image"
+  - docker logs "$name"
 
 notifications:
   email: false
