@@ -1,5 +1,5 @@
 FROM php:7.1-fpm
-MAINTAINER Thomas Bruederli <thomas@roundcube.net>
+LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN apt-get -qq update \
   && apt-get install -qq \
