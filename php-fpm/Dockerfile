@@ -21,7 +21,7 @@ VOLUME /var/roundcube/config
 VOLUME /var/www/html
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.3.4
+ENV ROUNDCUBEMAIL_VERSION 1.3.6
 
 # Download package and extract to web volume
 RUN curl -o roundcubemail.tar.gz -SL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz \
