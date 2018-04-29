@@ -1,5 +1,5 @@
 FROM php:7.1-fpm-alpine
-MAINTAINER Thomas Bruederli <thomas@roundcube.net>
+LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 # entrypoint.sh and cron.sh dependencies
 RUN set -ex; \
@@ -46,7 +46,7 @@ VOLUME /var/roundcube/config
 VOLUME /var/www/html
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.3.4
+ENV ROUNDCUBEMAIL_VERSION 1.3.6
 
 # Download package and extract to web volume
 RUN set -ex; \
