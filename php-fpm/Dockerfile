@@ -3,7 +3,6 @@ LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN apt-get -qq update \
   && apt-get install -qq \
-    libfreetype6-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
     libldap2-dev \
