@@ -74,7 +74,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['log_driver'] = 'stdout';
     " > config/config.inc.php
 
-    for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
+    for fn in `ls /var/roundcube/config/*.php`; do
       echo "include('$fn');" >> config/config.inc.php
     done
 

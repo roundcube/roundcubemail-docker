@@ -46,9 +46,10 @@ RUN set -ex; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
 
+
 # expose these volumes
 VOLUME /var/roundcube/config
-VOLUME /var/www/html
+VOLUME /tmp/roundcube-temp
 
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.3.6
