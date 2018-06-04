@@ -29,14 +29,23 @@ latest="$(
 
 set -x
 
+travisEnv=
 for variant in apache fpm fpm-alpine; do
+	dir="php-$variant"
+	mkdir -p "$dir"
+
 	template="Dockerfile-${base[$variant]}.template"
-	cp $template "php-$variant/Dockerfile"
-	cp docker-entrypoint.sh "php-$variant/docker-entrypoint.sh"
+	cp $template "$dir/Dockerfile"
+	cp docker-entrypoint.sh "$dir/docker-entrypoint.sh"
 	sed -ri -e '
 		s/%%VARIANT%%/'"$variant"'/;
 		s/%%VARIANT_EXTRAS%%/'"${extras[$variant]}"'/;
 		s/%%VERSION%%/'"$latest"'/;
 		s/%%CMD%%/'"${cmd[$variant]}"'/;
 	' "php-$variant/Dockerfile"
+
+	travisEnv+='\n  - VERSION='"$latest"' VARIANT='"$variant"
 done
+
+travis="$(awk -v 'RS=\n\n' '$1 == "env:" { $0 = "env:'"$travisEnv"'" } { printf "%s%s", $0, RS }' .travis.yml)"
+echo "$travis" > .travis.yml
