@@ -58,6 +58,9 @@ ENV ROUNDCUBEMAIL_VERSION 1.3.6
 
 # Download package and extract to web volume
 RUN set -ex; \
+	fetchDeps="gnupg dirmngr"; \
+	apt-get -qq update; \
+	apt-get install -y --no-install-recommends $fetchDeps; \
 	curl -o roundcubemail.tar.gz -SL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz; \
 	curl -o roundcubemail.tar.gz.asc -SL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz.asc; \
 	export GNUPGHOME="$(mktemp -d)"; \
@@ -65,7 +68,7 @@ RUN set -ex; \
 	gpg --batch --verify roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc; \
 	tar -xzf roundcubemail.tar.gz -C /usr/src/; \
-# upstream tarballs include ./roundcubemail-${ROUNDCUBEMAIL_VERSION}/ so this gives us /usr/src/roundcubemail-${ROUNDCUBEMAIL_VERSION}
+	# upstream tarballs include ./roundcubemail-${ROUNDCUBEMAIL_VERSION}/ so this gives us /usr/src/roundcubemail-${ROUNDCUBEMAIL_VERSION}
 	mv /usr/src/roundcubemail-${ROUNDCUBEMAIL_VERSION} /usr/src/roundcubemail; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	rm roundcubemail.tar.gz
