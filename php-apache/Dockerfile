@@ -25,7 +25,6 @@ RUN set -ex; \
 		gd \
 		intl \
 		ldap \
-		pdo \
 		pdo_mysql \
 		pdo_pgsql \
 		pdo_sqlite \
