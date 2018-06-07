@@ -48,6 +48,9 @@ RUN set -ex; \
 # enable mod_rewrite
 RUN a2enmod rewrite
 
+# use custom PHP settings
+COPY php.ini /usr/local/etc/php/conf.d/roundcube.ini
+
 # expose these volumes
 VOLUME /var/roundcube/config
 VOLUME /tmp/roundcube-temp
