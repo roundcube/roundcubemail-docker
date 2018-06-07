@@ -87,6 +87,9 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   if [ ! -z "${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" ]; then
     sed -i -E "s/^(upload_max_filesize|post_max_size) *= *[0-9BKMG]+/\1=${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}/g" /usr/local/etc/php/conf.d/roundcube.ini
   fi
+  if [ ! -z "${ROUNDCUBEMAIL_PHP_MEMORY_LIMIT}" ]; then
+    sed -i -E "s/^memory_limit *= *[0-9BKMG]+/memory_limit=${ROUNDCUBEMAIL_PHP_MEMORY_LIMIT}/g" /usr/local/etc/php/conf.d/roundcube.ini
+  fi
 fi
 
 exec "$@"
