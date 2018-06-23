@@ -45,6 +45,9 @@ RUN set -ex; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
 
+# use custom PHP settings
+COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
+
 # expose these volumes
 VOLUME /var/roundcube/config
 VOLUME /var/www/html
