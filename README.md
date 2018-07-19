@@ -66,6 +66,9 @@ docker run -v ./config/:/var/roundcube/config/ -d roundcube/roundcubemail
 
 Check the Roundcube Webmail wiki for a reference of [Roundcube config options](https://github.com/roundcube/roundcubemail/wiki/Configuration).
 
+Customized PHP settings can be implemented by mounting a configuration file to `/usr/local/etc/php/conf.d/zzz_roundcube-custom.ini`.
+For example, it may be used to increase the PHP memory limit (`memory_limit=128M`).
+
 ## Building a Docker image
 
 Use the `Dockerfile` in this repository to build your own Docker image.
