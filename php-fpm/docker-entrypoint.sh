@@ -11,7 +11,6 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
       ( set -x; ls -A; sleep 10 )
     fi
     tar cf - --one-file-system -C /usr/src/roundcubemail . | tar xf -
-    sed -i 's/mod_php5.c/mod_php7.c/' .htaccess
     echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $PWD"
   fi
 
@@ -86,7 +85,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   fi
 
   if [ ! -z "${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" ]; then
-    sed -i -E "s/(upload_max_filesize|post_max_size) +[0-9BKMG]+/\1 ${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}/g" $PWD/.htaccess
+    echo "upload_max_filesize=${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" >> /usr/local/etc/php/conf.d/roundcube-override.ini
+    echo "post_max_size=${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" >> /usr/local/etc/php/conf.d/roundcube-override.ini
   fi
 fi
 
