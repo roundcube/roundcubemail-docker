@@ -7,18 +7,20 @@
 The simplest method is to run the official image:
 
 ```
-docker run -e ROUNDCUBEMAIL_DEFAULT_HOST=mail -d roundcube/roundcubemail
+docker run -e ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail -e ROUNDCUBEMAIL_SMTP_SERVER=tls://mail -d roundcube/roundcubemail
 ```
+
+where `mail` should be replaced by your host name for the IMAP and SMTP server.
 
 ## Configuration/Environment Variables
 
 The following env variables can be set to configure your Roundcube Docker instance:
 
-`ROUNDCUBEMAIL_DEFAULT_HOST` - Hostname of the IMAP server to connect to
+`ROUNDCUBEMAIL_DEFAULT_HOST` - Hostname of the IMAP server to connect to, use `tls://` prefix for STARTTLS
 
 `ROUNDCUBEMAIL_DEFAULT_PORT` - IMAP port number; defaults to `143`
 
-`ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails
+`ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails, use `tls://` prefix for STARTTLS
 
 `ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`
 
