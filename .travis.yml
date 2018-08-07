@@ -28,5 +28,5 @@ notifications:
   email: false
 
 env: # Environments
-    - VERSION=1.3.6 VARIANT=fpm
-    - VERSION=1.3.6 VARIANT=apache
+    - VERSION=1.3.7 VARIANT=fpm
+    - VERSION=1.3.7 VARIANT=apache
