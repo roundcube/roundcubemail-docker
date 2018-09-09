@@ -57,10 +57,18 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   if [ ! -e config/config.inc.php ]; then
     ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
     mkdir -p ${ROUNDCUBEMAIL_TEMP_DIR} && chown www-data ${ROUNDCUBEMAIL_TEMP_DIR}
-    touch config/config.inc.php
+    touch config/config.inc.php.tmp
 
-    echo "Write config to $PWD/config/config.inc.php"
+    echo "Write config to $PWD/config/config.inc.php.tmp"
     echo "<?php
+    \$config = array();
+    " > config/config.inc.php.tmp
+
+    for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
+      echo "include('$fn');" >> config/config.inc.php.tmp
+    done
+
+    echo "
     \$config['db_dsnw'] = '${ROUNDCUBEMAIL_DSNW}';
     \$config['db_dsnr'] = '${ROUNDCUBEMAIL_DSNR}';
     \$config['default_host'] = '${ROUNDCUBEMAIL_DEFAULT_HOST}';
@@ -71,11 +79,9 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['plugins'] = ['${ROUNDCUBEMAIL_PLUGINS_PHP}'];
     \$config['zipdownload_selection'] = true;
     \$config['log_driver'] = 'stdout';
-    " > config/config.inc.php
+    " >> config/config.inc.php.tmp
 
-    for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
-      echo "include('$fn');" >> config/config.inc.php
-    done
+    mv config/config.inc.php.tmp config/config.inc.php
 
     # initialize DB if not SQLite
     echo "${ROUNDCUBEMAIL_DSNW}" | grep -q 'sqlite:' || bin/initdb.sh --dir=$PWD/SQL || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize databse. Please run $PWD/bin/initdb.sh manually."
