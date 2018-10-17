@@ -67,6 +67,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['default_port'] = '${ROUNDCUBEMAIL_DEFAULT_PORT}';
     \$config['smtp_server'] = '${ROUNDCUBEMAIL_SMTP_SERVER}';
     \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
+    \$config['smtp_user'] = '%u';
+    \$config['smtp_pass'] = '%p';
     \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
     \$config['plugins'] = ['${ROUNDCUBEMAIL_PLUGINS_PHP}'];
     \$config['zipdownload_selection'] = true;
