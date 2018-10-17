@@ -64,10 +64,6 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config = array();
     " > config/config.inc.php.tmp
 
-    for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
-      echo "include('$fn');" >> config/config.inc.php.tmp
-    done
-
     echo "
     \$config['db_dsnw'] = '${ROUNDCUBEMAIL_DSNW}';
     \$config['db_dsnr'] = '${ROUNDCUBEMAIL_DSNR}';
@@ -80,6 +76,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['zipdownload_selection'] = true;
     \$config['log_driver'] = 'stdout';
     " >> config/config.inc.php.tmp
+
+    for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
+      echo "include('$fn');" >> config/config.inc.php.tmp
+    done
 
     mv config/config.inc.php.tmp config/config.inc.php
 
