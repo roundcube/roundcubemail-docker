@@ -56,7 +56,6 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
   if [ ! -e config/config.inc.php ]; then
     ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
-    mkdir -p ${ROUNDCUBEMAIL_TEMP_DIR} && chown www-data ${ROUNDCUBEMAIL_TEMP_DIR}
     touch config/config.inc.php
 
     echo "Write config to $PWD/config/config.inc.php"
@@ -84,6 +83,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   else
     echo "WARNING: $PWD/config/config.inc.php already exists."
     echo "ROUNDCUBEMAIL_* environment variables have been ignored."
+  fi
+
+  if [ ! -z "${ROUNDCUBEMAIL_TEMP_DIR}" ]; then
+    mkdir -p ${ROUNDCUBEMAIL_TEMP_DIR} && chown www-data ${ROUNDCUBEMAIL_TEMP_DIR}
   fi
 
   if [ ! -z "${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" ]; then
