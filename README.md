@@ -74,7 +74,7 @@ For example, it may be used to increase the PHP memory limit (`memory_limit=128M
 ## Building a Docker image
 
 Use the `Dockerfile` in this repository to build your own Docker image.
-It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.1-apache` Docker image.
+It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.2-apache` Docker image.
 
 Build it from this directory with
 

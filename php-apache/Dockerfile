@@ -1,4 +1,4 @@
-FROM php:7.1-apache
+FROM php:7.2-apache
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
