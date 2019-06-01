@@ -1,0 +1,36 @@
+version: "2"
+
+services:
+  roundcube:
+    build: ./
+    container_name: roundcube
+    #restart: always
+    depends_on:
+      - roundcubedb
+    links:
+      - roundcubedb
+    ports:
+      - 80:80
+    volumes:
+      - /srv/roundcube/html:/var/www/html
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=mysql
+      - ROUNDCUBEMAIL_DB_HOST=roundcubedb # same as mysql container name
+      - ROUNDCUBEMAIL_DB_NAME=roundcube # same as mysql MYSQL_DATABASE env name
+      - ROUNDCUBEMAIL_DB_USER=roundcube # same as mysql MYSQL_USER env name
+      - ROUNDCUBEMAIL_DB_PASSWORD=roundcubedbpass # same as mysql MYSQL_PASSWORD env name
+
+  roundcubedb:
+    image: mariadb:latest
+    container_name: roundcubedb
+    restart: always
+    command: --character_set_client=utf8 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --character-set-client-handshake=FALSE
+    ports:
+      - 3306:3306
+    volumes:
+      - /srv/roundcube/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysqlrootpassword
+      - MYSQL_DATABASE=roundcube
+      - MYSQL_USER=roundcube
+      - MYSQL_PASSWORD=roundcubedbpass
