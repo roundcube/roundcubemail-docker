@@ -32,13 +32,15 @@ By default, the image will use a local SQLite database for storing user account 
 It'll be created inside the `/var/www/html` directory and can be backed up from there. Please note that
 this option should not be used for production environments.
 
-### Connect to a MySQL Database
+### Connect to a Database
 
 The recommended way to run Roundcube is connected to a MySQL database. Specify the following env variables to do so:
 
 `ROUNDCUBEMAIL_DB_TYPE` - Database provider; currently supported: `mysql`, `pgsql`, `sqlite`
 
 `ROUNDCUBEMAIL_DB_HOST` - Host (or Docker instance) name of the database service; defaults to `mysql` or `postgres` depending on linked containers.
+
+`ROUNDCUBEMAIL_DB_PORT` - Port number of the database service; defaults to `3306` or `5432` depending on linked containers.
 
 `ROUNDCUBEMAIL_DB_USER` - The database username for Roundcube; defaults to `root` on `mysql`
 

@@ -17,15 +17,17 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   if [ ! -z "${!POSTGRES_ENV_POSTGRES_*}" ] || [ "$ROUNDCUBEMAIL_DB_TYPE" == "pgsql" ]; then
     : "${ROUNDCUBEMAIL_DB_TYPE:=pgsql}"
     : "${ROUNDCUBEMAIL_DB_HOST:=postgres}"
+    : "${ROUNDCUBEMAIL_DB_PORT:=5432}"
     : "${ROUNDCUBEMAIL_DB_USER:=${POSTGRES_ENV_POSTGRES_USER}}"
     : "${ROUNDCUBEMAIL_DB_PASSWORD:=${POSTGRES_ENV_POSTGRES_PASSWORD}}"
     : "${ROUNDCUBEMAIL_DB_NAME:=${POSTGRES_ENV_POSTGRES_DB:-roundcubemail}}"
     : "${ROUNDCUBEMAIL_DSNW:=${ROUNDCUBEMAIL_DB_TYPE}://${ROUNDCUBEMAIL_DB_USER}:${ROUNDCUBEMAIL_DB_PASSWORD}@${ROUNDCUBEMAIL_DB_HOST}/${ROUNDCUBEMAIL_DB_NAME}}"
 
-    /wait-for-it.sh ${ROUNDCUBEMAIL_DB_HOST}:5432 -t 30
+    /wait-for-it.sh ${ROUNDCUBEMAIL_DB_HOST}:${ROUNDCUBEMAIL_DB_PORT} -t 30
   elif [ ! -z "${!MYSQL_ENV_MYSQL_*}" ] || [ "$ROUNDCUBEMAIL_DB_TYPE" == "mysql" ]; then
     : "${ROUNDCUBEMAIL_DB_TYPE:=mysql}"
     : "${ROUNDCUBEMAIL_DB_HOST:=mysql}"
+    : "${ROUNDCUBEMAIL_DB_PORT:=3306}"
     : "${ROUNDCUBEMAIL_DB_USER:=${MYSQL_ENV_MYSQL_USER:-root}}"
     if [ "$ROUNDCUBEMAIL_DB_USER" = 'root' ]; then
       : "${ROUNDCUBEMAIL_DB_PASSWORD:=${MYSQL_ENV_MYSQL_ROOT_PASSWORD}}"
@@ -35,7 +37,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     : "${ROUNDCUBEMAIL_DB_NAME:=${MYSQL_ENV_MYSQL_DATABASE:-roundcubemail}}"
     : "${ROUNDCUBEMAIL_DSNW:=${ROUNDCUBEMAIL_DB_TYPE}://${ROUNDCUBEMAIL_DB_USER}:${ROUNDCUBEMAIL_DB_PASSWORD}@${ROUNDCUBEMAIL_DB_HOST}/${ROUNDCUBEMAIL_DB_NAME}}"
 
-    /wait-for-it.sh ${ROUNDCUBEMAIL_DB_HOST}:3306 -t 30
+    /wait-for-it.sh ${ROUNDCUBEMAIL_DB_HOST}:${ROUNDCUBEMAIL_DB_PORT} -t 30
   else
     # use local SQLite DB in /var/www/html/db
     : "${ROUNDCUBEMAIL_DB_TYPE:=sqlite}"
