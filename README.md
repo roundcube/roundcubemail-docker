@@ -83,3 +83,35 @@ Build it from this directory with
 ```
 docker build -t roundcubemail .
 ```
+
+You can also create your own Docker image by extending from this image.
+
+For instance, you could extend this image to add composer and install requirements for builtin plugins or even external plugins:
+```Dockerfile
+FROM roundcube/roundcubemail:latest
+
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        git \
+    ; \
+    \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer; \
+    mv /usr/src/roundcubemail/composer.json-dist /usr/src/roundcubemail/composer.json; \
+    \
+    composer \
+        --working-dir=/usr/src/roundcubemail/ \
+        --prefer-dist --prefer-stable \
+        --no-update --no-interaction \
+        --optimize-autoloader --apcu-autoloader \
+        require \
+            johndoh/contextmenu \
+    ; \
+    composer \
+        --working-dir=/usr/src/roundcubemail/ \
+        --prefer-dist --no-dev \
+        --no-interaction \
+        --optimize-autoloader --apcu-autoloader \
+        update;
+
+```
