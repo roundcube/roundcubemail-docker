@@ -1,0 +1,102 @@
+version: "2"
+
+services:
+  roundcube:
+    build: ./
+    container_name: roundcube
+    #restart: always
+    depends_on:
+      - roundcubedb
+    links:
+      - roundcubedb
+    ports:
+      - 9000:9000
+    volumes:
+      - /srv/roundcube/html:/var/www/html
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=pgsql
+      - ROUNDCUBEMAIL_DB_HOST=roundcubedb # same as pgsql container name
+      - ROUNDCUBEMAIL_DB_NAME=roundcube # same as pgsql POSTGRES_DB env name
+      - ROUNDCUBEMAIL_DB_USER=roundcube # same as pgsql POSTGRES_USER env name
+      - ROUNDCUBEMAIL_DB_PASSWORD=roundcube # same as pgsql POSTGRES_PASSWORD env name
+
+  roundcubedb:
+    image: postgres:latest
+    container_name: roundcubedb
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - /srv/roundcube/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=roundcube
+      - POSTGRES_USER=roundcube
+      - POSTGRES_PASSWORD=roundcube
+
+  roundcubenginx:
+    image: nginx:latest
+    container_name: roundcubenginx
+    restart: always
+    ports:
+      - 80:80
+      # If you need SSL connection
+      # - '443:443'
+    depends_on:
+      - roundcube
+    links:
+      - roundcube
+    volumes:
+      - /srv/roundcube/html:/var/www/html
+      # TODO Provide a custom nginx conf
+      #- ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # If you need SSL connection, you can provide your own certificates
+      # - ./certs:/etc/letsencrypt
+      # - ./certs-data:/data/letsencrypt
+    environment:
+      - NGINX_HOST=localhost # set your local domain or your live domain
+      # - NGINX_CGI=roundcube:9000 # same as roundcube container name
+
+  # Sample mail server to use with RoundCube: https://github.com/tomav/docker-mailserver
+#  mailserver:
+#    image: tvial/docker-mailserver:latest
+#    hostname: mail
+#    domainname: <YOUR.DOMAIN.NAME>
+#    container_name: mail
+#    restart: always
+#    ports:
+#      # receiving email from other mailservers
+#      - "25:25"
+#      # SSL & TLS Client email submission (SMTP)
+#      - "465:465"
+#      - "587:587"
+#      # StartTLS & TLS/SSL IMAP client
+#      - "143:143"
+#      - "993:993"
+#      # POP3 & TLS/SSL POP3 client
+#      - "110:110"
+#      - "995:995"
+#      # Manage Sieve port
+#      - "4190:4190"
+#    environment:
+#      - DMS_DEBUG=0
+#      - ONE_DIR=1
+#      - ENABLE_CLAMAV=1
+#      - ENABLE_FAIL2BAN=1
+#      - ENABLE_POSTGREY=1
+#      - ENABLE_MANAGESIEVE=1
+#      # If you need SSL connection, you can provide your own certificates
+#      #- SSL_TYPE=manual
+#      #- SSL_CERT_PATH=/etc/letsencrypt/fullchain.pem
+#      #- SSL_KEY_PATH=/etc/letsencrypt/privkey.pem
+#    cap_add:
+#      - NET_ADMIN
+#      - SYS_PTRACE
+#    volumes:
+#      - /srv/mail/data:/var/mail
+#      - /srv/mail/state:/var/mail-state
+#      # For proper delivery, generate DKIM keys in /srv/mail/setup
+#      - /srv/mail/setup:/tmp/docker-mailserver
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#      # If you need SSL connection, you can provide your own certificates
+#      # - ./certs:/etc/letsencrypt
