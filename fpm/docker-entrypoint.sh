@@ -14,6 +14,13 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $PWD"
   fi
 
+  if [ -f /run/secrets/roundcube_db_user]; then
+    ROUNDCUBEMAIL_DB_USER=`cat /run/secrets/roundcube_db_user`
+  fi
+  if [ -f /run/secrets/roundcube_db_password]; then
+    ROUNDCUBEMAIL_DB_PASSWORD=`cat /run/secrets/roundcube_db_password`
+  fi
+
   if [ ! -z "${!POSTGRES_ENV_POSTGRES_*}" ] || [ "$ROUNDCUBEMAIL_DB_TYPE" == "pgsql" ]; then
     : "${ROUNDCUBEMAIL_DB_TYPE:=pgsql}"
     : "${ROUNDCUBEMAIL_DB_HOST:=postgres}"
@@ -58,6 +65,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
   if [ ! -e config/config.inc.php ]; then
     ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
+    ROUNDCUBEMAIL_DES_KEY=`test -f /run/secrets/roundcube_des_key && cat /run/secrets/roundcube_des_key || head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
 
     echo "Write config to $PWD/config/config.inc.php"
@@ -70,6 +78,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
     \$config['smtp_user'] = '%u';
     \$config['smtp_pass'] = '%p';
+    \$config['des_key'] = '${ROUNDCUBEMAIL_DES_KEY}';
     \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
     \$config['plugins'] = ['${ROUNDCUBEMAIL_PLUGINS_PHP}'];
     \$config['zipdownload_selection'] = true;

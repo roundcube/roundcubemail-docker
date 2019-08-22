@@ -57,6 +57,15 @@ Run it with a link to the MySQL host and the username/password variables:
 docker run --link=mysql:mysql -d roundcube/roundcubemail
 ```
 
+## Docker Secrets
+
+When running the Roundcube container in a Docker Swarm, you can use [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/)
+to share credentials accross all instances. The following secrets are currently supported by Roundcube:
+
+* `roundcube_des_key`: Unique and random key for encryption purposes
+* `roundcube_db_user`: Database connection username (mappend to `ROUNDCUBEMAIL_DB_USER`)
+* `roundcube_db_password`: Database connection password (mappend to `ROUNDCUBEMAIL_DB_PASSWORD`)
+
 ### Advanced configuration
 
 Apart from the above described environment variables, the Docker image also allows to add custom config files
