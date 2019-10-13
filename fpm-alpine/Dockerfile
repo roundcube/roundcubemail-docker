@@ -1,12 +1,13 @@
 FROM php:7.3-fpm-alpine
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
-# entrypoint.sh and cron.sh dependencies
+# entrypoint.sh and installto.sh dependencies
 RUN set -ex; \
 	\
 	apk add --no-cache \
 		bash \
 		coreutils \
+		rsync \
 		tzdata
 
 RUN set -ex; \
