@@ -14,10 +14,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $PWD"
   fi
 
-  if [ -f /run/secrets/roundcube_db_user]; then
+  if [ -f /run/secrets/roundcube_db_user ]; then
     ROUNDCUBEMAIL_DB_USER=`cat /run/secrets/roundcube_db_user`
   fi
-  if [ -f /run/secrets/roundcube_db_password]; then
+  if [ -f /run/secrets/roundcube_db_password ]; then
     ROUNDCUBEMAIL_DB_PASSWORD=`cat /run/secrets/roundcube_db_password`
   fi
 
