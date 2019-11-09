@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.3-fpm-alpine
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 # entrypoint.sh and cron.sh dependencies
@@ -14,6 +14,7 @@ RUN set -ex; \
 		icu-dev \
 		libjpeg-turbo-dev \
 		libpng-dev \
+		libzip-dev \
 		openldap-dev \
 		postgresql-dev \
 		sqlite-dev \
@@ -47,7 +48,7 @@ VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.3.10
+ENV ROUNDCUBEMAIL_VERSION 1.4.0
 
 # Download package and extract to web volume
 RUN set -ex; \

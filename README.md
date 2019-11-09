@@ -12,6 +12,14 @@ docker run -e ROUNDCUBEMAIL_DEFAULT_HOST=mail -e ROUNDCUBEMAIL_SMTP_SERVER=mail 
 
 where `mail` should be replaced by your host name for the IMAP and SMTP server.
 
+## Tags and Variants
+
+Roundcube comes in three different variants (`apache`, `fpm` and `fpm-alpine`) which are all built on top of official `php` images of the same variants.
+
+The `latest-*` tags always contain the **latest stable** version of Roundcube Webmail with the latest version of the `php` base images available. For recent major versions of Roundcube we have tags like `1.3.x`. Those are continuously updated with versions of the according release series and updates to the base images.
+
+We also publish full version tags (e.g. `1.3.10`) but these just represent the version and base image at the time of the release. These tags do not receive any updates.
+
 ## Configuration/Environment Variables
 
 The following env variables can be set to configure your Roundcube Docker instance:
@@ -85,7 +93,7 @@ For example, it may be used to increase the PHP memory limit (`memory_limit=128M
 ## Building a Docker image
 
 Use the `Dockerfile` in this repository to build your own Docker image.
-It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.2-apache` Docker image.
+It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.3-apache` Docker image.
 
 Build it from this directory with
 

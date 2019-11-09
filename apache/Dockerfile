@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
@@ -14,7 +14,7 @@ RUN set -ex; \
 		libpng-dev \
 		libpq-dev \
 		libsqlite3-dev \
-		zlib1g-dev \
+		libzip-dev \
 	; \
 	\
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
@@ -54,7 +54,7 @@ VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.3.10
+ENV ROUNDCUBEMAIL_VERSION 1.4.0
 
 # Download package and extract to web volume
 RUN set -ex; \

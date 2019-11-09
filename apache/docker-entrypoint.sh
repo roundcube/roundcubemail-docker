@@ -83,6 +83,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['plugins'] = ['${ROUNDCUBEMAIL_PLUGINS_PHP}'];
     \$config['zipdownload_selection'] = true;
     \$config['log_driver'] = 'stdout';
+    \$config['skin'] = 'larry';
     " > config/config.inc.php
 
     for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
