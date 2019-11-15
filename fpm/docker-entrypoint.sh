@@ -60,6 +60,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_DEFAULT_PORT:=143}"
   : "${ROUNDCUBEMAIL_SMTP_SERVER:=localhost}"
   : "${ROUNDCUBEMAIL_SMTP_PORT:=587}"
+  : "${ROUNDCUBEMAIL_SMTP_SSL_VERIFY_PEER:=true}"
+  : "${ROUNDCUBEMAIL_SMTP_SSL_VERIFY_PEER_NAME:=true}"
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
@@ -76,6 +78,12 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['default_port'] = '${ROUNDCUBEMAIL_DEFAULT_PORT}';
     \$config['smtp_server'] = '${ROUNDCUBEMAIL_SMTP_SERVER}';
     \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
+    \$config['smtp_conn_options'] = array(
+      'ssl' => array(
+        'verify_peer' => ${ROUNDCUBEMAIL_SMTP_SSL_VERIFY_PEER},
+        'verify_peer_name' => ${ROUNDCUBEMAIL_SMTP_SSL_VERIFY_PEER_NAME},
+      ),
+    );
     \$config['smtp_user'] = '%u';
     \$config['smtp_pass'] = '%p';
     \$config['des_key'] = '${ROUNDCUBEMAIL_DES_KEY}';

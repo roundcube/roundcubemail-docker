@@ -32,6 +32,10 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`
 
+`ROUNDCUBEMAIL_SMTP_SSL_VERIFY_PEER` - Whether SSL/TLS peer certificate should be verified. Defaults to `true`
+
+`ROUNDCUBEMAIL_SMTP_SSL_VERIFY_PEER_NAME` - Whether SSL/TLS peer hostname should be verified. Defaults to `true`
+
 `ROUNDCUBEMAIL_PLUGINS` - List of built-in plugins to activate. Defaults to `archive,zipdownload`
 
 `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
