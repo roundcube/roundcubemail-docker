@@ -61,6 +61,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_SMTP_SERVER:=localhost}"
   : "${ROUNDCUBEMAIL_SMTP_PORT:=587}"
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
+  : "${ROUNDCUBEMAIL_SKIN:=larry}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
   if [ ! -e config/config.inc.php ]; then
@@ -83,7 +84,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['plugins'] = ['${ROUNDCUBEMAIL_PLUGINS_PHP}'];
     \$config['zipdownload_selection'] = true;
     \$config['log_driver'] = 'stdout';
-    \$config['skin'] = 'larry';
+    \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
     " > config/config.inc.php
 
     for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
