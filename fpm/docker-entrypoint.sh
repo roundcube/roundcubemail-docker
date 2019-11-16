@@ -3,6 +3,36 @@
 
 # PWD=`pwd`
 
+esc_str () {
+  echo "$1" | LC_ALL=C sed -e 's/[^a-zA-Z0-9 ]/\\&/g; 1{$s/^$/""/}; 1!s/^/"/; $!s/$/"/'
+}
+
+configure_plugins () {
+  IFS='
+'
+
+  for line in $(env | grep -E '^ROUNDCUBEMAIL_PLUGIN_[A-Z0-9_]+__[A-Z0-9_]+='); do
+    PLUGIN=`echo "$line" | sed -r "s/^ROUNDCUBEMAIL_PLUGIN_([A-Z0-9_]+)__([A-Z0-9_]+)=(.+)$/\1/" | awk '{print tolower($0)}'`
+    VAR=`echo "$line" | sed -r "s/^ROUNDCUBEMAIL_PLUGIN_([A-Z0-9_]+)__([A-Z0-9_]+)=(.+)$/\2/" | awk '{print tolower($0)}'`
+    VALUE=`echo "$line" | sed -r "s/^ROUNDCUBEMAIL_PLUGIN_([A-Z0-9_]+)__([A-Z0-9_]+)=(.+)$/\3/"`
+
+    if [ -d "plugins/$PLUGIN" ]; then
+      if [ ! -f "plugins/$PLUGIN/config.inc.php" ]; then
+        cp plugins/$PLUGIN/config.inc.php.dist plugins/$PLUGIN/config.inc.php
+      fi
+
+      if grep -q "^\$config\['$(esc_str $VAR)'\]\s*=\s*.*;$" "plugins/$PLUGIN/config.inc.php"; then
+        sed -i "/^\$config\['$(esc_str $VAR)'\]\s*=\s*.*;$/ s/=.*;/= $(esc_str $VALUE);/" "plugins/$PLUGIN/config.inc.php"
+      else
+        >&2 echo "WARNING: Failed to set variable '$VAR' for plugin '$PLUGIN'"
+      fi
+    else
+      >&2 echo "WARNING: No plugin found for environment variable: $line"
+    fi
+  done
+}
+
+
 if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   if ! [ -e index.php -a -e bin/installto.sh ]; then
     echo >&2 "roundcubemail not found in $PWD - copying now..."
@@ -89,6 +119,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
       echo "include('$fn');" >> config/config.inc.php
     done
+
+    configure_plugins
 
     # initialize DB if not SQLite
     echo "${ROUNDCUBEMAIL_DSNW}" | grep -q 'sqlite:' || bin/initdb.sh --dir=$PWD/SQL || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize databse. Please run $PWD/bin/initdb.sh manually."

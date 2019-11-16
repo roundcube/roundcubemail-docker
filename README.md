@@ -36,6 +36,29 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
 
+You can also configure most plugins with environment variables:
+
+`ROUNDCUBEMAIL_PLUGIN_{PLUGIN}__{CONFIG_OPTION}={value}`
+
+* `{PLUGIN}` should be replaced with the corresponding upper-case
+  name of the appropriate folder in plugins/
+* `{CONFIG_OPTION}` should be replaced with the corresponding
+  upper-case configuration option name, as defined in the
+  plugin's config.inc.php.dist file.
+* `{value}` should be replaced with the option value. Be sure to
+  enclose it in quotes or double quotes, if the type of the
+  setting is a string!
+
+Both, `{PLUGIN}` and `{CONFIG_OPTION}` always need to be upper-case.
+Note that the `{PLUGIN}` and `{CONFIG_OPTION}` are separated
+by two underscore (`__`) characters!
+
+For example, to set the `'password_query'` config option of
+the `password` plugin, you would set the following environment
+variable:
+
+`ROUNDCUBEMAIL_PLUGIN_PASSWORD__PASSWORD_QUERY='SELECT update_passwd(%c, %u)'`
+
 By default, the image will use a local SQLite database for storing user account metadata.
 It'll be created inside the `/var/www/html` directory and can be backed up from there. Please note that
 this option should not be used for production environments.
