@@ -105,6 +105,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo "upload_max_filesize=${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" >> /usr/local/etc/php/conf.d/roundcube-override.ini
     echo "post_max_size=${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" >> /usr/local/etc/php/conf.d/roundcube-override.ini
   fi
+
+  if [ ! -z "${ROUNDCUBEMAIL_MEMORY_LIMIT}" ]; then
+    echo "memory_limit=${ROUNDCUBEMAIL_MEMORY_LIMIT}" >> /usr/local/etc/php/conf.d/roundcube-override.ini
+  fi
 fi
 
 exec "$@"
