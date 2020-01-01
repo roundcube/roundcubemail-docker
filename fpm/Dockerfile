@@ -48,6 +48,7 @@ RUN set -ex; \
 
 # expose these volumes
 VOLUME /var/roundcube/config
+VOLUME /var/roundcube/db
 VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
