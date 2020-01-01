@@ -50,6 +50,7 @@ RUN a2enmod rewrite
 
 # expose these volumes
 VOLUME /var/roundcube/config
+VOLUME /var/roundcube/db
 VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
