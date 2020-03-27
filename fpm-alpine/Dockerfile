@@ -6,7 +6,8 @@ RUN set -ex; \
 	\
 	apk add --no-cache \
 		bash \
-		coreutils
+		coreutils \
+		tzdata
 
 RUN set -ex; \
 	\
