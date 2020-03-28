@@ -75,7 +75,7 @@ RUN set -ex; \
 	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
-	chown -R www-data:www-data /usr/src/roundcubemail/
+	chown -R www-data:www-data /usr/src/roundcubemail/logs
 
 # include the wait-for-it.sh script
 RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /wait-for-it.sh && chmod +x /wait-for-it.sh

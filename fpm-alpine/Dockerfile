@@ -70,7 +70,7 @@ RUN set -ex; \
 	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
-	chown -R www-data:www-data /usr/src/roundcubemail/; \
+	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
 	apk del .fetch-deps
 
 # include the wait-for-it.sh script
