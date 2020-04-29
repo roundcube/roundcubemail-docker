@@ -50,7 +50,7 @@ VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.4.3
+ENV ROUNDCUBEMAIL_VERSION 1.4.4
 
 # Download package and extract to web volume
 RUN set -ex; \
