@@ -57,7 +57,7 @@ ENV ROUNDCUBEMAIL_VERSION 1.4.4
 
 # Download package and extract to web volume
 RUN set -ex; \
-	fetchDeps="gnupg dirmngr"; \
+	fetchDeps="gnupg dirmngr locales libc-l10n"; \
 	apt-get -qq update; \
 	apt-get install -y --no-install-recommends $fetchDeps; \
 	curl -o roundcubemail.tar.gz -fSL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz; \
