@@ -34,8 +34,8 @@ RUN set -ex; \
 		zip \
 		pspell \
 	; \
-	pecl install imagick; \
-	docker-php-ext-enable imagick opcache; \
+	pecl install imagick redis; \
+	docker-php-ext-enable imagick opcache redis; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
