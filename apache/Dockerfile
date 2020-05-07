@@ -57,6 +57,8 @@ VOLUME /tmp/roundcube-temp
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.4.4
 
+ENV ROUNDCUBEMAIL_LOCALE="en_US.UTF-8 UTF-8"
+
 # Download package and extract to web volume
 RUN set -ex; \
 	fetchDeps="gnupg dirmngr locales libc-l10n"; \
