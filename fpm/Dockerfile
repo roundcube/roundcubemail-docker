@@ -68,12 +68,12 @@ RUN set -ex; \
 	# ha.pool.sks-keyservers.net seems to be unreliable, use pgp.mit.edu as fallback
 	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys F3E4C04BB3DB5D4215C45F7F5AB2BAA141C4F7D5 || gpg --batch --keyserver pgp.mit.edu --recv-keys F3E4C04BB3DB5D4215C45F7F5AB2BAA141C4F7D5; \
 	gpg --batch --verify roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
-	tar -xf roundcubemail.tar.gz -C /usr/src/; \
 	gpgconf --kill all; \
+	mkdir /usr/src/roundcubemail; \
+	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
-	# upstream tarballs include ./roundcubemail-${ROUNDCUBEMAIL_VERSION}/ so this gives us /usr/src/roundcubemail-${ROUNDCUBEMAIL_VERSION}
-	mv /usr/src/roundcubemail-${ROUNDCUBEMAIL_VERSION} /usr/src/roundcubemail; \
-	rm -rf /usr/src/roundcubemail/installer
+	rm -rf /usr/src/roundcubemail/installer; \
+	chown -R www-data:www-data /usr/src/roundcubemail/logs
 
 # include the wait-for-it.sh script
 RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /wait-for-it.sh && chmod +x /wait-for-it.sh
