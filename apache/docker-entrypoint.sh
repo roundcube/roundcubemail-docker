@@ -105,6 +105,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo "post_max_size=${ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE}" >> /usr/local/etc/php/conf.d/roundcube-override.ini
   fi
 
+  : "${ROUNDCUBEMAIL_LOCALE:=en_US.UTF-8 UTF-8}"
+
   if [ ! -z "${ROUNDCUBEMAIL_LOCALE}" ]; then
     echo "${ROUNDCUBEMAIL_LOCALE}" > /etc/locale.gen
     /usr/sbin/locale-gen
