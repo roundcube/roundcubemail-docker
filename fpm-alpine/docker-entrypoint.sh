@@ -90,7 +90,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     done
 
     # initialize DB if not SQLite
-    echo "${ROUNDCUBEMAIL_DSNW}" | grep -q 'sqlite:' || bin/initdb.sh --dir=$PWD/SQL || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize databse. Please run $PWD/bin/initdb.sh manually."
+    echo "${ROUNDCUBEMAIL_DSNW}" | grep -q 'sqlite:' || bin/initdb.sh --dir=$PWD/SQL || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize database. Please run $PWD/bin/initdb.sh or $PWD/bin/updatedb.sh manually."
   else
     echo "WARNING: $PWD/config/config.inc.php already exists."
     echo "ROUNDCUBEMAIL_* environment variables have been ignored."
