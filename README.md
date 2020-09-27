@@ -7,7 +7,7 @@
 The simplest method is to run the official image:
 
 ```
-docker run -e ROUNDCUBEMAIL_DEFAULT_HOST=mail -e ROUNDCUBEMAIL_SMTP_SERVER=mail -d roundcube/roundcubemail
+docker run -e ROUNDCUBEMAIL_DEFAULT_HOST=mail -e ROUNDCUBEMAIL_SMTP_SERVER=mail -p 8000:80 -d roundcube/roundcubemail
 ```
 
 where `mail` should be replaced by your host name for the IMAP and SMTP server.
