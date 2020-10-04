@@ -4,6 +4,7 @@
 # PWD=`pwd`
 
 if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
+  # docroot is empty
   if ! [ -e index.php -a -e bin/installto.sh ]; then
     echo >&2 "roundcubemail not found in $PWD - copying now..."
     if [ "$(ls -A)" ]; then
@@ -12,6 +13,12 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     fi
     tar cf - --one-file-system -C /usr/src/roundcubemail . | tar xf -
     echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $PWD"
+  # update Roundcube in docroot
+  else
+    INSTALLDIR=`pwd`
+    echo >&2 "roundcubemail found in $INSTALLDIR - installing update..."
+    (cd /usr/src/roundcubemail && bin/installto.sh -y $INSTALLDIR)
+    composer.phar update --no-dev
   fi
 
   if [ -f /run/secrets/roundcube_db_user ]; then
@@ -89,8 +96,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
       echo "include('$fn');" >> config/config.inc.php
     done
 
-    # initialize DB if not SQLite
-    echo "${ROUNDCUBEMAIL_DSNW}" | grep -q 'sqlite:' || bin/initdb.sh --dir=$PWD/SQL || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize databse. Please run $PWD/bin/initdb.sh manually."
+    # initialize or update DB
+    bin/initdb.sh --dir=$PWD/SQL --create || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize database. Please run $PWD/bin/initdb.sh and $PWD/bin/updatedb.sh manually."
   else
     echo "WARNING: $PWD/config/config.inc.php already exists."
     echo "ROUNDCUBEMAIL_* environment variables have been ignored."

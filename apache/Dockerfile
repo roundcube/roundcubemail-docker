@@ -45,6 +45,21 @@ RUN set -ex; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*
 
+# installto.sh dependencies
+RUN set -ex; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+			rsync \
+	; \
+	rm -rf /var/lib/apt/lists/*
+
+# ... and composer.phar
+ADD https://getcomposer.org/installer /tmp/composer-installer.php
+
+RUN php /tmp/composer-installer.php --install-dir=/usr/local/bin/; \
+	rm /tmp/composer-installer.php
+
 # enable mod_rewrite
 RUN a2enmod rewrite
 
