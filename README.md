@@ -76,7 +76,7 @@ to share credentials accross all instances. The following secrets are currently 
 * `roundcube_db_user`: Database connection username (mappend to `ROUNDCUBEMAIL_DB_USER`)
 * `roundcube_db_password`: Database connection password (mappend to `ROUNDCUBEMAIL_DB_PASSWORD`)
 
-### Advanced configuration
+## Advanced configuration
 
 Apart from the above described environment variables, the Docker image also allows to add custom config files
 which are merged into Roundcube's default config. Therefore the image defines a volume `/var/roundcube/config`
@@ -92,12 +92,16 @@ Check the Roundcube Webmail wiki for a reference of [Roundcube config options](h
 Customized PHP settings can be implemented by mounting a configuration file to `/usr/local/etc/php/conf.d/zzz_roundcube-custom.ini`.
 For example, it may be used to increase the PHP memory limit (`memory_limit=128M`).
 
+## Examples
+
+A few example setups using `docker-compose` can be found in our [Github repository](https://github.com/roundcube/roundcubemail-docker/tree/master/examples).
+
 ## Building a Docker image
 
 Use the `Dockerfile` in this repository to build your own Docker image.
 It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.3-apache` Docker image.
 
-Build it from this directory with
+Build it from one of the variants directories with
 
 ```
 docker build -t roundcubemail .
