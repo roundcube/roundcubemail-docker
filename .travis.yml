@@ -21,7 +21,7 @@ script:
   - docker-compose ps
   - docker-compose logs
   - docker-compose ps "roundcubedb" | grep "Up"
-  - docker-compose ps "roundcube" | grep "Up"
+  - docker-compose ps "roundcubemail" | grep "Up"
 
 notifications:
   email: false
