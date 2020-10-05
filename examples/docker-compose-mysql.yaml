@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  roundcubedb:
+    image: mysql:5.7
+    container_name: roundcubedb
+#    restart: unless-stopped
+    volumes:
+      - ./db/mysql:/var/lib/mysql
+    ports:
+      - 34010:5432
+      - 33006:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=roundcube-mysql-pw
+      - MYSQL_DATABASE=roundcubemail
+
+  roundcubemail:
+    image: roundcube/roundcubemail:latest
+    container_name: roundcubemail
+#    restart: unless-stopped
+    depends_on:
+      - roundcubedb
+    links:
+      - roundcubedb
+    volumes:
+      - ./www:/var/www/html
+    ports:
+      - 9001:80
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=mysql
+      - ROUNDCUBEMAIL_DB_HOST=roundcubedb
+      - ROUNDCUBEMAIL_DB_PASSWORD=roundcube-mysql-pw
+      - ROUNDCUBEMAIL_SKIN=elastic
+      - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.example.org
+      - ROUNDCUBEMAIL_SMTP_SERVER=tls://mail.example.org
+
+### Optional: add a full mail server stack to use with Roundcube like https://hub.docker.com/r/tvial/docker-mailserver
+#   mailserver:
+#     image: tvial/docker-mailserver:latest
+#     hostname: mail.example.org
+#     ...  # for more options see https://github.com/tomav/docker-mailserver#examples
