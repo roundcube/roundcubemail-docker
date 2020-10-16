@@ -71,6 +71,22 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_SKIN:=larry}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
+
+
+    # add plugins
+    echo "adding plugins from list"
+    echo ${ROUNDCUBEMAIL_INSTALL_PLUGINS}
+
+    if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then 
+            cd $PWD 
+            for i in ${ROUNDCUBEMAIL_INSTALL_PLUGINS//,/ }
+            do
+                    /usr/local/bin/composer.phar -n -v require $i
+            done
+    fi
+
+
+
   if [ ! -e config/config.inc.php ]; then
     ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
     ROUNDCUBEMAIL_DES_KEY=`test -f /run/secrets/roundcube_des_key && cat /run/secrets/roundcube_des_key || head /dev/urandom | base64 | head -c 24`
@@ -122,18 +138,6 @@ fi
 
 
 
-# add plugins
-echo "adding plugins from list"
-echo ${ROUNDCUBEMAIL_INSTALL_PLUGINS}
-
-
-if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then 
-        cd /var/www/html 
-        for i in ${ROUNDCUBEMAIL_INSTALL_PLUGINS//,/ }
-        do
-                /usr/local/bin/composer.phar -n -v require $i
-        done
-fi
 
 
 
