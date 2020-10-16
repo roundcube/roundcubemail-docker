@@ -120,4 +120,21 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   fi
 fi
 
+
+
+# add plugins
+echo "adding plugins from list"
+echo ${ROUNDCUBEMAIL_INSTALL_PLUGINS}
+
+
+if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then 
+        cd /var/www/html 
+        for i in ${ROUNDCUBEMAIL_INSTALL_PLUGINS//,/ }
+        do
+                /usr/local/bin/composer.phar -n -v require $i
+        done
+fi
+
+
+
 exec "$@"
