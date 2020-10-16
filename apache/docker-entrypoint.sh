@@ -72,6 +72,18 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
   : "${ROUNDCUBEMAIL_REQUEST_PATH:=/}"
 
+  if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then
+    echo "Installing plugins from the list"
+    echo "Plugins: ${ROUNDCUBEMAIL_INSTALL_PLUGINS}"
+
+    cd $PWD
+    for plugin in ${ROUNDCUBEMAIL_INSTALL_PLUGINS//,/ }
+    do
+      echo "Installing: $plugin"
+      composer --no-interaction require $plugin
+    done
+  fi
+
   if [ ! -e config/config.inc.php ]; then
     GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
