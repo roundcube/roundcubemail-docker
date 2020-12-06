@@ -84,7 +84,7 @@ RUN set -ex; \
 	gpg --batch --verify roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	gpgconf --kill all; \
 	mkdir /usr/src/roundcubemail; \
-	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1; \
+	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1 --no-same-owner; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs
