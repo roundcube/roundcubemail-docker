@@ -97,7 +97,14 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     done
 
     # initialize or update DB
-    bin/initdb.sh --dir=$PWD/SQL --create || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize database. Please run $PWD/bin/initdb.sh and $PWD/bin/updatedb.sh manually."
+    if ! [[ $(bin/initdb.sh --dir=$PWD/SQL --create) || $(bin/updatedb.sh --dir=$PWD/SQL --package=roundcube) ]]; then
+      mv config/config.inc.php config/config.inc.php.failed
+      echo "Failed to initialize database."
+      echo "Config file moved to 'config/config.inc.php.failed"
+      echo "Please, run $PWD/bin/initdb.sh and $PWD/bin/updatedb.sh manually"
+      exit 1
+    fi
+
   else
     echo "WARNING: $PWD/config/config.inc.php already exists."
     echo "ROUNDCUBEMAIL_* environment variables have been ignored."
