@@ -3,7 +3,7 @@ version: "2"
 services:
   roundcube:
     build: ./
-    container_name: roundcube
+    container_name: roundcubemail
     #restart: always
     depends_on:
       - roundcubedb
