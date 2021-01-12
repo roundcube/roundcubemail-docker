@@ -11,6 +11,7 @@ RUN set -ex; \
 		libicu-dev \
 		libjpeg62-turbo-dev \
 		libldap2-dev \
+		libmagickwand-dev \
 		libpng-dev \
 		libpq-dev \
 		libsqlite3-dev \
@@ -30,6 +31,8 @@ RUN set -ex; \
 		pdo_sqlite \
 		zip \
 	; \
+	pecl install imagick; \
+	docker-php-ext-enable imagick; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
@@ -59,6 +62,7 @@ ADD https://getcomposer.org/installer /tmp/composer-installer.php
 
 RUN php /tmp/composer-installer.php --install-dir=/usr/local/bin/; \
 	rm /tmp/composer-installer.php
+
 
 # expose these volumes
 VOLUME /var/roundcube/config
