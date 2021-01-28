@@ -72,7 +72,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
   if [ ! -e config/config.inc.php ]; then
-    ROUNDCUBEMAIL_DES_KEY=`head /dev/urandom | base64 | head -c 24`
+    GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
 
     echo "Write root config to $PWD/config/config.inc.php"
@@ -80,7 +80,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['plugins'] = [];
     \$config['log_driver'] = 'stdout';
     \$config['zipdownload_selection'] = true;
-    \$config['des_key'] = '${ROUNDCUBEMAIL_DES_KEY}';
+    \$config['des_key'] = '${GENERATED_DES_KEY}';
     include(__DIR__ . '/config.docker.inc.php');
     " > config/config.inc.php
 
@@ -103,8 +103,9 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   " > config/config.docker.inc.php
 
   if [ -e /run/secrets/roundcube_des_key ]; then
-    ROUNDCUBEMAIL_DES_KEY=`cat /run/secrets/roundcube_des_key`
-    echo "\$config['des_key'] = '${ROUNDCUBEMAIL_DES_KEY}';" >> config/config.docker.inc.php
+    echo "\$config['des_key'] = file_get_contents('/run/secrets/roundcube_des_key');" >> config/config.docker.inc.php
+  elif [ ! -z "${ROUNDCUBEMAIL_DES_KEY}" ]; then
+    echo "\$config['des_key'] = getenv('ROUNDCUBEMAIL_DES_KEY');" >> config/config.docker.inc.php
   fi
 
   # include custom config files
