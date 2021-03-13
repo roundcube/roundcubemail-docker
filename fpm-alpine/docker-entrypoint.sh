@@ -67,6 +67,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_DEFAULT_PORT:=143}"
   : "${ROUNDCUBEMAIL_SMTP_SERVER:=localhost}"
   : "${ROUNDCUBEMAIL_SMTP_PORT:=587}"
+  : "${ROUNDCUBEMAIL_SMTP_AUTH_TYPE:=DIGEST-MD5}"
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
   : "${ROUNDCUBEMAIL_SKIN:=larry}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
@@ -97,6 +98,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   \$config['default_port'] = '${ROUNDCUBEMAIL_DEFAULT_PORT}';
   \$config['smtp_server'] = '${ROUNDCUBEMAIL_SMTP_SERVER}';
   \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
+  \$config['smtp_auth_type'] = '${ROUNDCUBEMAIL_SMTP_AUTH_TYPE}';
   \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
   \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
   \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));

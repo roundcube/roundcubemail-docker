@@ -32,6 +32,7 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`
 
+`ROUNDCUBEMAIL_SMTP_AUTH_TYPE` - SMTP authentification [type](https://pear.php.net/manual/en/package.networking.net-smtp.intro.php) ; defaults `DIGEST-MD5`
 `ROUNDCUBEMAIL_PLUGINS` - List of built-in plugins to activate. Defaults to `archive,zipdownload`
 
 `ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `larry`
