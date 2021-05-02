@@ -24,11 +24,11 @@ We also publish full version tags (e.g. `1.3.10`) but these just represent the v
 
 The following env variables can be set to configure your Roundcube Docker instance:
 
-`ROUNDCUBEMAIL_DEFAULT_HOST` - Hostname of the IMAP server to connect to, use `tls://` prefix for STARTTLS
+`ROUNDCUBEMAIL_DEFAULT_HOST` - Hostname of the IMAP server to connect to. For encypted connections, prefix the host with `tls://` (STARTTLS) or `ssl://` (SSL/TLS).
 
 `ROUNDCUBEMAIL_DEFAULT_PORT` - IMAP port number; defaults to `143`
 
-`ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails, use `tls://` prefix for STARTTLS
+`ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails. For encypted connections, prefix the host with `tls://` (STARTTLS) or `ssl://` (SSL/TLS).
 
 `ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`
 
