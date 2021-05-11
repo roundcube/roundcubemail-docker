@@ -70,7 +70,7 @@ FROM base AS builder
 
 # install nodejs and lessc compiler
 RUN apt-get -qq update; \
-	apt-get install -y --no-install-recommends rsync unzip gnupg dirmngr; \
+	apt-get install -y --no-install-recommends unzip gnupg dirmngr; \
 	curl -sL https://deb.nodesource.com/setup_14.x | bash -; \
 	apt-get install -y nodejs; \
 	npm install -g less; \
@@ -85,7 +85,7 @@ RUN set -ex; \
 	tar -xzf roundcubemail.tar.gz -C /usr/src/; \
 	rm roundcubemail.tar.gz; \
 	mv /usr/src/roundcubemail-master /usr/src/roundcubemail; \
-  cd /usr/src/roundcubemail; \
+	cd /usr/src/roundcubemail; \
 	rm -rf installer tests public_html .ci .github .gitignore .editorconfig .tx .travis.yml; \
 	(cd /usr/src/roundcubemail/skins/elastic; \
 		lessc --clean-css="--s1 --advanced" styles/styles.less > styles/styles.min.css; \
