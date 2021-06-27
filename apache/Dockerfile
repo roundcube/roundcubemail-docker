@@ -84,8 +84,7 @@ RUN set -ex; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	# workaround for "Cannot assign requested address", see e.g. https://github.com/inversepath/usbarmory-debian-base_image/issues/9
 	echo "disable-ipv6" > "$GNUPGHOME/dirmngr.conf"; \
-	# ha.pool.sks-keyservers.net seems to be unreliable, use pgp.mit.edu as fallback
-	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys F3E4C04BB3DB5D4215C45F7F5AB2BAA141C4F7D5 || gpg --batch --keyserver pgp.mit.edu --recv-keys F3E4C04BB3DB5D4215C45F7F5AB2BAA141C4F7D5; \
+	curl -fSL https://roundcube.net/download/pubkey.asc | gpg --batch --import -; \
 	gpg --batch --verify roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	gpgconf --kill all; \
 	mkdir /usr/src/roundcubemail; \
