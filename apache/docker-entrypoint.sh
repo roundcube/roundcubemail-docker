@@ -71,6 +71,22 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_SKIN:=larry}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
+
+
+    # add plugins
+    echo "adding plugins from list"
+    echo ${ROUNDCUBEMAIL_INSTALL_PLUGINS}
+
+    if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then 
+            cd $PWD 
+            for i in ${ROUNDCUBEMAIL_INSTALL_PLUGINS//,/ }
+            do
+                    /usr/local/bin/composer.phar -n -v require $i
+            done
+    fi
+
+
+
   if [ ! -e config/config.inc.php ]; then
     GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
@@ -132,5 +148,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     /usr/sbin/locale-gen
   fi
 fi
+
+
+
+
+
 
 exec "$@"
