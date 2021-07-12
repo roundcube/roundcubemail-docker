@@ -32,7 +32,7 @@ RUN set -ex; \
 		zip \
 	; \
 	pecl install imagick; \
-	docker-php-ext-enable imagick; \
+	docker-php-ext-enable imagick opcache; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \

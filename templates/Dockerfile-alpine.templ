@@ -38,7 +38,7 @@ RUN set -ex; \
 		zip \
 	; \
 	pecl install imagick; \
-	docker-php-ext-enable imagick; \
+	docker-php-ext-enable imagick opcache; \
 	\
 	runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
