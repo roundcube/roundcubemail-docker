@@ -28,6 +28,6 @@ notifications:
   email: false
 
 env:
-  - VERSION=1.4.11 VARIANT=apache
-  - VERSION=1.4.11 VARIANT=fpm
-  - VERSION=1.4.11 VARIANT=fpm-alpine
+  - VARIANT=apache
+  - VARIANT=fpm
+  - VARIANT=fpm-alpine
