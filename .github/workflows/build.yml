@@ -1,0 +1,17 @@
+name: Build Docker image
+
+on: [push]
+
+jobs:
+  build-variants:
+    name: Build image variants
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variants: ["apache", "fpm", "fpm-alpine"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build image variant "${{ matrix.variants }}"
+        run: cd ${{ matrix.variants }} && docker build ./
