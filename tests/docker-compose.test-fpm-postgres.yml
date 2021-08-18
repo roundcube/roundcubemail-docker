@@ -5,7 +5,9 @@ services:
     image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube-test-fpm}
     healthcheck:
       # Check until the FPM port is in in the LISTEN list
-      test: ["CMD-SHELL", "netstat -an | grep -q -F \":9000\""]
+      # test: ["CMD-SHELL", "netstat -an | grep -q -F \":9000\""]
+      # Or use php to test php since the non alpine fpm image has no binary able to know if a port is in listen mode
+      test: ["CMD-SHELL", "php -r '$$c = @fsockopen(\"localhost\", 9000); if (is_resource($$c)) { fwrite(STDOUT, \"OK\"); fclose($$c); exit(0); } else { fwrite(STDERR, \"FAIL\"); exit(1); }'"]
       interval: 2s
       timeout: 3s
       retries: 30
