@@ -49,11 +49,7 @@ RUN set -ex; \
 	apk add --virtual .roundcubemail-phpext-rundeps imagemagick $runDeps; \
 	apk del .build-deps
 
-# add composer.phar
-ADD https://getcomposer.org/installer /tmp/composer-installer.php
-
-RUN php /tmp/composer-installer.php --install-dir=/usr/local/bin/; \
-	rm /tmp/composer-installer.php
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 
 # expose these volumes
