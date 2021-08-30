@@ -92,6 +92,18 @@ Check the Roundcube Webmail wiki for a reference of [Roundcube config options](h
 Customized PHP settings can be implemented by mounting a configuration file to `/usr/local/etc/php/conf.d/zzz_roundcube-custom.ini`.
 For example, it may be used to increase the PHP memory limit (`memory_limit=128M`).
 
+## Installing Roundcube Plugins
+
+With the latest updates, the Roundcube images contain the [Composer](https://getcomposer.org) binary
+which is used to install plugins. You can add and activate plugins by executing `composer.phar require <package-name>` 
+inside a running Roundcube container:
+
+```
+$ docker exec -it roundcubemail composer.phar require johndoh/contextmenu --update-no-dev
+```
+
+If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system. Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
+
 ## Examples
 
 A few example setups using `docker-compose` can be found in our [Github repository](https://github.com/roundcube/roundcubemail-docker/tree/master/examples).
