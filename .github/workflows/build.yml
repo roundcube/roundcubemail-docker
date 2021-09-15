@@ -1,6 +1,6 @@
 name: Build Docker image
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build-and-testvariants:
