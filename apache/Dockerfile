@@ -59,7 +59,6 @@ RUN set -ex; \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-
 RUN a2enmod rewrite
 
 # expose these volumes
@@ -69,7 +68,7 @@ VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.4.11
+ENV ROUNDCUBEMAIL_VERSION 1.5.0
 
 # Define the GPG key used for the bundle verification process
 ENV ROUNDCUBEMAIL_KEYID "F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
