@@ -16,6 +16,8 @@ RUN set -ex; \
 		libpq-dev \
 		libsqlite3-dev \
 		libzip-dev \
+		libpspell-dev \
+		libonig-dev \
 	; \
 	\
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
@@ -30,6 +32,7 @@ RUN set -ex; \
 		pdo_pgsql \
 		pdo_sqlite \
 		zip \
+		pspell \
 	; \
 	pecl install imagick; \
 	docker-php-ext-enable imagick opcache; \
@@ -53,6 +56,8 @@ RUN set -ex; \
 	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
+			aspell \
+			aspell-en \
 			rsync \
 	; \
 	rm -rf /var/lib/apt/lists/*

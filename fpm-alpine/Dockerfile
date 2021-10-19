@@ -8,7 +8,9 @@ RUN set -ex; \
 		bash \
 		coreutils \
 		rsync \
-		tzdata
+		tzdata \
+		aspell \
+		aspell-en
 
 RUN set -ex; \
 	\
@@ -23,6 +25,7 @@ RUN set -ex; \
 		openldap-dev \
 		postgresql-dev \
 		sqlite-dev \
+		aspell-dev \
 	; \
 	\
 	docker-php-ext-configure gd; \
@@ -36,6 +39,7 @@ RUN set -ex; \
 		pdo_pgsql \
 		pdo_sqlite \
 		zip \
+		pspell \
 	; \
 	pecl install imagick; \
 	docker-php-ext-enable imagick opcache; \

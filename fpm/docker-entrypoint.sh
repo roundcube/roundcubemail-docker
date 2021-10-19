@@ -68,7 +68,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_SMTP_SERVER:=localhost}"
   : "${ROUNDCUBEMAIL_SMTP_PORT:=587}"
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
-  : "${ROUNDCUBEMAIL_SKIN:=larry}"
+  : "${ROUNDCUBEMAIL_SKIN:=elastic}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
   if [ ! -e config/config.inc.php ]; then
@@ -81,6 +81,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     \$config['log_driver'] = 'stdout';
     \$config['zipdownload_selection'] = true;
     \$config['des_key'] = '${GENERATED_DES_KEY}';
+    \$config['enable_spellcheck'] = true;
+    \$config['spellcheck_engine'] = 'pspell';
     include(__DIR__ . '/config.docker.inc.php');
     " > config/config.inc.php
 
@@ -108,6 +110,11 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo "\$config['des_key'] = getenv('ROUNDCUBEMAIL_DES_KEY');" >> config/config.docker.inc.php
   fi
 
+  if [ ! -z "${ROUNDCUBEMAIL_SPELLCHECK_URI}"]; then
+    echo "\$config['spellcheck_engine'] = 'googie';" >> config/config.docker.inc.php
+    echo "\$config['spellcheck_uri'] = '${ROUNDCUBEMAIL_SPELLCHECK_URI}';" >> config/config.docker.inc.php
+  fi
+
   # include custom config files
   for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
     echo "include('$fn');" >> config/config.docker.inc.php
@@ -131,6 +138,13 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo "${ROUNDCUBEMAIL_LOCALE}" > /etc/locale.gen
     /usr/sbin/locale-gen
   fi
+
+  if [ ! -z "${ROUNDCUBEMAIL_ASPELL_DICTS}" ]; then
+    ASPELL_PACKAGES=`echo -n "aspell-${ROUNDCUBEMAIL_ASPELL_DICTS}" | sed -E "s/[, ]+/ aspell-/g"`
+    which apt-get && apt-get install -y $ASPELL_PACKAGES
+    which apk && apk add --no-cache $ASPELL_PACKAGES
+  fi
+
 fi
 
 exec "$@"
