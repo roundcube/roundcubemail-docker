@@ -38,6 +38,10 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
 
+`ROUNDCUBEMAIL_SPELLCHECK_URI` - Fully qualified URL to a Google XML spell check API like [google-spell-pspell](https://github.com/roundcube/google-spell-pspell)
+
+`ROUNDCUBEMAIL_ASPELL_DICTS` - List of aspell dictionaries to install for spell checking (comma-separated, e.g. `de,fr,pl`). 
+
 By default, the image will use a local SQLite database for storing user account metadata.
 It'll be created inside the `/var/roundcube/db` directory and can be backed up from there. Please note that
 this option should not be used for production environments.
