@@ -17,6 +17,7 @@ RUN set -ex; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 		icu-dev \
+		freetype-dev \
 		imagemagick-dev \
 		libjpeg-turbo-dev \
 		libpng-dev \
@@ -28,7 +29,7 @@ RUN set -ex; \
 		aspell-dev \
 	; \
 	\
-	docker-php-ext-configure gd; \
+	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap; \
 	docker-php-ext-install \
 		exif \

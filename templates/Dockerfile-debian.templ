@@ -21,7 +21,7 @@ RUN set -ex; \
 	; \
 	\
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
-	docker-php-ext-configure gd; \
+	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch"; \
 	docker-php-ext-install \
 		exif \
