@@ -37,8 +37,8 @@ RUN set -ex; \
 		pdo_sqlite \
 		zip \
 	; \
-	pecl install imagick; \
-	docker-php-ext-enable imagick; \
+	pecl install imagick redis; \
+	docker-php-ext-enable imagick opcache redis; \
 	\
 	runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \

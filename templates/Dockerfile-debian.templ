@@ -31,8 +31,8 @@ RUN set -ex; \
 		pdo_sqlite \
 		zip \
 	; \
-	pecl install imagick; \
-	docker-php-ext-enable imagick; \
+	pecl install imagick redis; \
+	docker-php-ext-enable imagick opcache redis; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
