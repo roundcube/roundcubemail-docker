@@ -126,10 +126,9 @@ docker build -t roundcubemail .
 You can also create your own Docker image by extending from this image.
 
 For instance, you could extend this image to add composer and install requirements for builtin plugins or even external plugins:
+
 ```Dockerfile
 FROM roundcube/roundcubemail:latest
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN set -ex; \
     apt-get update; \
@@ -137,21 +136,14 @@ RUN set -ex; \
         git \
     ; \
     \
-    mv /usr/src/roundcubemail/composer.json-dist /usr/src/roundcubemail/composer.json; \
-    \
     composer \
         --working-dir=/usr/src/roundcubemail/ \
-        --prefer-dist --prefer-stable \
-        --no-update --no-interaction \
-        --optimize-autoloader --apcu-autoloader \
+        --prefer-dist \
+        --prefer-stable \
+        --update-no-dev \
+        --no-interaction \
+        --optimize-autoloader \
         require \
             johndoh/contextmenu \
     ; \
-    composer \
-        --working-dir=/usr/src/roundcubemail/ \
-        --prefer-dist --no-dev \
-        --no-interaction \
-        --optimize-autoloader --apcu-autoloader \
-        update;
-
 ```

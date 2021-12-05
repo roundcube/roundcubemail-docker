@@ -31,7 +31,7 @@ which is used to install plugins. You can add and activate plugins by executing 
 inside a running Roundcube container:
 
 ```
-$ docker exec -it roundcubemail composer.phar require johndoh/contextmenu --update-no-dev
+$ docker exec -it roundcubemail composer require johndoh/contextmenu --update-no-dev
 ```
 
 If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system. Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
