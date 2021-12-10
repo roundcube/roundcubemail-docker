@@ -24,11 +24,11 @@ We also publish full version tags (e.g. `1.3.10`) but these just represent the v
 
 The following env variables can be set to configure your Roundcube Docker instance:
 
-`ROUNDCUBEMAIL_DEFAULT_HOST` - Hostname of the IMAP server to connect to, use `tls://` prefix for STARTTLS
+`ROUNDCUBEMAIL_DEFAULT_HOST` - Hostname of the IMAP server to connect to. For encypted connections, prefix the host with `tls://` (STARTTLS) or `ssl://` (SSL/TLS).
 
 `ROUNDCUBEMAIL_DEFAULT_PORT` - IMAP port number; defaults to `143`
 
-`ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails, use `tls://` prefix for STARTTLS
+`ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails. For encypted connections, prefix the host with `tls://` (STARTTLS) or `ssl://` (SSL/TLS).
 
 `ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`
 
@@ -38,8 +38,12 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
 
+`ROUNDCUBEMAIL_SPELLCHECK_URI` - Fully qualified URL to a Google XML spell check API like [google-spell-pspell](https://github.com/roundcube/google-spell-pspell)
+
+`ROUNDCUBEMAIL_ASPELL_DICTS` - List of aspell dictionaries to install for spell checking (comma-separated, e.g. `de,fr,pl`). 
+
 By default, the image will use a local SQLite database for storing user account metadata.
-It'll be created inside the `/var/www/html` directory and can be backed up from there. Please note that
+It'll be created inside the `/var/roundcube/db` directory and can be backed up from there. Please note that
 this option should not be used for production environments.
 
 ### Connect to a Database
@@ -92,6 +96,18 @@ Check the Roundcube Webmail wiki for a reference of [Roundcube config options](h
 Customized PHP settings can be implemented by mounting a configuration file to `/usr/local/etc/php/conf.d/zzz_roundcube-custom.ini`.
 For example, it may be used to increase the PHP memory limit (`memory_limit=128M`).
 
+## Installing Roundcube Plugins
+
+With the latest updates, the Roundcube images contain the [Composer](https://getcomposer.org) binary
+which is used to install plugins. You can add and activate plugins by executing `composer.phar require <package-name>` 
+inside a running Roundcube container:
+
+```
+$ docker exec -it roundcubemail composer.phar require johndoh/contextmenu --update-no-dev
+```
+
+If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system. Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
+
 ## Examples
 
 A few example setups using `docker-compose` can be found in our [Github repository](https://github.com/roundcube/roundcubemail-docker/tree/master/examples).
@@ -110,6 +126,7 @@ docker build -t roundcubemail .
 You can also create your own Docker image by extending from this image.
 
 For instance, you could extend this image to add composer and install requirements for builtin plugins or even external plugins:
+
 ```Dockerfile
 FROM roundcube/roundcubemail:latest
 
@@ -119,22 +136,14 @@ RUN set -ex; \
         git \
     ; \
     \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer; \
-    mv /usr/src/roundcubemail/composer.json-dist /usr/src/roundcubemail/composer.json; \
-    \
     composer \
         --working-dir=/usr/src/roundcubemail/ \
-        --prefer-dist --prefer-stable \
-        --no-update --no-interaction \
-        --optimize-autoloader --apcu-autoloader \
+        --prefer-dist \
+        --prefer-stable \
+        --update-no-dev \
+        --no-interaction \
+        --optimize-autoloader \
         require \
             johndoh/contextmenu \
     ; \
-    composer \
-        --working-dir=/usr/src/roundcubemail/ \
-        --prefer-dist --no-dev \
-        --no-interaction \
-        --optimize-autoloader --apcu-autoloader \
-        update;
-
 ```

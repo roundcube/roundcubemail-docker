@@ -1,5 +1,5 @@
+os: linux
 dist: trusty
-sudo: required
 
 services: docker
 
@@ -12,6 +12,7 @@ branches:
 before_script:
   - env | sort
   - dir="${VARIANT}"
+  - echo "$DOCKER_PULL_PASSWORD" | docker login -u "$DOCKER_PULL_USERNAME" --password-stdin
 
 script:
   - cd "$dir"
@@ -26,7 +27,4 @@ script:
 notifications:
   email: false
 
-env:
-  - VERSION=1.4.9 VARIANT=apache
-  - VERSION=1.4.9 VARIANT=fpm
-  - VERSION=1.4.9 VARIANT=fpm-alpine
+env:%%ENV%%

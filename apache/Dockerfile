@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.4-apache
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
@@ -11,14 +11,17 @@ RUN set -ex; \
 		libicu-dev \
 		libjpeg62-turbo-dev \
 		libldap2-dev \
+		libmagickwand-dev \
 		libpng-dev \
 		libpq-dev \
 		libsqlite3-dev \
 		libzip-dev \
+		libpspell-dev \
+		libonig-dev \
 	; \
 	\
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
-	docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr --with-jpeg-dir=/usr; \
+	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch"; \
 	docker-php-ext-install \
 		exif \
@@ -29,7 +32,10 @@ RUN set -ex; \
 		pdo_pgsql \
 		pdo_sqlite \
 		zip \
+		pspell \
 	; \
+	pecl install imagick redis; \
+	docker-php-ext-enable imagick opcache redis; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
@@ -50,17 +56,14 @@ RUN set -ex; \
 	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
+			aspell \
+			aspell-en \
 			rsync \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-# ... and composer.phar
-ADD https://getcomposer.org/installer /tmp/composer-installer.php
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN php /tmp/composer-installer.php --install-dir=/usr/local/bin/; \
-	rm /tmp/composer-installer.php
-
-# enable mod_rewrite
 RUN a2enmod rewrite
 
 # expose these volumes
@@ -70,7 +73,10 @@ VOLUME /var/www/html
 VOLUME /tmp/roundcube-temp
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.4.9
+ENV ROUNDCUBEMAIL_VERSION 1.5.1
+
+# Define the GPG key used for the bundle verification process
+ENV ROUNDCUBEMAIL_KEYID "F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
 
 # Download package and extract to web volume
 RUN set -ex; \
@@ -82,12 +88,15 @@ RUN set -ex; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	# workaround for "Cannot assign requested address", see e.g. https://github.com/inversepath/usbarmory-debian-base_image/issues/9
 	echo "disable-ipv6" > "$GNUPGHOME/dirmngr.conf"; \
-	# ha.pool.sks-keyservers.net seems to be unreliable, use pgp.mit.edu as fallback
-	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys F3E4C04BB3DB5D4215C45F7F5AB2BAA141C4F7D5 || gpg --batch --keyserver pgp.mit.edu --recv-keys F3E4C04BB3DB5D4215C45F7F5AB2BAA141C4F7D5; \
+	curl -fSL https://roundcube.net/download/pubkey.asc -o /tmp/pubkey.asc; \
+	LC_ALL=C.UTF-8 gpg -n --show-keys --with-fingerprint --keyid-format=long /tmp/pubkey.asc | if [ $(grep -c -o 'Key fingerprint') != 1 ]; then echo 'The key file should contain only one GPG key'; exit 1; fi; \
+	LC_ALL=C.UTF-8 gpg -n --show-keys --with-fingerprint --keyid-format=long /tmp/pubkey.asc | if [ $(grep -c -o "${ROUNDCUBEMAIL_KEYID}") != 1 ]; then echo 'The key ID should be the roundcube one'; exit 1; fi; \
+	gpg --batch --import /tmp/pubkey.asc; \
+	rm /tmp/pubkey.asc; \
 	gpg --batch --verify roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	gpgconf --kill all; \
 	mkdir /usr/src/roundcubemail; \
-	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1; \
+	tar -xf roundcubemail.tar.gz -C /usr/src/roundcubemail --strip-components=1 --no-same-owner; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs

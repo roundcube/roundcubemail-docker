@@ -1,0 +1,280 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: roundcubemail-www-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: roundcubemail-temp-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: roundcubedb-volumeclaim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: roundcubemail-shared-secret
+stringData:
+  DES_KEY: 'a-super-random-value'
+  DB_USER: roundcube
+  DB_PASSWORD: roundcubePwd
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: roundcubenginx-config
+data:
+  default.conf: |
+    server {
+        listen 80 default_server;
+        server_name _;
+        root /var/www/html;
+
+        location / {
+            try_files $uri /index.php$is_args$args;
+        }
+
+        location ~ \.php(/|$) {
+            try_files $uri =404;
+            fastcgi_pass roundcubemail:9000;
+            fastcgi_read_timeout 300;
+            proxy_read_timeout 300;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+            fastcgi_param DOCUMENT_ROOT $realpath_root;
+            internal;
+        }
+
+        client_max_body_size 6m;
+
+        error_log  /var/log/nginx/error.log;
+        access_log /var/log/nginx/access.log;
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roundcubedb
+  labels:
+    service: roundcubedb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: roundcubedb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: roundcubedb
+    spec:
+      containers:
+      - name: roundcubedb
+        image: postgres:alpine
+        imagePullPolicy: ""
+        env:
+        - name: POSTGRES_DB
+          value: roundcube
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: roundcubemail-shared-secret
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: roundcubemail-shared-secret
+              key: DB_PASSWORD
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: roundcubedb-volume
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: roundcubedb-volume
+        persistentVolumeClaim:
+          claimName: roundcubedb-volumeclaim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roundcubemail
+  labels:
+    service: roundcubemail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: roundcubemail
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: roundcubemail
+    spec:
+      containers:
+      - name: roundcubemail
+        image: roundcube/roundcubemail:latest-fpm-alpine
+        imagePullPolicy: ""
+        env:
+        - name: ROUNDCUBEMAIL_DB_TYPE
+          value: pgsql
+        - name: ROUNDCUBEMAIL_DB_HOST
+          value: roundcubedb
+        - name: ROUNDCUBEMAIL_DB_NAME
+          value: roundcube
+        - name: ROUNDCUBEMAIL_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: roundcubemail-shared-secret
+              key: DB_USER
+        - name: ROUNDCUBEMAIL_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: roundcubemail-shared-secret
+              key: DB_PASSWORD
+        - name: ROUNDCUBEMAIL_DES_KEY
+          valueFrom:
+            secretKeyRef:
+              name: roundcubemail-shared-secret
+              key: DES_KEY
+        - name: ROUNDCUBEMAIL_DEFAULT_HOST
+          value: tls://mail.example.org
+        - name: ROUNDCUBEMAIL_SMTP_SERVER
+          value: tls://mail.example.org
+        - name: ROUNDCUBEMAIL_SKIN
+          value: elastic
+        - name: ROUNDCUBEMAIL_PLUGINS
+          value: archive,zipdownload,newmail_notifier
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: www-data
+        - mountPath: /tmp/roundcube-temp
+          name: temp-data
+      restartPolicy: Always
+      # serviceAccountName: ""
+      volumes:
+      - name: www-data
+        persistentVolumeClaim:
+          claimName: roundcubemail-www-pvc
+      - name: temp-data
+        persistentVolumeClaim:
+          claimName: roundcubemail-temp-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roundcubenginx
+  labels:
+    service: roundcubenginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: roundcubenginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: roundcubenginx
+    spec:
+      containers:
+      - name: roundcubenginx
+        image: nginx:alpine
+        imagePullPolicy: ""
+        env:
+        - name: NGINX_HOST
+          value: localhost
+        - name: NGINX_PHP_CGI
+          value: roundcubemail:9000
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: www-data
+          mountPath: /var/www/html
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: www-data
+        persistentVolumeClaim:
+          claimName: roundcubemail-www-pvc
+      - name: nginx-config
+        configMap:
+          name: roundcubenginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roundcubedb
+  labels:
+    service: roundcubedb
+spec:
+  type: NodePort
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    service: roundcubedb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roundcubemail
+  labels:
+    service: roundcubemail
+spec:
+  type: NodePort
+  ports:
+  - port: 9000
+    protocol: TCP
+  selector:
+    service: roundcubemail
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roundcubenginx
+  labels:
+    service: roundcubenginx
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 80
+  selector:
+    service: roundcubenginx

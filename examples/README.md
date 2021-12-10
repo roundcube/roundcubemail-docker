@@ -31,7 +31,19 @@ which is used to install plugins. You can add and activate plugins by executing 
 inside a running Roundcube container:
 
 ```
-$ docker exec -it roundcubemail composer.phar require johndoh/contextmenu --update-no-dev
+$ docker exec -it roundcubemail composer require johndoh/contextmenu --update-no-dev
 ```
 
 If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system. Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
+
+## Kubernetes Cluster
+
+The sample [kubernetes.yaml](./kubernetes.yaml) file configures a Roundcube installation on a Kubernetes cluster with three individual deployments and services which can be scaled individually:
+
+* roundcubedb: Postgres database
+* roundcubemail: PHP-FPM with Roundcube
+* roundcubenginx: Nginx service serving HTTP
+
+The setup defines three PersistentVolumeClaims for database and shared temp file storage as well as for sharing the static file of Roundcube with the Nginx pods which finally serve them via HTTP.
+
+This is only an example and needs to be modified and tweaked for productive systems. At least set the `ROUNDCUBEMAIL_DEFAULT_HOST` and `ROUNDCUBEMAIL_SMTP_SERVER` and change the values of the `roundcubemail-shared-secret` Secret.

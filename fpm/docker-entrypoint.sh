@@ -68,40 +68,60 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_SMTP_SERVER:=localhost}"
   : "${ROUNDCUBEMAIL_SMTP_PORT:=587}"
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
-  : "${ROUNDCUBEMAIL_SKIN:=larry}"
+  : "${ROUNDCUBEMAIL_SKIN:=elastic}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
 
   if [ ! -e config/config.inc.php ]; then
-    ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
-    ROUNDCUBEMAIL_DES_KEY=`test -f /run/secrets/roundcube_des_key && cat /run/secrets/roundcube_des_key || head /dev/urandom | base64 | head -c 24`
+    GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
 
-    echo "Write config to $PWD/config/config.inc.php"
+    echo "Write root config to $PWD/config/config.inc.php"
     echo "<?php
-    \$config['db_dsnw'] = '${ROUNDCUBEMAIL_DSNW}';
-    \$config['db_dsnr'] = '${ROUNDCUBEMAIL_DSNR}';
-    \$config['default_host'] = '${ROUNDCUBEMAIL_DEFAULT_HOST}';
-    \$config['default_port'] = '${ROUNDCUBEMAIL_DEFAULT_PORT}';
-    \$config['smtp_server'] = '${ROUNDCUBEMAIL_SMTP_SERVER}';
-    \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
-    \$config['des_key'] = '${ROUNDCUBEMAIL_DES_KEY}';
-    \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
-    \$config['plugins'] = ['${ROUNDCUBEMAIL_PLUGINS_PHP}'];
-    \$config['zipdownload_selection'] = true;
+    \$config['plugins'] = [];
     \$config['log_driver'] = 'stdout';
-    \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
+    \$config['zipdownload_selection'] = true;
+    \$config['des_key'] = '${GENERATED_DES_KEY}';
+    \$config['enable_spellcheck'] = true;
+    \$config['spellcheck_engine'] = 'pspell';
+    include(__DIR__ . '/config.docker.inc.php');
     " > config/config.inc.php
 
-    for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
-      echo "include('$fn');" >> config/config.inc.php
-    done
-
-    # initialize or update DB
-    bin/initdb.sh --dir=$PWD/SQL --create || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize database. Please run $PWD/bin/initdb.sh and $PWD/bin/updatedb.sh manually."
-  else
-    echo "WARNING: $PWD/config/config.inc.php already exists."
-    echo "ROUNDCUBEMAIL_* environment variables have been ignored."
+  elif ! grep -q "config.docker.inc.php" config/config.inc.php; then
+    echo "include(__DIR__ . '/config.docker.inc.php');" >> config/config.inc.php
   fi
+
+  ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
+  echo "Write Docker config to $PWD/config/config.docker.inc.php"
+  echo "<?php
+  \$config['db_dsnw'] = '${ROUNDCUBEMAIL_DSNW}';
+  \$config['db_dsnr'] = '${ROUNDCUBEMAIL_DSNR}';
+  \$config['default_host'] = '${ROUNDCUBEMAIL_DEFAULT_HOST}';
+  \$config['default_port'] = '${ROUNDCUBEMAIL_DEFAULT_PORT}';
+  \$config['smtp_server'] = '${ROUNDCUBEMAIL_SMTP_SERVER}';
+  \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
+  \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
+  \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
+  \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));
+  " > config/config.docker.inc.php
+
+  if [ -e /run/secrets/roundcube_des_key ]; then
+    echo "\$config['des_key'] = file_get_contents('/run/secrets/roundcube_des_key');" >> config/config.docker.inc.php
+  elif [ ! -z "${ROUNDCUBEMAIL_DES_KEY}" ]; then
+    echo "\$config['des_key'] = getenv('ROUNDCUBEMAIL_DES_KEY');" >> config/config.docker.inc.php
+  fi
+
+  if [ ! -z "${ROUNDCUBEMAIL_SPELLCHECK_URI}"]; then
+    echo "\$config['spellcheck_engine'] = 'googie';" >> config/config.docker.inc.php
+    echo "\$config['spellcheck_uri'] = '${ROUNDCUBEMAIL_SPELLCHECK_URI}';" >> config/config.docker.inc.php
+  fi
+
+  # include custom config files
+  for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
+    echo "include('$fn');" >> config/config.docker.inc.php
+  done
+
+  # initialize or update DB
+  bin/initdb.sh --dir=$PWD/SQL --create || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize database. Please run $PWD/bin/initdb.sh and $PWD/bin/updatedb.sh manually."
 
   if [ ! -z "${ROUNDCUBEMAIL_TEMP_DIR}" ]; then
     mkdir -p ${ROUNDCUBEMAIL_TEMP_DIR} && chown www-data ${ROUNDCUBEMAIL_TEMP_DIR}
@@ -114,10 +134,17 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
   : "${ROUNDCUBEMAIL_LOCALE:=en_US.UTF-8 UTF-8}"
 
-  if [ ! -z "${ROUNDCUBEMAIL_LOCALE}" ]; then
+  if [ -e /usr/sbin/locale-gen ] && [ ! -z "${ROUNDCUBEMAIL_LOCALE}" ]; then
     echo "${ROUNDCUBEMAIL_LOCALE}" > /etc/locale.gen
     /usr/sbin/locale-gen
   fi
+
+  if [ ! -z "${ROUNDCUBEMAIL_ASPELL_DICTS}" ]; then
+    ASPELL_PACKAGES=`echo -n "aspell-${ROUNDCUBEMAIL_ASPELL_DICTS}" | sed -E "s/[, ]+/ aspell-/g"`
+    which apt-get && apt-get install -y $ASPELL_PACKAGES
+    which apk && apk add --no-cache $ASPELL_PACKAGES
+  fi
+
 fi
 
 exec "$@"

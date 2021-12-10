@@ -1,0 +1,94 @@
+version: "2"
+
+services:
+  roundcubemail-fpm:
+    image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube-test-fpm}
+    healthcheck:
+      # Check until the FPM port is in in the LISTEN list
+      # test: ["CMD-SHELL", "netstat -an | grep -q -F \":9000\""]
+      # Or use php to test php since the non alpine fpm image has no binary able to know if a port is in listen mode
+      test: ["CMD-SHELL", "php -r '$$c = @fsockopen(\"localhost\", 9000); if (is_resource($$c)) { fwrite(STDOUT, \"OK\"); fclose($$c); exit(0); } else { fwrite(STDERR, \"FAIL\"); exit(1); }'"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    depends_on:
+      roundcubedb:
+        condition: service_healthy
+    networks:
+      roundcube_test_net:
+        aliases:
+          - roundcubemail-fpm
+    volumes:
+      - www-vol:/var/www/html
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=pgsql
+      - ROUNDCUBEMAIL_DB_HOST=roundcubedb # same as pgsql container name
+      - ROUNDCUBEMAIL_DB_NAME=roundcube # same as pgsql POSTGRES_DB env name
+      - ROUNDCUBEMAIL_DB_USER=roundcube # same as pgsql POSTGRES_USER env name
+      - ROUNDCUBEMAIL_DB_PASSWORD=roundcube # same as pgsql POSTGRES_PASSWORD env name
+
+  roundcubedb:
+    image: postgres:alpine
+    healthcheck:
+      # "roundcube" is the POSTGRES_USER value
+      test: ["CMD-SHELL", "pg_isready -U roundcube"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    networks:
+      roundcube_test_net:
+        aliases:
+          - roundcubedb
+    environment:
+      - POSTGRES_DB=roundcube
+      - POSTGRES_USER=roundcube
+      - POSTGRES_PASSWORD=roundcube
+
+  roundcubenginx:
+    image: nginx:alpine
+    healthcheck:
+      # To make it obvious in logs "ping=ping" is added
+      test: ["CMD", "curl", "--fail", "http://localhost/?ping=ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    networks:
+      roundcube_test_net:
+        aliases:
+          - roundcubenginx
+    depends_on:
+      roundcubemail-fpm:
+        condition: service_healthy
+    volumes:
+      - www-vol:/var/www/html
+      - ./nginx-default.conf:/etc/nginx/conf.d/default.conf
+    environment:
+      - NGINX_HOST=localhost # set your local domain or your live domain
+
+  # A name that matches Docker auto test naming, you want a name here is one
+  # Source: https://docs.docker.com/docker-hub/builds/automated-testing/#set-up-automated-test-files
+  sut:
+    image: alpine:3.14
+    networks:
+      roundcube_test_net:
+    depends_on:
+      roundcubenginx:
+        condition: service_healthy
+      roundcubemail-fpm:
+        condition: service_healthy
+      roundcubedb:
+        condition: service_healthy
+    command: /tests/run.sh
+    volumes:
+      - ./run.sh:/tests/run.sh:ro
+    working_dir: /tests
+    environment:
+      ROUNDCUBE_URL: http://roundcubenginx/
+networks:
+  roundcube_test_net:
+
+volumes:
+  www-vol:
