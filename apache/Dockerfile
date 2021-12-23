@@ -18,6 +18,7 @@ RUN set -ex; \
 		libzip-dev \
 		libpspell-dev \
 		libonig-dev \
+		libldap-common \
 	; \
 	\
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
