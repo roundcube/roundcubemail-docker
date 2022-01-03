@@ -18,7 +18,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     INSTALLDIR=`pwd`
     echo >&2 "roundcubemail found in $INSTALLDIR - installing update..."
     (cd /usr/src/roundcubemail && bin/installto.sh -y $INSTALLDIR)
-    composer.phar update --no-dev
+    composer update --no-dev
   fi
 
   if [ -f /run/secrets/roundcube_db_user ]; then

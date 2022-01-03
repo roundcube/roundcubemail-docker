@@ -99,11 +99,11 @@ For example, it may be used to increase the PHP memory limit (`memory_limit=128M
 ## Installing Roundcube Plugins
 
 With the latest updates, the Roundcube images contain the [Composer](https://getcomposer.org) binary
-which is used to install plugins. You can add and activate plugins by executing `composer.phar require <package-name>` 
+which is used to install plugins. You can add and activate plugins by executing `composer require <package-name>` 
 inside a running Roundcube container:
 
 ```
-$ docker exec -it roundcubemail composer.phar require johndoh/contextmenu --update-no-dev
+$ docker exec -it roundcubemail composer require johndoh/contextmenu --update-no-dev
 ```
 
 If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system. Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
