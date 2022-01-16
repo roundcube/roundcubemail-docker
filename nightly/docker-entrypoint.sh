@@ -95,8 +95,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   \$config['db_dsnr'] = '${ROUNDCUBEMAIL_DSNR}';
   \$config['default_host'] = '${ROUNDCUBEMAIL_DEFAULT_HOST}';
   \$config['default_port'] = '${ROUNDCUBEMAIL_DEFAULT_PORT}';
+  \$config['imap_host'] = '${ROUNDCUBEMAIL_DEFAULT_HOST}:${ROUNDCUBEMAIL_DEFAULT_PORT}';
   \$config['smtp_server'] = '${ROUNDCUBEMAIL_SMTP_SERVER}';
   \$config['smtp_port'] = '${ROUNDCUBEMAIL_SMTP_PORT}';
+  \$config['smtp_host'] = '${ROUNDCUBEMAIL_SMTP_SERVER}:${ROUNDCUBEMAIL_SMTP_PORT}';
   \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
   \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
   \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));
