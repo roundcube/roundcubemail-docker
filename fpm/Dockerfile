@@ -109,5 +109,8 @@ COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
 COPY docker-entrypoint.sh /
 
+# Ensure docker-entrypoint.sh is executable
+RUN chmod +x /docker-entrypoint.sh
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
