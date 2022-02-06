@@ -19,7 +19,7 @@ declare -A EXTRAS=(
 	[fpm-alpine]=''
 )
 
-VERSION="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
+VERSION="1.4.13"
 
 #set -x
 echo "Generating files for version $VERSION..."
