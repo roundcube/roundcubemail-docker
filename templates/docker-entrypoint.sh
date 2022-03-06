@@ -121,7 +121,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   done
 
   # initialize or update DB
-  bin/initdb.sh --dir=$PWD/SQL --create || bin/updatedb.sh --dir=$PWD/SQL --package=roundcube || echo "Failed to initialize database. Please run $PWD/bin/initdb.sh and $PWD/bin/updatedb.sh manually."
+  bin/initdb.sh --dir=$PWD/SQL --update || echo "Failed to initialize/update the database. Please start with an empty database and restart the container."
 
   if [ ! -z "${ROUNDCUBEMAIL_TEMP_DIR}" ]; then
     mkdir -p ${ROUNDCUBEMAIL_TEMP_DIR} && chown www-data ${ROUNDCUBEMAIL_TEMP_DIR}

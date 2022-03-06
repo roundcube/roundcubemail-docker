@@ -102,6 +102,9 @@ RUN set -ex; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs
 
+# copy the latest version of initdb.sh which supports the --update flag
+RUN curl -fL https://raw.githubusercontent.com/roundcube/roundcubemail/master/bin/initdb.sh > /usr/src/roundcubemail/bin/initdb.sh && chmod +x /usr/src/roundcubemail/bin/initdb.sh
+
 # include the wait-for-it.sh script
 RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /wait-for-it.sh && chmod +x /wait-for-it.sh
 
