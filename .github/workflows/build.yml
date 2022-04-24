@@ -26,7 +26,7 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
       - name: Build image variant "${{ matrix.variant }}"
-        run: cd ${{ matrix.variant }} && docker build ./ -t ${{ matrix.docker-tag }}
+        run: cd ${{ matrix.variant }} && docker buildx ./ -t ${{ matrix.docker-tag }}
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
