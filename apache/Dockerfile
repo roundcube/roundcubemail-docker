@@ -111,7 +111,7 @@ RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait
 # use custom PHP settings
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
-COPY docker-entrypoint.sh /
+COPY --chmod=0755 docker-entrypoint.sh /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
