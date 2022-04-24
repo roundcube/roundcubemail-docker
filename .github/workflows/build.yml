@@ -26,6 +26,7 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
       - name: Build image variant "${{ matrix.variant }}"
+        uses: docker/build-push-action@v2
         run: cd ${{ matrix.variant }} && docker buildx ./ -t ${{ matrix.docker-tag }}
       - name: Run tests
         env:
