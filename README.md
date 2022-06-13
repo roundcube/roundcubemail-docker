@@ -43,7 +43,7 @@ The following env variables can be set to configure your Roundcube Docker instan
 `ROUNDCUBEMAIL_ASPELL_DICTS` - List of aspell dictionaries to install for spell checking (comma-separated, e.g. `de,fr,pl`). 
 
 By default, the image will use a local SQLite database for storing user account metadata.
-It'll be created inside the `/var/roundcube/db` directory and can be backed up from there. Please note that
+It'll be created inside the unnamed volume `/var/roundcube/db` and can be backed up from there. Please note that
 this option should not be used for production environments.
 
 ### Connect to a Database
@@ -71,6 +71,26 @@ Run it with a link to the MySQL host and the username/password variables:
 docker run --link=mysql:mysql -d roundcube/roundcubemail
 ```
 
+## Persistent data
+
+The Roundcube containers do not store any data persistently by default. There are, however,
+some directories that could be mounted as volume or bind mount to share data between containers
+or to inject additional data into the container:
+
+* `/var/www/html`: Roundcube installation directory  
+  This is the document root of Roundcube. Plugins and additional skins are stored here amongst the Roundcube sources.
+  Share this directory when using the FPM variant and let a webserver container serve the static files from here.
+
+* `/var/roundcube/config`: Location for additonal config files  
+  See the [Advanced configuration](#advanced-configuration) section for details.
+
+* `/var/roundcube/db`: storage location of the SQLite database  
+  Only needed if using `ROUNDCUBEMAIL_DB_TYPE=sqlite` to persist the Roundcube database.
+
+* `/tmp/roundcube-temp`: Roundcube's temp folder  
+  Temp files like uploaded attachments or thumbnail images are stored here.
+  Share this directory via a volume when running multiple replicas of the roundcube container.
+
 ## Docker Secrets
 
 When running the Roundcube container in a Docker Swarm, you can use [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/)
@@ -83,7 +103,7 @@ to share credentials accross all instances. The following secrets are currently 
 ## Advanced configuration
 
 Apart from the above described environment variables, the Docker image also allows to add custom config files
-which are merged into Roundcube's default config. Therefore the image defines a volume `/var/roundcube/config`
+which are merged into Roundcube's default config. Therefore the image defines the path `/var/roundcube/config`
 where additional config files (`*.php`) are searched and included. Mount a local directory with your config
 files - check for valid PHP syntax - when starting the Docker container:
 
@@ -106,7 +126,8 @@ inside a running Roundcube container:
 $ docker exec -it roundcubemail composer require johndoh/contextmenu --update-no-dev
 ```
 
-If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system. Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
+If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system.
+Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
 
 ## Examples
 
@@ -115,7 +136,7 @@ A few example setups using `docker-compose` can be found in our [Github reposito
 ## Building a Docker image
 
 Use the `Dockerfile` in this repository to build your own Docker image.
-It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.3-apache` Docker image.
+It pulls the latest build of Roundcube Webmail from the Github download page and builds it on top of a `php:7.4-apache` Docker image.
 
 Build it from one of the variants directories with
 

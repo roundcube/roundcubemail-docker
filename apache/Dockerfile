@@ -67,12 +67,6 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN a2enmod rewrite
 
-# expose these volumes
-VOLUME /var/roundcube/config
-VOLUME /var/roundcube/db
-VOLUME /var/www/html
-VOLUME /tmp/roundcube-temp
-
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.5.2
 
@@ -112,6 +106,8 @@ RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
 COPY --chmod=0755 docker-entrypoint.sh /
+
+RUN mkdir -p /var/roundcube/config
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
