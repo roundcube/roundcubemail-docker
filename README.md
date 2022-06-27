@@ -141,7 +141,7 @@ It pulls the latest build of Roundcube Webmail from the Github download page and
 Build it from one of the variants directories with
 
 ```
-docker build -t roundcubemail .
+docker buildx build -t roundcubemail .
 ```
 
 You can also create your own Docker image by extending from this image.

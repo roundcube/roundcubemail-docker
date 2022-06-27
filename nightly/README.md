@@ -6,5 +6,5 @@ It's not recommended to use these builds for productive environments.
 Build from this directory with
 
 ```
-docker build -t roundcubemail:nightly-`date +%Y%m%d` .
+docker buildx build -t roundcubemail:nightly-`date +%Y%m%d` .
 ```
