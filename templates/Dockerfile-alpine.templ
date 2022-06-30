@@ -57,9 +57,6 @@ RUN set -ex; \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 %%EXTRAS%%
 
-# expose these volumes
-VOLUME /var/roundcube/db
-
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION %%VERSION%%
 

@@ -43,8 +43,8 @@ The following env variables can be set to configure your Roundcube Docker instan
 `ROUNDCUBEMAIL_ASPELL_DICTS` - List of aspell dictionaries to install for spell checking (comma-separated, e.g. `de,fr,pl`). 
 
 By default, the image will use a local SQLite database for storing user account metadata.
-It'll be created inside the unnamed volume `/var/roundcube/db` and can be backed up from there. Please note that
-this option should not be used for production environments.
+It'll be created inside the container directory `/var/roundcube/db`. In order to persist the database, a volume
+mount should be added to this path. Please note that this option should not be used for production environments.
 
 ### Connect to a Database
 
