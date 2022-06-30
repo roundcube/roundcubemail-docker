@@ -1,4 +1,4 @@
-FROM php:7.4-apache AS base
+FROM php:8.0-apache AS base
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
@@ -115,12 +115,6 @@ FROM base
 RUN mkdir -p /usr/src
 COPY --from=builder /usr/src/roundcubemail /usr/src/roundcubemail
 
-# expose these volumes
-VOLUME /var/roundcube/config
-VOLUME /var/roundcube/db
-VOLUME /var/www/html
-VOLUME /tmp/roundcube-temp
-
 # include the wait-for-it.sh script
 RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /wait-for-it.sh && chmod +x /wait-for-it.sh
 
@@ -128,6 +122,8 @@ RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
 COPY docker-entrypoint.sh /
+
+RUN mkdir -p /var/roundcube/config
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
