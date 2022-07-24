@@ -101,5 +101,7 @@ COPY --chmod=0755 docker-entrypoint.sh /
 
 RUN mkdir -p /var/roundcube/config
 
+RUN chmod +x /entrypoint.sh
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
