@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8.0-fpm
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
@@ -67,7 +67,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.5.3
+ENV ROUNDCUBEMAIL_VERSION 1.6.0
 
 # Define the GPG key used for the bundle verification process
 ENV ROUNDCUBEMAIL_KEYID "F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
@@ -94,9 +94,6 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs
-
-# copy the latest version of initdb.sh which supports the --update flag
-RUN curl -fL https://raw.githubusercontent.com/roundcube/roundcubemail/master/bin/initdb.sh > /usr/src/roundcubemail/bin/initdb.sh && chmod +x /usr/src/roundcubemail/bin/initdb.sh
 
 # include the wait-for-it.sh script
 RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /wait-for-it.sh && chmod +x /wait-for-it.sh
