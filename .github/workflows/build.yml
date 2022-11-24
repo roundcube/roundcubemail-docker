@@ -26,7 +26,12 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
       - name: Build image variant "${{ matrix.variant }}"
-        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }}
+        run: |
+          docker run --privileged --rm tonistiigi/binfmt --install all
+          docker buildx create --name multibuilder --driver docker-container --bootstrap
+          docker buildx use multibuilder
+          cd ${{ matrix.variant }}
+          docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 ./ -t ${{ matrix.docker-tag }}
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
