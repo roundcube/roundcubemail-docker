@@ -39,3 +39,5 @@ jobs:
           IMAGE_TAG: "docker.io/botsudo/phpmyadmin-snapshots:5.2-snapshot"
           VERSION_RANGE: "5.2"
           ACTION: push
+
+          
