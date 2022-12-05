@@ -26,10 +26,7 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
       - name: Build image variant "${{ matrix.variant }}"
-        run: cd ${{ matrix.variant }} && docker buildx build \
-        --platform linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x \
-        --push \
-        ./ -t ${{ matrix.docker-tag }}
+        run: cd ${{ matrix.variant }} && docker buildx build --platform linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x --push  -t ${{ matrix.docker-tag }} .
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
@@ -40,9 +37,6 @@ jobs:
             docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
-
-### do it with docker compose  instead
-#https://github.com/roundcube/roundcubemail-docker/blame/master/.github/workflows/build.yml
 
 
           		
