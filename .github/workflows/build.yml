@@ -1,7 +1,7 @@
 name: Build Docker image
-
 on: [push, pull_request]
 
+# https://github.com/roundcube/roundcubemail-docker/pull/200
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
@@ -15,7 +15,7 @@ jobs:
           - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm-alpine' }
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Get docker hub username
         id: creds
         run: echo '::set-output name=username::${{ secrets.DOCKER_PULL_USERNAME }}'
@@ -25,8 +25,32 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
-      - name: Build image variant "${{ matrix.variant }}"
-        run: cd ${{ matrix.variant }} && docker buildx build --platform linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x --push  -t ${{ matrix.docker-tag }} .
+
+      # https://github.com/docker/setup-qemu-action
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+
+
+      # original build lines only for amd64
+      #- name: Build image variant "${{ matrix.variant }}"
+      #  run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }}
+# the folowing lines are wrong as they dont use the GH action for multi platform
+      #- name: Build image variant "${{ matrix.variant }}"
+      #  run: cd ${{ matrix.variant }} && docker buildx build --platform linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x --push  -t ${{ matrix.docker-tag }} .
+
+      - name: Build and push image for "${{ matrix.variant }}"
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ matrix.variant }}
+          platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x 
+          #linux/amd64,linux/arm64,linux/ppc64le
+
+# leave the tests as is 
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
@@ -39,4 +63,4 @@ jobs:
           done
 
 
-          		
+
