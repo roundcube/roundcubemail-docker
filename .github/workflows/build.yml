@@ -26,44 +26,28 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
 
-      # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
           buildkitd-flags: --debug
-
-
-      # original build lines only for amd64
-      #- name: Build image variant "${{ matrix.variant }}"
-      #  run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }}
-# the folowing lines are wrong as they dont use the GH action for multi platform
-      #- name: Build image variant "${{ matrix.variant }}"
-      #  run: cd ${{ matrix.variant }} && docker buildx build --platform linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x --push  -t ${{ matrix.docker-tag }} .
 
       - name: Build and push image for "${{ matrix.variant }}"
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.variant }}
           platforms: linux/amd64,linux/arm64
-          #linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x 
-          #linux/amd64,linux/arm64,linux/ppc64le
           push: true 
-          tags: montgomeryauber/roundcube${{ matrix.variant }}:1.6
+          tags: montgomeryauber/${{ matrix.docker-tag }}:1.6,montgomeryauber/${{ matrix.docker-tag }}:latest
 
-# leave the tests as is 
-      #- name: Run tests
-      #  env:
-      #    ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
-      #  run: |
-      #    set -exu;
-      #    for testFile in ${{ join(matrix.test-files, ' ') }};
-      #    do
-      #      docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
-      #      up --exit-code-from=sut --abort-on-container-exit
-      #    done
-
-
-
+      - name: Run tests
+        env:
+          ROUNDCUBEMAIL_TEST_IMAGE: montgomeryauber/${{ matrix.docker-tag }}
+        run: |
+          set -exu;
+          for testFile in ${{ join(matrix.test-files, ' ') }};
+          do
+            docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
+            up --exit-code-from=sut --abort-on-container-exit
+          done
