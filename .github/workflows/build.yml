@@ -1,7 +1,6 @@
 name: Build Docker image
 on: [push, pull_request]
 
-# https://github.com/roundcube/roundcubemail-docker/pull/200
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
@@ -13,6 +12,7 @@ jobs:
           - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: 'roundcube-test-apache' }
           - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm' }
           - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm-alpine' }
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -37,13 +37,13 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.variant }}
-          platforms: linux/amd64,linux/arm64
+          PLATFORM: "linux/386,linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8,linux/mips64le,linux/ppc64le,linux/s390x,linux/arm64"
           push: true 
-          tags: montgomeryauber/${{ matrix.docker-tag }}:1.6,montgomeryauber/${{ matrix.docker-tag }}:latest
+          tags: ${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:1.6,${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:latest
 
       - name: Run tests
         env:
-          ROUNDCUBEMAIL_TEST_IMAGE: montgomeryauber/${{ matrix.docker-tag }}
+          ROUNDCUBEMAIL_TEST_IMAGE: ${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
