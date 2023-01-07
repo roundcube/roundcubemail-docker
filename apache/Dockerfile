@@ -3,9 +3,7 @@ LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
 	apt-get update; \
-	\
 	savedAptMark="$(apt-mark showmanual)"; \
-	\
 	apt-get install -y --no-install-recommends \
 		libfreetype6-dev \
 		libicu-dev \
@@ -102,9 +100,10 @@ RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait
 # use custom PHP settings
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
-COPY --chmod=0755 docker-entrypoint.sh /
+COPY docker-entrypoint.sh /
 
 RUN mkdir -p /var/roundcube/config
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
+
