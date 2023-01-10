@@ -9,9 +9,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: 'roundcube-test-apache' }
-          - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm' }
-          - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm-alpine' }
+          - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-apache' }
+          - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-fpm,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-fpm,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-fpm' }
+          - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-fpm-alpine,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-fpm-alpine,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-fpm-alpine ' }
 
     steps:
       - name: Checkout repository
@@ -40,9 +40,10 @@ jobs:
           platforms: "linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x,linux/arm64"
           push: true 
           tags: ${{ matrix.docker-tag }}
+
       - name: Run tests
         env:
-          ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
+          ROUNDCUBEMAIL_TEST_IMAGE: ${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
