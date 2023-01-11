@@ -14,7 +14,7 @@ jobs:
         include:
           - variant: 'apache'
             test-files: 'apache-postgres'
-            docker-tag: montgomeryauber/roundcubemail:latest
+            docker-tag: ${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:1.6,${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:latest
             #,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-apache
           #- variant: 'fpm'
           #  test-files: 'fpm-postgres'
