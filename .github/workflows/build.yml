@@ -1,7 +1,6 @@
 name: Build Docker image
 on: [push, pull_request]
-env:
-  USERNAME: montgomeryauber
+
 
 
 jobs:
@@ -15,7 +14,7 @@ jobs:
         include:
           - variant: 'apache'
             test-files: 'apache-postgres'
-            docker-tag: $USERNAME/roundcubemail:latest
+            docker-tag: montgomeryauber/roundcubemail:latest
             #,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-apache
           #- variant: 'fpm'
           #  test-files: 'fpm-postgres'
