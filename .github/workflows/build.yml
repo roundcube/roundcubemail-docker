@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         include:
-          - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-apache' }
-          - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-fpm,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-fpm,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-fpm' }
-          - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-fpm-alpine,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-fpm-alpine,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-fpm-alpine ' }
+          - variant: 'apache'
+            test-files: 'apache-postgres'
+            docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-apache' 
+
+
+          #- { variant: 'apache', test-files: ['apache-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-apache,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-apache' }
+          #- { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-fpm,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-fpm,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-fpm' }
+          #- { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: '${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.x-fpm-alpine,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:1.6.0-fpm-alpine,${{ secrets.DOCKER_PULL_USERNAME }}/roundcubemail:latest-fpm-alpine ' }
 
     steps:
       - name: Checkout repository
