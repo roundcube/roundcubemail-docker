@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.variant }}
-          platforms: "linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x,linux/arm64"
+          platforms: "linux/386,linux/amd64,linux/arm64/v8"
           push: true 
           tags: ${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:1.6,${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:latest
 
