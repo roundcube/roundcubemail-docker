@@ -2,7 +2,8 @@ version: "2"
 
 services:
   roundcubemail-fpm:
-    image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube-test-fpm}
+    image: montgomeryauber/roundcubemail:1.6.0-fpm
+    #image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube-test-fpm}
     healthcheck:
       # Check until the FPM port is in in the LISTEN list
       # test: ["CMD-SHELL", "netstat -an | grep -q -F \":9000\""]

@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.variant }}
-          platforms: "linux/386,linux/amd64,linux/arm64/v8"
+          platforms: "linux/arm,linux/386,linux/amd64,linux/arm64/v8"
           push: true 
           tags: ${{ matrix.docker-tag }}
 
