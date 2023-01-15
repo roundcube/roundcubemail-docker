@@ -1,18 +1,23 @@
 name: Build Docker image
 on: [push, pull_request]
-
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         include:
-          - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: 'roundcube-test-apache' }
-          - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm' }
-          - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm-alpine' }
-
+          - variant: 'apache'
+            test-files: 'apache-postgres'
+            docker-tag: montgomeryauber/roundcubemail:latest,montgomeryauber/roundcubemail:1.6.x-apache,montgomeryauber/roundcubemail:1.6.0-apache,montgomeryauber/roundcubemail:latest-apache
+          - variant: 'fpm'
+            test-files: 'fpm-postgres'
+            docker-tag: montgomeryauber/roundcubemail:1.6.x-fpm,montgomeryauber/roundcubemail:1.6.0-fpm,montgomeryauber/roundcubemail:latest-fpm
+          - variant: 'fpm-alpine'
+            test-files: 'fpm-postgres'
+            docker-tag: montgomeryauber/roundcubemail:1.6.x-fpm-alpine,montgomeryauber/roundcubemail:1.6.0-fpm-alpine,montgomeryauber/roundcubemail:latest-fpm-alpine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -39,7 +44,7 @@ jobs:
           context: ${{ matrix.variant }}
           platforms: "linux/386,linux/amd64,linux/arm64/v8"
           push: true 
-          tags: ${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:1.6,${{ secrets.DOCKER_PULL_USERNAME }}/${{ matrix.docker-tag }}:latest
+          tags: ${{ matrix.docker-tag }}
 
       - name: Run tests
         env:
@@ -51,3 +56,6 @@ jobs:
             docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
+          
+#platforms: "linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8,linux/s390x,linux/arm64"
+          
