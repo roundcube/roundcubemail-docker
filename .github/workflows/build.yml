@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ${{ matrix.variant }}
-          platforms: "linux/ppc64le,linux/arm,linux/386,linux/amd64,linux/arm64/v8"
+          platforms: "linux/s390x,linux/ppc64le,linux/arm,linux/386,linux/amd64,linux/arm64/v8"
           push: true 
           tags: ${{ matrix.docker-tag }}
 
@@ -56,7 +56,8 @@ jobs:
             docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
-          
+# does not work - linux/mips64le
+
 #platforms: "linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8,linux/s390x,linux/arm64"
 #Most of the Docker Official Images on Docker Hub provide a variety of architectures. For example, the busybox image supports amd64, arm32v5, arm32v6, arm32v7, arm64v8, i386, ppc64le, and s390x. When running this image on an x86_64 / amd64 machine, the amd64 variant is pulled and run.
 #https://github.com/sudo-bot/docker-phpmyadmin-snapshots/blob/28d025bff39dd1ded8d581a9e5c079fa3cb9fdf7/.github/workflows/publish.yml#L37
