@@ -11,13 +11,13 @@ jobs:
         include:
           - variant: 'apache'
             test-files: 'apache-postgres'
-            docker-tag: montgomeryauber/roundcubemail:latest,montgomeryauber/roundcubemail:1.6.x-apache,montgomeryauber/roundcubemail:1.6.0-apache,montgomeryauber/roundcubemail:latest-apache
+            docker-tag: roundcube/roundcubemail:latest,roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.0-apache,roundcube/roundcubemail:latest-apache
           - variant: 'fpm'
             test-files: 'fpm-postgres'
-            docker-tag: montgomeryauber/roundcubemail:1.6.x-fpm,montgomeryauber/roundcubemail:1.6.0-fpm,montgomeryauber/roundcubemail:latest-fpm
+            docker-tag: roundcube/roundcubemail:1.6.x-fpm,roundcube/roundcubemail:1.6.0-fpm,roundcube/roundcubemail:latest-fpm
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
-            docker-tag: montgomeryauber/roundcubemail:1.6.x-fpm-alpine,montgomeryauber/roundcubemail:1.6.0-fpm-alpine,montgomeryauber/roundcubemail:latest-fpm-alpine
+            docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine,roundcube/roundcubemail:1.6.0-fpm-alpine,roundcube/roundcubemail:latest-fpm-alpine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
