@@ -45,7 +45,7 @@ jobs:
           platforms: "linux/arm/v6,linux/arm/v7,linux/s390x,linux/ppc64le,linux/386,linux/amd64,linux/arm64/v8"
           push: true 
           tags: ${{ matrix.docker-tag }}
-          # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 although docker buildx does support them
+          # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
