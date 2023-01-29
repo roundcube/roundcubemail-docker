@@ -1,21 +1,26 @@
 name: Build Docker image
-
 on: [push, pull_request]
-
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 10
       matrix:
         include:
-          - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: 'roundcube-test-apache' }
-          - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm' }
-          - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm-alpine' }
+          - variant: 'apache'
+            test-files: 'apache-postgres'
+            docker-tag: roundcube/roundcubemail:latest,roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.0-apache,roundcube/roundcubemail:latest-apache
+          - variant: 'fpm'
+            test-files: 'fpm-postgres'
+            docker-tag: roundcube/roundcubemail:1.6.x-fpm,roundcube/roundcubemail:1.6.0-fpm,roundcube/roundcubemail:latest-fpm
+          - variant: 'fpm-alpine'
+            test-files: 'fpm-postgres'
+            docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine,roundcube/roundcubemail:1.6.0-fpm-alpine,roundcube/roundcubemail:latest-fpm-alpine
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Get docker hub username
         id: creds
         run: echo '::set-output name=username::${{ secrets.DOCKER_PULL_USERNAME }}'
@@ -25,8 +30,22 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
-      - name: Build image variant "${{ matrix.variant }}"
-        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          buildkitd-flags: --debug
+
+      - name: Build and push image for "${{ matrix.variant }}"
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ matrix.variant }}
+          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/s390x,linux/ppc64le,linux/386,linux/amd64,"
+          push: true 
+          tags: ${{ matrix.docker-tag }}
+          # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
@@ -37,3 +56,5 @@ jobs:
             docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
+          
+

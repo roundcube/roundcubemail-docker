@@ -2,7 +2,7 @@ version: "2"
 
 services:
   roundcubemail:
-    image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube-test-apache}
+    image: roundcube/roundcubemail:1.6.0-apache
     healthcheck:
       # To make it obvious in logs "ping=ping" is added
       test: ["CMD", "curl", "--fail", "http://localhost/?ping=ping"]
