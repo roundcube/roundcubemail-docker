@@ -11,7 +11,7 @@ jobs:
         include:
           - variant: 'apache'
             test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail:latest,roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.0-apache,roundcube/roundcubemail:latest-apache
+            docker-tag: roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.0-apache,roundcube/roundcubemail:latest-apache,roundcube/roundcubemail:latest
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm,roundcube/roundcubemail:1.6.0-fpm,roundcube/roundcubemail:latest-fpm
@@ -29,7 +29,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
-          password: ${{ secrets.DOCKER_PULL_PASSWORD }}
+          password: ${{ secrets.DOCKER_PUSH_PASSWORD }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
