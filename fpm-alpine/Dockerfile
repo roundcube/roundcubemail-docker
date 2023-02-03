@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine
+FROM php:8.1-fpm-alpine
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 # entrypoint.sh and installto.sh dependencies
@@ -58,7 +58,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.6.0
+ENV ROUNDCUBEMAIL_VERSION 1.6.1
 
 # Define the GPG key used for the bundle verification process
 ENV ROUNDCUBEMAIL_KEYID "F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
