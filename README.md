@@ -157,14 +157,13 @@ RUN set -ex; \
         git \
     ; \
     \
-    composer \
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer \
         --working-dir=/usr/src/roundcubemail/ \
-        --prefer-dist \
         --prefer-stable \
         --update-no-dev \
         --no-interaction \
         --optimize-autoloader \
         require \
-            johndoh/contextmenu \
-    ; \
+            weird-birds/thunderbird_labels \
+    ;
 ```
