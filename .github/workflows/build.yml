@@ -3,9 +3,9 @@ on:
   push:
     branches: 
       - 'master'
-    paths:
-      - '!README.md'
-      - '!examples/**'
+    paths-ignore:
+      - 'README.md'
+      - 'examples/**'
     tags:
       - '*'
 jobs:
