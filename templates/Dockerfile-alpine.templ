@@ -10,7 +10,8 @@ RUN set -ex; \
 		rsync \
 		tzdata \
 		aspell \
-		aspell-en
+		aspell-en \
+		unzip
 
 RUN set -ex; \
 	\
