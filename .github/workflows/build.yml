@@ -1,7 +1,7 @@
 name: Build & Publish
 on:
   push:
-    branches: 
+    branches:
       - 'master'
     paths-ignore:
       - 'README.md'
@@ -20,12 +20,15 @@ jobs:
           - variant: 'apache'
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.1-apache,roundcube/roundcubemail:latest-apache,roundcube/roundcubemail:latest
+            test-tag: roundcube/roundcubemail:latest-apache
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm,roundcube/roundcubemail:1.6.1-fpm,roundcube/roundcubemail:latest-fpm
+            test-tag: roundcube/roundcubemail:latest-fpm
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine,roundcube/roundcubemail:1.6.1-fpm-alpine,roundcube/roundcubemail:latest-fpm-alpine
+            test-tag: roundcube/roundcubemail:latest-fpm-alpine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -51,10 +54,13 @@ jobs:
         with:
           context: ${{ matrix.variant }}
           platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/s390x,linux/ppc64le,linux/386,linux/amd64,"
-          push: true 
+          push: true
           tags: ${{ matrix.docker-tag }}
           # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
+
       - name: Run tests
+        env:
+          ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.test-tag }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
@@ -62,5 +68,3 @@ jobs:
             docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
-          
-
