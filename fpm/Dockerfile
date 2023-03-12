@@ -60,6 +60,7 @@ RUN set -ex; \
 			aspell \
 			aspell-en \
 			rsync \
+			unzip \
 	; \
 	rm -rf /var/lib/apt/lists/*
 

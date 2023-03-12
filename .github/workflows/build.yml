@@ -1,5 +1,13 @@
-name: Build Docker image
-on: [push, pull_request]
+name: Build & Publish
+on:
+  push:
+    branches: 
+      - 'master'
+    paths:
+      - '!README.md'
+      - '!examples/**'
+    tags:
+      - '*'
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
@@ -47,8 +55,6 @@ jobs:
           tags: ${{ matrix.docker-tag }}
           # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
       - name: Run tests
-        env:
-          ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
