@@ -157,7 +157,11 @@ RUN set -ex; \
         git \
     ; \
     \
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer \
+
+# needed to run plugins when using containers
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+RUN composer \
         --working-dir=/usr/src/roundcubemail/ \
         --prefer-stable \
         --update-no-dev \
