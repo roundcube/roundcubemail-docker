@@ -158,16 +158,15 @@ RUN set -ex; \
     ; \
     \
 
-# needed to run plugins when using containers
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-RUN composer \
-        --working-dir=/usr/src/roundcubemail/ \
-        --prefer-stable \
-        --update-no-dev \
-        --no-interaction \
-        --optimize-autoloader \
-        require \
-            weird-birds/thunderbird_labels \
-    ;
+# COMPOSER_ALLOW_SUPERUSER is needed to run plugins when using a container
+RUN export COMPOSER_ALLOW_SUPERUSER=1 && \
+  composer \
+    --working-dir=/usr/src/roundcubemail/ \
+    --prefer-stable \
+    --update-no-dev \
+    --no-interaction \
+    --optimize-autoloader \
+    require \
+        weird-birds/thunderbird_labels \
+  ;
 ```
