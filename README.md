@@ -163,11 +163,12 @@ RUN set -ex; \
 
 RUN composer \
     --working-dir=/usr/src/roundcubemail/ \
+    --prefer-dist \
     --prefer-stable \
     --update-no-dev \
     --no-interaction \
     --optimize-autoloader \
     require \
-        weird-birds/thunderbird_labels \
-  ;
+        johndoh/contextmenu \
+  ; \
 ```
