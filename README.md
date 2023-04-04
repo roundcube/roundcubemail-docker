@@ -28,6 +28,8 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_DEFAULT_PORT` - IMAP port number; defaults to `143`
 
+`ROUNDCUBEMAIL_IMAP_VERIFY_PEER` - IMAP verify peer (`true`/`false`)
+
 `ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails. For encypted connections, prefix the host with `tls://` (STARTTLS) or `ssl://` (SSL/TLS).
 
 `ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`

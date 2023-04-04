@@ -70,6 +70,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
   : "${ROUNDCUBEMAIL_SKIN:=elastic}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
+  : "${ROUNDCUBEMAIL_IMAP_VERIFY_PEER:=true}"
 
   if [ ! -e config/config.inc.php ]; then
     GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
@@ -89,7 +90,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   fi
 
   ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
-  echo "Write Docker config to $PWD/config/config.docker.inc.php"
+  echo "Write4 Docker config to $PWD/config/config.docker.inc.php"
   echo "<?php
   \$config['db_dsnw'] = '${ROUNDCUBEMAIL_DSNW}';
   \$config['db_dsnr'] = '${ROUNDCUBEMAIL_DSNR}';
@@ -103,6 +104,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
   \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));
   " > config/config.docker.inc.php
+
+  if [ ! -z "${ROUNDCUBEMAIL_IMAP_VERIFY_PEER}"]; then
+    echo "\$config['imap_conn_options'] = ['ssl' => ['verify_peer' => "${ROUNDCUBEMAIL_IMAP_VERIFY_PEER}"]]" >> config/config.docker.inc.php
+  fi
 
   if [ -e /run/secrets/roundcube_des_key ]; then
     echo "\$config['des_key'] = file_get_contents('/run/secrets/roundcube_des_key');" >> config/config.docker.inc.php

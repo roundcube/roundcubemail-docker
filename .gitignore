@@ -1,0 +1,4 @@
+.idea/
+db/
+docker-compose.yaml
+www/
