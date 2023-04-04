@@ -160,15 +160,14 @@ RUN set -ex; \
         git \
     ; \
     \
-
-RUN composer \
-    --working-dir=/usr/src/roundcubemail/ \
-    --prefer-dist \
-    --prefer-stable \
-    --update-no-dev \
-    --no-interaction \
-    --optimize-autoloader \
-    require \
-        johndoh/contextmenu \
-  ; \
+    composer \
+      --working-dir=/usr/src/roundcubemail/ \
+      --prefer-dist \
+      --prefer-stable \
+      --update-no-dev \
+      --no-interaction \
+      --optimize-autoloader \
+      require \
+          johndoh/contextmenu \
+    ; \
 ```
