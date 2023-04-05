@@ -100,8 +100,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   \$config['smtp_host'] = '${ROUNDCUBEMAIL_SMTP_SERVER}:${ROUNDCUBEMAIL_SMTP_PORT}';
   \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
   \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
-  \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));
   \$config['request_path'] = '${ROUNDCUBEMAIL_REQUEST_PATH}';
+  \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));
   " > config/config.docker.inc.php
 
   if [ -e /run/secrets/roundcube_des_key ]; then

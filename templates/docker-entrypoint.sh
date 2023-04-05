@@ -70,6 +70,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_PLUGINS:=archive,zipdownload}"
   : "${ROUNDCUBEMAIL_SKIN:=elastic}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
+  : "${ROUNDCUBEMAIL_REQUEST_PATH:=/}"
 
   if [ ! -e config/config.inc.php ]; then
     GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
@@ -99,6 +100,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   \$config['smtp_host'] = '${ROUNDCUBEMAIL_SMTP_SERVER}:${ROUNDCUBEMAIL_SMTP_PORT}';
   \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
   \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
+  \$config['request_path'] = '${ROUNDCUBEMAIL_REQUEST_PATH}';
   \$config['plugins'] = array_filter(array_unique(array_merge(\$config['plugins'], ['${ROUNDCUBEMAIL_PLUGINS_PHP}'])));
   " > config/config.docker.inc.php
 
