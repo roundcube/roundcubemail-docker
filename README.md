@@ -151,6 +151,9 @@ For instance, you could extend this image to add composer and install requiremen
 ```Dockerfile
 FROM roundcube/roundcubemail:latest
 
+# COMPOSER_ALLOW_SUPERUSER is needed to run plugins when using a container
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -158,13 +161,13 @@ RUN set -ex; \
     ; \
     \
     composer \
-        --working-dir=/usr/src/roundcubemail/ \
-        --prefer-dist \
-        --prefer-stable \
-        --update-no-dev \
-        --no-interaction \
-        --optimize-autoloader \
-        require \
-            johndoh/contextmenu \
+      --working-dir=/usr/src/roundcubemail/ \
+      --prefer-dist \
+      --prefer-stable \
+      --update-no-dev \
+      --no-interaction \
+      --optimize-autoloader \
+      require \
+          johndoh/contextmenu \
     ; \
 ```
