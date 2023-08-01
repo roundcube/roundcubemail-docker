@@ -41,8 +41,9 @@ RUN set -ex; \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
-	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
-		| awk '/=>/ { print $3 }' \
+	extdir="$(php -r 'echo ini_get("extension_dir");')"; \
+	ldd "$extdir"/*.so \
+		| awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); print so }' \
 		| sort -u \
 		| xargs -r dpkg-query -S \
 		| cut -d: -f1 \
@@ -50,7 +51,12 @@ RUN set -ex; \
 		| xargs -rt apt-mark manual; \
 	\
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/*; \
+    ldd "$extdir"/*.so | grep -qzv "=> not found" || (echo "Sanity check failed: missing libraries:"; ldd "$extdir"/*.so | grep " => not found"; exit 1); \
+    ldd "$extdir"/*.so | grep -q "libzip.so.* => .*/libzip.so.*" || (echo "Sanity check failed: libzip.so is not referenced"; ldd "$extdir"/*.so; exit 1); \
+    err="$(php --version 3>&1 1>&2 2>&3)"; \
+    [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;);
+
 
 # installto.sh dependencies
 RUN set -ex; \
