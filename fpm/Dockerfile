@@ -74,7 +74,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 
 # Define Roundcubemail version
-ENV ROUNDCUBEMAIL_VERSION 1.6.2
+ENV ROUNDCUBEMAIL_VERSION 1.6.3
 
 # Define the GPG key used for the bundle verification process
 ENV ROUNDCUBEMAIL_KEYID "F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
