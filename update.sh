@@ -41,4 +41,7 @@ for variant in apache fpm fpm-alpine; do
 	echo "✓ Wrote $dir/Dockerfile"
 done
 
+sed -i -E "s/1\.[0-9]\.[0-9]+-/${VERSION}-/" .github/workflows/build.yml
+echo "Updating version in build.yml workflow"
+
 echo "Done."
