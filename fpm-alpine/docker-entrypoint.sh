@@ -3,7 +3,7 @@
 
 # PWD=`pwd`
 
-if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
+if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   # docroot is empty
   if ! [ -e index.php -a -e bin/installto.sh ]; then
     echo >&2 "roundcubemail not found in $PWD - copying now..."

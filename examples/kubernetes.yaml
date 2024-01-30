@@ -145,7 +145,7 @@ spec:
       - name: roundcubemail
         image: roundcube/roundcubemail:latest-fpm-alpine
         imagePullPolicy: ""
-        env:
+        env: &env
         - name: ROUNDCUBEMAIL_DB_TYPE
           value: pgsql
         - name: ROUNDCUBEMAIL_DB_HOST
@@ -278,3 +278,25 @@ spec:
     targetPort: 80
   selector:
     service: roundcubenginx
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cleandb
+spec:
+  schedule: "@daily"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name:  cleandb
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: roundcubemail
+              image: roundcube/roundcubemail:latest-fpm-alpine
+              imagePullPolicy: ""
+              env: *env
+              args:
+                - bin/cleandb.sh
