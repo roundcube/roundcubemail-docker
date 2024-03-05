@@ -30,7 +30,9 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_SMTP_SERVER` - Hostname of the SMTP server to send mails. For encrypted connections, prefix the host with `tls://` (STARTTLS) or `ssl://` (SSL/TLS).
 
-`ROUNDCUBEMAIL_SMTP_PORT`  - SMTP port number; defaults to `587`
+`ROUNDCUBEMAIL_SMTP_PORT` - SMTP port number; defaults to `587`
+
+`ROUNDCUBEMAIL_USERNAME_DOMAIN` - Automatically add this domain to user names for login. See [defaults.inc.php](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php) for more information.
 
 `ROUNDCUBEMAIL_REQUEST_PATH` - Specify request path with reverse proxy; defaults to `/`. See [defaults.inc.php](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php) for possible values.
 
