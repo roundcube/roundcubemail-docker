@@ -76,12 +76,19 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo "Installing plugins from the list"
     echo "Plugins: ${ROUNDCUBEMAIL_INSTALL_PLUGINS}"
 
-    cd $PWD
-    for plugin in ${ROUNDCUBEMAIL_INSTALL_PLUGINS//,/ }
-    do
-      echo "Installing: $plugin"
-      composer --no-interaction require $plugin
-    done
+    # Remove ',' and send the list as is
+    ROUNDCUBEMAIL_PLUGINS_SH=`echo "${ROUNDCUBEMAIL_PLUGINS}" | tr -d ','`
+
+    composer \
+      --working-dir=/usr/src/roundcubemail/ \
+      --prefer-dist \
+      --prefer-stable \
+      --update-no-dev \
+      --no-interaction \
+      --optimize-autoloader \
+      require \
+      -- \
+      ${ROUNDCUBEMAIL_PLUGINS_SH};
   fi
 
   if [ ! -e config/config.inc.php ]; then
