@@ -36,6 +36,8 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_PLUGINS` - List of built-in plugins to activate. Defaults to `archive,zipdownload`
 
+`ROUNDCUBEMAIL_INSTALL_PLUGINS` - Set to `1` or `true` to enable installation of plugins on startup
+
 `ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `larry`
 
 `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
@@ -120,16 +122,8 @@ For example, it may be used to increase the PHP memory limit (`memory_limit=128M
 
 ## Installing Roundcube Plugins
 
-With the latest updates, the Roundcube images contain the [Composer](https://getcomposer.org) binary
-which is used to install plugins. You can add and activate plugins by executing `composer require <package-name>` 
-inside a running Roundcube container:
-
-```sh
-docker exec -it roundcubemail composer require johndoh/contextmenu --update-no-dev
-```
-
-If you have mounted the container's volume `/var/www/html` the plugins installed persist on your host system.
-Otherwise they need to be (re-)installed every time you update or restart the Roundcube container.
+With the latest updates, the Roundcube image is now able to install plugins.
+You need to use `ROUNDCUBEMAIL_INSTALL_PLUGINS=1` in the env variables.
 
 ## Examples
 
@@ -148,7 +142,7 @@ docker build -t roundcubemail .
 
 You can also create your own Docker image by extending from this image.
 
-For instance, you could extend this image to add composer and install requirements for builtin plugins or even external plugins:
+For instance, you could extend this image to add composer and install requirements for special plugins:
 
 ```Dockerfile
 FROM roundcube/roundcubemail:latest
@@ -160,16 +154,5 @@ RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         git \
-    ; \
-    \
-    composer \
-      --working-dir=/usr/src/roundcubemail/ \
-      --prefer-dist \
-      --prefer-stable \
-      --update-no-dev \
-      --no-interaction \
-      --optimize-autoloader \
-      require \
-          johndoh/contextmenu \
     ; \
 ```
