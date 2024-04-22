@@ -101,6 +101,7 @@ to share credentials across all instances. The following secrets are currently s
 * `roundcube_des_key`: Unique and random key for encryption purposes
 * `roundcube_db_user`: Database connection username (mappend to `ROUNDCUBEMAIL_DB_USER`)
 * `roundcube_db_password`: Database connection password (mappend to `ROUNDCUBEMAIL_DB_PASSWORD`)
+* `roundcube_oauth_client_secret`: OAuth client secret (mappend to `ROUNDCUBEMAIL_OAUTH_CLIENT_SECRET`)
 
 ## Advanced configuration
 
