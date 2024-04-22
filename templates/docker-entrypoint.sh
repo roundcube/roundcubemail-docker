@@ -31,7 +31,6 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     ROUNDCUBEMAIL_OAUTH_CLIENT_SECRET=`cat /run/secrets/roundcube_oauth_client_secret`
   fi
 
-
   if [ ! -z "${!POSTGRES_ENV_POSTGRES_*}" ] || [ "$ROUNDCUBEMAIL_DB_TYPE" == "pgsql" ]; then
     : "${ROUNDCUBEMAIL_DB_TYPE:=pgsql}"
     : "${ROUNDCUBEMAIL_DB_HOST:=postgres}"
