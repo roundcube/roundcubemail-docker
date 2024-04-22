@@ -27,6 +27,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   if [ -f /run/secrets/roundcube_db_password ]; then
     ROUNDCUBEMAIL_DB_PASSWORD=`cat /run/secrets/roundcube_db_password`
   fi
+  if [ -f /run/secrets/roundcube_oauth_client_secret ]; then
+    ROUNDCUBEMAIL_OAUTH_CLIENT_SECRET=`cat /run/secrets/roundcube_oauth_client_secret`
+  fi
+
 
   if [ ! -z "${!POSTGRES_ENV_POSTGRES_*}" ] || [ "$ROUNDCUBEMAIL_DB_TYPE" == "pgsql" ]; then
     : "${ROUNDCUBEMAIL_DB_TYPE:=pgsql}"
@@ -108,6 +112,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     echo "\$config['des_key'] = file_get_contents('/run/secrets/roundcube_des_key');" >> config/config.docker.inc.php
   elif [ ! -z "${ROUNDCUBEMAIL_DES_KEY}" ]; then
     echo "\$config['des_key'] = getenv('ROUNDCUBEMAIL_DES_KEY');" >> config/config.docker.inc.php
+  fi
+
+  if [ ! -z "${ROUNDCUBEMAIL_OAUTH_CLIENT_SECRET}" ]; then
+    echo "\$config['oauth_client_secret'] = '${ROUNDCUBEMAIL_OAUTH_CLIENT_SECRET}';" >> config/config.docker.inc.php
   fi
 
   if [ ! -z "${ROUNDCUBEMAIL_SPELLCHECK_URI}"]; then
