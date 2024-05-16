@@ -74,7 +74,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
   if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then
     echo "Installing plugins from the list"
-    echo "Plugins: ${ROUNDCUBEMAIL_INSTALL_PLUGINS}"
+    echo "Plugins: ${ROUNDCUBEMAIL_PLUGINS}"
 
     # Change ',' into a space
     ROUNDCUBEMAIL_PLUGINS_SH=`echo "${ROUNDCUBEMAIL_PLUGINS}" | tr ',' ' '`
