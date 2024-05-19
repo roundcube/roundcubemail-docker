@@ -75,6 +75,25 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
   : "${ROUNDCUBEMAIL_REQUEST_PATH:=/}"
 
+  if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then
+    echo "Installing plugins from the list"
+    echo "Plugins: ${ROUNDCUBEMAIL_PLUGINS}"
+
+    # Change ',' into a space
+    ROUNDCUBEMAIL_PLUGINS_SH=`echo "${ROUNDCUBEMAIL_PLUGINS}" | tr ',' ' '`
+
+    composer \
+      --working-dir=/usr/src/roundcubemail/ \
+      --prefer-dist \
+      --prefer-stable \
+      --update-no-dev \
+      --no-interaction \
+      --optimize-autoloader \
+      require \
+      -- \
+      ${ROUNDCUBEMAIL_PLUGINS_SH};
+  fi
+
   if [ ! -e config/config.inc.php ]; then
     GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
