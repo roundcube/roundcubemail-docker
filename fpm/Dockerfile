@@ -55,8 +55,10 @@ RUN set -ex; \
     ldd "$extdir"/*.so | grep -qzv "=> not found" || (echo "Sanity check failed: missing libraries:"; ldd "$extdir"/*.so | grep " => not found"; exit 1); \
     ldd "$extdir"/*.so | grep -q "libzip.so.* => .*/libzip.so.*" || (echo "Sanity check failed: libzip.so is not referenced"; ldd "$extdir"/*.so; exit 1); \
     err="$(php --version 3>&1 1>&2 2>&3)"; \
-    [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;);
-
+    [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
+# include the wait-for-it.sh script (latest commit)
+    curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373f17855a4dc21156cfe1694c31d7d1792e/wait-for-it.sh -o /wait-for-it.sh; \
+    chmod +x /wait-for-it.sh;
 
 # installto.sh dependencies
 RUN set -ex; \
@@ -101,9 +103,6 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs
-
-# include the wait-for-it.sh script
-RUN curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /wait-for-it.sh && chmod +x /wait-for-it.sh
 
 # use custom PHP settings
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
