@@ -40,7 +40,7 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_INSTALL_PLUGINS` - Set to `1` or `true` to enable installation of plugins on startup
 
-`ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `larry`
+`ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `elastic`
 
 `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
 
