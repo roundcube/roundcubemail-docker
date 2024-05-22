@@ -21,7 +21,7 @@ RUN set -ex; \
 		libldap-common \
 	; \
 # installto.sh & web install dependencies
-    fetchDeps="gnupg dirmngr locales libc-l10n"; \
+    fetchDeps="gnupg locales libc-l10n"; \
     installDeps="aspell aspell-en rsync unzip"; \
 	apt-get install -y --no-install-recommends \
 			$installDeps \
@@ -91,8 +91,6 @@ RUN set -ex; \
 	curl -o roundcubemail.tar.gz -fSL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz; \
 	curl -o roundcubemail.tar.gz.asc -fSL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz.asc; \
 	export GNUPGHOME="$(mktemp -d)"; \
-	# workaround for "Cannot assign requested address", see e.g. https://github.com/inversepath/usbarmory-debian-base_image/issues/9
-	echo "disable-ipv6" > "$GNUPGHOME/dirmngr.conf"; \
 	curl -fSL https://roundcube.net/download/pubkey.asc -o /tmp/pubkey.asc; \
 	LC_ALL=C.UTF-8 gpg -n --show-keys --with-fingerprint --keyid-format=long /tmp/pubkey.asc | if [ $(grep -c -o 'Key fingerprint') != 1 ]; then echo 'The key file should contain only one GPG key'; exit 1; fi; \
 	LC_ALL=C.UTF-8 gpg -n --show-keys --with-fingerprint --keyid-format=long /tmp/pubkey.asc | if [ $(grep -c -o "${ROUNDCUBEMAIL_KEYID}") != 1 ]; then echo 'The key ID should be the roundcube one'; exit 1; fi; \
