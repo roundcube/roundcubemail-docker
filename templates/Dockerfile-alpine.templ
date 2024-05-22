@@ -31,6 +31,9 @@ RUN set -ex; \
 		aspell-dev \
 	; \
 	\
+# Extract sources to avoid using pecl (https://github.com/docker-library/php/issues/374#issuecomment-690698974)
+    pecl bundle -d /usr/src/php/ext imagick; \
+    pecl bundle -d /usr/src/php/ext redis; \
 	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap; \
 	docker-php-ext-install \
@@ -43,9 +46,16 @@ RUN set -ex; \
 		pdo_sqlite \
 		zip \
 		pspell \
-	; \
-	pecl install imagick redis; \
-	docker-php-ext-enable imagick opcache redis; \
+		imagick \
+		redis \
+    ; \
+    docker-php-ext-enable imagick opcache redis; \
+    docker-php-source delete; \
+# Header files ".h"
+    rm -r /usr/local/include/php/ext; \
+    rm -r /tmp/pear; \
+# Display installed modules
+    php -m; \
 	\
 	runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
