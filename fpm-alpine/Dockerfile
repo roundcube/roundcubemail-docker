@@ -1,7 +1,6 @@
 FROM php:8.1-fpm-alpine
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
-# entrypoint.sh and installto.sh dependencies
 RUN set -ex; \
     if [ "fpm-alpine" = "apache" ]; then a2enmod rewrite; fi; \
 	\
@@ -57,18 +56,22 @@ RUN set -ex; \
 # Display installed modules
     php -m; \
 	\
+	extdir="$(php -r 'echo ini_get("extension_dir");')"; \
 	runDeps="$( \
-		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+		scanelf --needed --nobanner --format '%n#p' --recursive $extdir \
 		| tr ',' '\n' \
 		| sort -u \
 		| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 		)"; \
 	apk add --virtual .roundcubemail-phpext-rundeps imagemagick $runDeps; \
 	apk del .build-deps; \
+    ldd "$extdir"/*.so | grep -qFv "not found" || (echo "Sanity check failed: missing libraries:"; ldd "$extdir"/*.so | grep -F "not found"; exit 1); \
+    ldd "$extdir"/*.so | grep -q "libzip.so.* => .*/libzip.so.*" || (echo "Sanity check failed: libzip.so is not referenced"; ldd "$extdir"/*.so; exit 1); \
+    err="$(php --version 3>&1 1>&2 2>&3)"; \
+    [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
 # include the wait-for-it.sh script (latest commit)
     curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373f17855a4dc21156cfe1694c31d7d1792e/wait-for-it.sh -o /wait-for-it.sh; \
     chmod +x /wait-for-it.sh;
-
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -99,14 +102,14 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
-	apk del .fetch-deps
+	apk del .fetch-deps; \
+# Create the config dir
+	mkdir -p /var/roundcube/config
 
 # use custom PHP settings
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
 COPY --chmod=0755 docker-entrypoint.sh /
-
-RUN mkdir -p /var/roundcube/config
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
