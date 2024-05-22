@@ -2,6 +2,7 @@ FROM php:8.1-apache
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
+    if [ "apache" = "apache" ]; then a2enmod rewrite; fi; \
 	apt-get update; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -78,9 +79,6 @@ RUN set -ex; \
     chmod +x /wait-for-it.sh;
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-
-RUN a2enmod rewrite
 
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.6.7

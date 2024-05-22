@@ -3,6 +3,7 @@ LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 # entrypoint.sh and installto.sh dependencies
 RUN set -ex; \
+    if [ "fpm-alpine" = "apache" ]; then a2enmod rewrite; fi; \
 	\
 	apk add --no-cache \
 		bash \
@@ -60,7 +61,6 @@ RUN set -ex; \
 
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.6.7
