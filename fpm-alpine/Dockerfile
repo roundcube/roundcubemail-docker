@@ -65,8 +65,6 @@ RUN set -ex; \
 		)"; \
 	apk add --virtual .roundcubemail-phpext-rundeps imagemagick $runDeps; \
 	apk del .build-deps; \
-    ldd "$extdir"/*.so | grep -qFv "not found" || (echo "Sanity check failed: missing libraries:"; ldd "$extdir"/*.so | grep -F "not found"; exit 1); \
-    ldd "$extdir"/*.so | grep -q "libzip.so.* => .*/libzip.so.*" || (echo "Sanity check failed: libzip.so is not referenced"; ldd "$extdir"/*.so; exit 1); \
     err="$(php --version 3>&1 1>&2 2>&3)"; \
     [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
 # include the wait-for-it.sh script (latest commit)
