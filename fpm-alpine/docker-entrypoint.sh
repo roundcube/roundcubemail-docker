@@ -4,6 +4,7 @@
 # PWD=`pwd`
 
 if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
+  INSTALLDIR=`pwd`
   # docroot is empty
   if ! [ -e index.php -a -e bin/installto.sh ]; then
     echo >&2 "roundcubemail not found in $PWD - copying now..."
@@ -12,13 +13,19 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
       ( set -x; ls -A; sleep 10 )
     fi
     tar cf - --one-file-system -C /usr/src/roundcubemail . | tar xf -
-    echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $PWD"
+    echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $INSTALLDIR"
   # update Roundcube in docroot
   else
-    INSTALLDIR=`pwd`
     echo >&2 "roundcubemail found in $INSTALLDIR - installing update..."
     (cd /usr/src/roundcubemail && bin/installto.sh -y $INSTALLDIR)
-    composer update --no-dev
+    # Re-install composer modules (including plugins)
+    composer \
+          --working-dir=${INSTALLDIR} \
+          --prefer-dist \
+          --no-dev \
+          --no-interaction \
+          --optimize-autoloader \
+          install
   fi
 
   if [ -f /run/secrets/roundcube_db_user ]; then
@@ -74,6 +81,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   : "${ROUNDCUBEMAIL_SKIN:=elastic}"
   : "${ROUNDCUBEMAIL_TEMP_DIR:=/tmp/roundcube-temp}"
   : "${ROUNDCUBEMAIL_REQUEST_PATH:=/}"
+  : "${ROUNDCUBEMAIL_COMPOSER_PLUGINS_FOLDER:=$INSTALLDIR}"
 
   if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then
     echo "Installing plugins from the list"
@@ -83,7 +91,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
     ROUNDCUBEMAIL_COMPOSER_PLUGINS_SH=`echo "${ROUNDCUBEMAIL_COMPOSER_PLUGINS}" | tr ',' ' '`
 
     composer \
-      --working-dir=/usr/src/roundcubemail/ \
+      --working-dir=${ROUNDCUBEMAIL_COMPOSER_PLUGINS_FOLDER} \
       --prefer-dist \
       --prefer-stable \
       --update-no-dev \
