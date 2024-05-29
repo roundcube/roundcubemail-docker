@@ -77,10 +77,10 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
 
   if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then
     echo "Installing plugins from the list"
-    echo "Plugins: ${ROUNDCUBEMAIL_PLUGINS}"
+    echo "Plugins: ${ROUNDCUBEMAIL_COMPOSER_PLUGINS}"
 
     # Change ',' into a space
-    ROUNDCUBEMAIL_PLUGINS_SH=`echo "${ROUNDCUBEMAIL_PLUGINS}" | tr ',' ' '`
+    ROUNDCUBEMAIL_COMPOSER_PLUGINS_SH=`echo "${ROUNDCUBEMAIL_COMPOSER_PLUGINS}" | tr ',' ' '`
 
     composer \
       --working-dir=/usr/src/roundcubemail/ \
@@ -91,7 +91,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
       --optimize-autoloader \
       require \
       -- \
-      ${ROUNDCUBEMAIL_PLUGINS_SH};
+      ${ROUNDCUBEMAIL_COMPOSER_PLUGINS_SH};
   fi
 
   if [ ! -e config/config.inc.php ]; then
