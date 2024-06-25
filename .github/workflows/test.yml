@@ -1,6 +1,9 @@
-name: Build Docker image
+name: Build & Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '!master'
 
 jobs:
   build-and-testvariants:
@@ -10,9 +13,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { variant: 'apache', test-files: ['apache-postgres'], docker-tag: 'roundcube-test-apache' }
-          - { variant: 'fpm', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm' }
-          - { variant: 'fpm-alpine', test-files: ['fpm-postgres'], docker-tag: 'roundcube-test-fpm-alpine' }
+          - variant: 'apache'
+            test-files: ['apache-postgres']
+            docker-tag: 'roundcube-test-apache'
+          - variant: 'fpm'
+            test-files: ['fpm-postgres']
+            docker-tag: 'roundcube-test-fpm'
+          - variant: 'fpm-alpine'
+            test-files: ['fpm-postgres']
+            docker-tag: 'roundcube-test-fpm-alpine'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
