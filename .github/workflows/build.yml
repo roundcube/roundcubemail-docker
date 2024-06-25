@@ -11,7 +11,7 @@ on:
       - 'README.md'
       - 'examples/**'
     tags:
-      - '*'
+      - '1.6.*'
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
