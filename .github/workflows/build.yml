@@ -18,15 +18,15 @@ jobs:
         include:
           - variant: 'apache'
             test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail:1.5.x-apache,roundcube/roundcubemail:${{ env.GITHUB_REF_NAME }}-apache
+            docker-tag: roundcube/roundcubemail:1.5.x-apache,roundcube/roundcubemail:${{ github.ref_name }}-apache
             test-tag: roundcube/roundcubemail:1.5.x-apache
           - variant: 'fpm'
             test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:1.5.x-fpm,roundcube/roundcubemail:${{ env.GITHUB_REF_NAME }}-fpm
+            docker-tag: roundcube/roundcubemail:1.5.x-fpm,roundcube/roundcubemail:${{ github.ref_name }}-fpm
             test-tag: roundcube/roundcubemail:1.5.x-fpm
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:1.5.x-fpm-alpine,roundcube/roundcubemail:${{ env.GITHUB_REF_NAME }}-fpm-alpine
+            docker-tag: roundcube/roundcubemail:1.5.x-fpm-alpine,roundcube/roundcubemail:${{ github.ref_name }}-fpm-alpine
             test-tag: roundcube/roundcubemail:1.5.x-fpm-alpine
     steps:
       - name: Checkout repository
