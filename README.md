@@ -38,8 +38,6 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_PLUGINS` - List of built-in plugins to activate. Defaults to `archive,zipdownload`
 
-`ROUNDCUBEMAIL_INSTALL_PLUGINS` - Set to `1` or `true` to enable installation of plugins on startup
-
 `ROUNDCUBEMAIL_COMPOSER_PLUGINS` - The list of composer packages to install on startup. Use `ROUNDCUBEMAIL_PLUGINS` to enable them.
 
 `ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `elastic`
@@ -128,7 +126,15 @@ For example, it may be used to increase the PHP memory limit (`memory_limit=128M
 ## Installing Roundcube Plugins
 
 With the latest updates, the Roundcube image is now able to install plugins.
-You need to use `ROUNDCUBEMAIL_INSTALL_PLUGINS=1` in the env variables and fill `ROUNDCUBEMAIL_COMPOSER_PLUGINS`.
+You need to fill `ROUNDCUBEMAIL_COMPOSER_PLUGINS` with the list of composer packages to install.
+And set them in `ROUNDCUBEMAIL_PLUGINS` in order to enable the installed plugins.
+
+For example:
+
+```yaml
+  ROUNDCUBEMAIL_COMPOSER_PLUGINS: "weird-birds/thunderbird_labels,jfcherng-roundcube/show-folder-size,germancoding/tls_icon:^1.2"
+  ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
+```
 
 ## Examples
 

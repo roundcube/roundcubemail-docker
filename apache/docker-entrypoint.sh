@@ -83,7 +83,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   : "${ROUNDCUBEMAIL_REQUEST_PATH:=/}"
   : "${ROUNDCUBEMAIL_COMPOSER_PLUGINS_FOLDER:=$INSTALLDIR}"
 
-  if [ ! -z "${ROUNDCUBEMAIL_INSTALL_PLUGINS}" ]; then
+  if [ ! -z "${ROUNDCUBEMAIL_COMPOSER_PLUGINS}" ]; then
     echo "Installing plugins from the list"
     echo "Plugins: ${ROUNDCUBEMAIL_COMPOSER_PLUGINS}"
 

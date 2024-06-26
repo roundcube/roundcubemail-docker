@@ -15,7 +15,6 @@ services:
       ROUNDCUBEMAIL_SKIN: elastic
       ROUNDCUBEMAIL_DEFAULT_HOST: tls://mail.example.org
       ROUNDCUBEMAIL_SMTP_SERVER: tls://mail.example.org
-      ROUNDCUBEMAIL_INSTALL_PLUGINS: 1
       ROUNDCUBEMAIL_COMPOSER_PLUGINS: "weird-birds/thunderbird_labels,jfcherng-roundcube/show-folder-size,germancoding/tls_icon:^1.2"
       ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
 
