@@ -2,7 +2,7 @@ FROM php:8.1-apache
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
-    if [ "apache" = "apache" ]; then a2enmod rewrite; fi; \
+	if [ "apache" = "apache" ]; then a2enmod rewrite; fi; \
 	apt-get update; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -22,16 +22,16 @@ RUN set -ex; \
 		libldap-common \
 	; \
 # installto.sh & web install dependencies
-    fetchDeps="gnupg locales libc-l10n"; \
-    installDeps="aspell aspell-en rsync unzip"; \
+	fetchDeps="gnupg locales libc-l10n"; \
+	installDeps="aspell aspell-en rsync unzip"; \
 	apt-get install -y --no-install-recommends \
 			$installDeps \
 			$fetchDeps \
-    ; \
+	; \
 	\
 # Extract sources to avoid using pecl (https://github.com/docker-library/php/issues/374#issuecomment-690698974)
-    pecl bundle -d /usr/src/php/ext imagick; \
-    pecl bundle -d /usr/src/php/ext redis; \
+	pecl bundle -d /usr/src/php/ext imagick; \
+	pecl bundle -d /usr/src/php/ext redis; \
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
 	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch"; \
@@ -47,14 +47,14 @@ RUN set -ex; \
 		pspell \
 		imagick \
 		redis \
-    ; \
-    docker-php-ext-enable imagick opcache redis; \
-    docker-php-source delete; \
+	; \
+	docker-php-ext-enable imagick opcache redis; \
+	docker-php-source delete; \
 # Header files ".h"
-    rm -r /usr/local/include/php/ext; \
-    rm -r /tmp/pear; \
+	rm -r /usr/local/include/php/ext; \
+	rm -r /tmp/pear; \
 # Display installed modules
-    php -m; \
+	php -m; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
@@ -70,15 +70,20 @@ RUN set -ex; \
 	\
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*; \
-    ldd "$extdir"/*.so | grep -qzv "=> not found" || (echo "Sanity check failed: missing libraries:"; ldd "$extdir"/*.so | grep " => not found"; exit 1); \
-    ldd "$extdir"/*.so | grep -q "libzip.so.* => .*/libzip.so.*" || (echo "Sanity check failed: libzip.so is not referenced"; ldd "$extdir"/*.so; exit 1); \
-    err="$(php --version 3>&1 1>&2 2>&3)"; \
-    [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
+	ldd "$extdir"/*.so | grep -qzv "=> not found" || (echo "Sanity check failed: missing libraries:"; ldd "$extdir"/*.so | grep " => not found"; exit 1); \
+	ldd "$extdir"/*.so | grep -q "libzip.so.* => .*/libzip.so.*" || (echo "Sanity check failed: libzip.so is not referenced"; ldd "$extdir"/*.so; exit 1); \
+	err="$(php --version 3>&1 1>&2 2>&3)"; \
+	[ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
 # include the wait-for-it.sh script (latest commit)
-    curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373f17855a4dc21156cfe1694c31d7d1792e/wait-for-it.sh -o /wait-for-it.sh; \
-    chmod +x /wait-for-it.sh;
+	curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373f17855a4dc21156cfe1694c31d7d1792e/wait-for-it.sh -o /wait-for-it.sh; \
+	chmod +x /wait-for-it.sh;
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# use custom PHP settings
+COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
+
+COPY --chmod=0755 docker-entrypoint.sh /
 
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.6.7
@@ -105,11 +110,6 @@ RUN set -ex; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
 # Create the config dir
 	mkdir -p /var/roundcube/config
-
-# use custom PHP settings
-COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
-
-COPY --chmod=0755 docker-entrypoint.sh /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]

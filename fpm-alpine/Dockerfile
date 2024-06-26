@@ -2,7 +2,7 @@ FROM php:8.1-fpm-alpine
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
 RUN set -ex; \
-    if [ "fpm-alpine" = "apache" ]; then a2enmod rewrite; fi; \
+	if [ "fpm-alpine" = "apache" ]; then a2enmod rewrite; fi; \
 	\
 	apk add --no-cache \
 		bash \
@@ -31,8 +31,8 @@ RUN set -ex; \
 	; \
 	\
 # Extract sources to avoid using pecl (https://github.com/docker-library/php/issues/374#issuecomment-690698974)
-    pecl bundle -d /usr/src/php/ext imagick; \
-    pecl bundle -d /usr/src/php/ext redis; \
+	pecl bundle -d /usr/src/php/ext imagick; \
+	pecl bundle -d /usr/src/php/ext redis; \
 	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap; \
 	docker-php-ext-install \
@@ -47,14 +47,14 @@ RUN set -ex; \
 		pspell \
 		imagick \
 		redis \
-    ; \
-    docker-php-ext-enable imagick opcache redis; \
-    docker-php-source delete; \
+	; \
+	docker-php-ext-enable imagick opcache redis; \
+	docker-php-source delete; \
 # Header files ".h"
-    rm -r /usr/local/include/php/ext; \
-    rm -r /tmp/pear; \
+	rm -r /usr/local/include/php/ext; \
+	rm -r /tmp/pear; \
 # Display installed modules
-    php -m; \
+	php -m; \
 	\
 	extdir="$(php -r 'echo ini_get("extension_dir");')"; \
 	runDeps="$( \
@@ -65,13 +65,18 @@ RUN set -ex; \
 		)"; \
 	apk add --virtual .roundcubemail-phpext-rundeps imagemagick $runDeps; \
 	apk del .build-deps; \
-    err="$(php --version 3>&1 1>&2 2>&3)"; \
-    [ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
+	err="$(php --version 3>&1 1>&2 2>&3)"; \
+	[ -z "$err" ] || (echo "Sanity check failed: php returned errors; $err"; exit 1;); \
 # include the wait-for-it.sh script (latest commit)
-    curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373f17855a4dc21156cfe1694c31d7d1792e/wait-for-it.sh -o /wait-for-it.sh; \
-    chmod +x /wait-for-it.sh;
+	curl -fL https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373f17855a4dc21156cfe1694c31d7d1792e/wait-for-it.sh -o /wait-for-it.sh; \
+	chmod +x /wait-for-it.sh;
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# use custom PHP settings
+COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
+
+COPY --chmod=0755 docker-entrypoint.sh /
 
 # Define Roundcubemail version
 ENV ROUNDCUBEMAIL_VERSION 1.6.7
@@ -103,11 +108,6 @@ RUN set -ex; \
 	apk del .fetch-deps; \
 # Create the config dir
 	mkdir -p /var/roundcube/config
-
-# use custom PHP settings
-COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
-
-COPY --chmod=0755 docker-entrypoint.sh /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
