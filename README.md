@@ -38,7 +38,7 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_PLUGINS` - List of built-in plugins to activate. Defaults to `archive,zipdownload`
 
-`ROUNDCUBEMAIL_INSTALL_PLUGINS` - Set to `1` or `true` to enable installation of plugins on startup
+`ROUNDCUBEMAIL_COMPOSER_PLUGINS` - The list of composer packages to install on startup. Use `ROUNDCUBEMAIL_PLUGINS` to enable them.
 
 `ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `elastic`
 
@@ -83,17 +83,17 @@ The Roundcube containers do not store any data persistently by default. There ar
 some directories that could be mounted as volume or bind mount to share data between containers
 or to inject additional data into the container:
 
-* `/var/www/html`: Roundcube installation directory  
+* `/var/www/html`: Roundcube installation directory
   This is the document root of Roundcube. Plugins and additional skins are stored here amongst the Roundcube sources.
   Share this directory when using the FPM variant and let a webserver container serve the static files from here.
 
 * `/var/roundcube/config`: Location for additional config files
   See the [Advanced configuration](#advanced-configuration) section for details.
 
-* `/var/roundcube/db`: storage location of the SQLite database  
+* `/var/roundcube/db`: storage location of the SQLite database
   Only needed if using `ROUNDCUBEMAIL_DB_TYPE=sqlite` to persist the Roundcube database.
 
-* `/tmp/roundcube-temp`: Roundcube's temp folder  
+* `/tmp/roundcube-temp`: Roundcube's temp folder
   Temp files like uploaded attachments or thumbnail images are stored here.
   Share this directory via a volume when running multiple replicas of the roundcube container.
 
@@ -126,7 +126,15 @@ For example, it may be used to increase the PHP memory limit (`memory_limit=128M
 ## Installing Roundcube Plugins
 
 With the latest updates, the Roundcube image is now able to install plugins.
-You need to use `ROUNDCUBEMAIL_INSTALL_PLUGINS=1` in the env variables.
+You need to fill `ROUNDCUBEMAIL_COMPOSER_PLUGINS` with the list of composer packages to install.
+And set them in `ROUNDCUBEMAIL_PLUGINS` in order to enable the installed plugins.
+
+For example:
+
+```yaml
+  ROUNDCUBEMAIL_COMPOSER_PLUGINS: "weird-birds/thunderbird_labels,jfcherng-roundcube/show-folder-size,germancoding/tls_icon:^1.2"
+  ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
+```
 
 ## Examples
 
