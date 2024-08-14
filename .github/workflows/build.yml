@@ -63,6 +63,6 @@ jobs:
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
-            docker-compose -f ./tests/docker-compose.test-${testFile}.yml \
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
