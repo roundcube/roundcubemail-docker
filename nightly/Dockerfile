@@ -76,7 +76,7 @@ FROM base AS builder
 
 # install nodejs and lessc compiler
 RUN apt-get -qq update; \
-	apt-get install -y --no-install-recommends unzip gnupg dirmngr; \
+	apt-get install -y --no-install-recommends unzip gnupg dirmngr git; \
 	curl -sL https://deb.nodesource.com/setup_14.x | bash -; \
 	apt-get install -y nodejs; \
 	npm install -g less; \
@@ -97,7 +97,6 @@ RUN set -ex; \
 		lessc --clean-css="--s1 --advanced" styles/styles.less > styles/styles.min.css; \
 		lessc --clean-css="--s1 --advanced" styles/print.less > styles/print.css; \
 		lessc --clean-css="--s1 --advanced" styles/embed.less > styles/embed.css); \
-	mv composer.json-dist composer.json; \
 	composer.phar require kolab/net_ldap3 --no-install; \
 	composer.phar require bjeavons/zxcvbn-php --no-install; \
 	composer.phar install --no-dev --prefer-dist; \
