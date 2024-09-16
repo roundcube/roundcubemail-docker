@@ -16,6 +16,9 @@ RUN set -ex; \
 		libpq-dev \
 		libsqlite3-dev \
 		libzip-dev \
+		libpspell-dev \
+		libonig-dev \
+		libldap-common \
 	; \
 	\
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
@@ -30,6 +33,7 @@ RUN set -ex; \
 		pdo_pgsql \
 		pdo_sqlite \
 		zip \
+		pspell \
 	; \
 	pecl install imagick redis; \
 	docker-php-ext-enable imagick opcache redis; \
@@ -59,15 +63,15 @@ RUN set -ex; \
 	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-			rsync \
+		aspell \
+		aspell-en \
+		rsync \
+		unzip \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
 # ... and composer.phar
-ADD https://getcomposer.org/installer /tmp/composer-installer.php
-
-RUN php /tmp/composer-installer.php --install-dir=/usr/local/bin/; \
-	rm /tmp/composer-installer.php
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN a2enmod rewrite
 
@@ -77,7 +81,7 @@ FROM base AS builder
 # install nodejs and lessc compiler
 RUN apt-get -qq update; \
 	apt-get install -y --no-install-recommends unzip gnupg dirmngr git; \
-	curl -sL https://deb.nodesource.com/setup_14.x | bash -; \
+	curl -sL https://deb.nodesource.com/setup_20.x | bash -; \
 	apt-get install -y nodejs; \
 	npm install -g less; \
 	npm install -g uglify-js; \
@@ -97,9 +101,9 @@ RUN set -ex; \
 		lessc --clean-css="--s1 --advanced" styles/styles.less > styles/styles.min.css; \
 		lessc --clean-css="--s1 --advanced" styles/print.less > styles/print.css; \
 		lessc --clean-css="--s1 --advanced" styles/embed.less > styles/embed.css); \
-	composer.phar require kolab/net_ldap3 --no-install; \
-	composer.phar require bjeavons/zxcvbn-php --no-install; \
-	composer.phar install --no-dev --prefer-dist; \
+	composer require kolab/net_ldap3 --no-install; \
+	composer require bjeavons/zxcvbn-php --no-install; \
+	composer install --no-dev --prefer-dist; \
 	bin/install-jsdeps.sh; \
 	bin/updatecss.sh; \
 	rm -rf vendor/masterminds/html5/test \
