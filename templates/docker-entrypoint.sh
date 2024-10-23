@@ -145,7 +145,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
     echo "\$config['oauth_client_secret'] = '${ROUNDCUBEMAIL_OAUTH_CLIENT_SECRET}';" >> config/config.docker.inc.php
   fi
 
-  if [ ! -z "${ROUNDCUBEMAIL_SPELLCHECK_URI}"]; then
+  if [ ! -z "${ROUNDCUBEMAIL_SPELLCHECK_URI}" ]; then
     echo "\$config['spellcheck_engine'] = 'googie';" >> config/config.docker.inc.php
     echo "\$config['spellcheck_uri'] = '${ROUNDCUBEMAIL_SPELLCHECK_URI}';" >> config/config.docker.inc.php
   fi
