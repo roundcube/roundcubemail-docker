@@ -1,5 +1,6 @@
 FROM php:8.0-apache AS base
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
+LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
 
 RUN set -ex; \
 	apt-get update; \
