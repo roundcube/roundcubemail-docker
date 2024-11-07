@@ -13,12 +13,6 @@ declare -A BASE=(
 	[fpm-alpine]='alpine'
 )
 
-declare -A EXTRAS=(
-	[apache]='¬RUN a2enmod rewrite'
-	[fpm]=''
-	[fpm-alpine]=''
-)
-
 VERSION="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
 
 #set -x
@@ -33,7 +27,6 @@ for variant in apache fpm fpm-alpine; do
 	cp templates/php.ini "$dir/php.ini"
 	sed -E -e '
 		s/%%VARIANT%%/'"$variant"'/;
-		s/%%EXTRAS%%/'"${EXTRAS[$variant]}"'/;
 		s/%%VERSION%%/'"$VERSION"'/;
 		s/%%CMD%%/'"${CMD[$variant]}"'/;
 	' $template | tr '¬' '\n' > "$dir/Dockerfile"
