@@ -9,8 +9,6 @@ services:
       - roundcubedb
     links:
       - roundcubedb
-    ports:
-      - 9000:9000
     volumes:
       - ./www:/var/www/html
     environment:
@@ -27,8 +25,6 @@ services:
     image: postgres:alpine
     container_name: roundcubedb
     # restart: unless-stopped
-    ports:
-      - 5432:5432
     volumes:
       - ./db/postgres:/var/lib/postgresql/data
     environment:

@@ -7,9 +7,6 @@ services:
 #    restart: unless-stopped
     volumes:
       - ./db/mysql:/var/lib/mysql
-    ports:
-      - 34010:5432
-      - 33006:3306
     environment:
       - MYSQL_ROOT_PASSWORD=roundcube-mysql-pw
       - MYSQL_DATABASE=roundcubemail
