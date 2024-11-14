@@ -12,6 +12,10 @@ on:
       - 'examples/**'
     tags:
       - '1.6.*'
+  schedule:
+    # Rebuild images each monday early morning to ensure a fresh base OS.
+    - cron: "23 2 * * 1"
+
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
