@@ -6,7 +6,7 @@ permissions:
 on:
   schedule:
     # Rebuild automatically each night
-    - cron: "* 4 * * *"
+    - cron: "4 2 * * *"
 
 jobs:
   build-and-testvariants:
