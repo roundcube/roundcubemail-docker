@@ -104,7 +104,7 @@ RUN set -ex; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
 # Create the config dir
-	mkdir -p /var/roundcube/config
+	mkdir -p /var/roundcube/config /var/roundcube/enigma
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["%%CMD%%"]
