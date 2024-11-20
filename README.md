@@ -93,6 +93,9 @@ or to inject additional data into the container:
 * `/var/roundcube/db`: storage location of the SQLite database
   Only needed if using `ROUNDCUBEMAIL_DB_TYPE=sqlite` to persist the Roundcube database.
 
+* `/var/roundcube/enigma`: storage location of the enigma plugin
+  If enabled, the "enigma" plugin stores OpenPGP keys here.
+
 * `/tmp/roundcube-temp`: Roundcube's temp folder
   Temp files like uploaded attachments or thumbnail images are stored here.
   Share this directory via a volume when running multiple replicas of the roundcube container.
