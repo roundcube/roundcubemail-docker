@@ -16,4 +16,3 @@ jobs:
           inactivity_deadline_hours: 336
           default_users_to_notify: |
             @pabzm
-            @alecpl
