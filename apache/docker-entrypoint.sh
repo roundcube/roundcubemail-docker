@@ -104,6 +104,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
 
   if [ ! -d skins/${ROUNDCUBEMAIL_SKIN} ]; then
     # Installing missing skin
+    echo "Installing missing skin: ${ROUNDCUBEMAIL_SKIN}"
     composer \
       --working-dir=/usr/src/roundcubemail/ \
       --prefer-dist \
