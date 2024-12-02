@@ -87,10 +87,7 @@ ENV ROUNDCUBEMAIL_KEYID "F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
 
 # Download package and extract to web volume
 RUN set -ex; \
-	apk add --no-cache --virtual .fetch-deps \
-		gnupg \
-	; \
-	\
+	apk add --no-cache gnupg;
 	curl -o roundcubemail.tar.gz -fSL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz; \
 	curl -o roundcubemail.tar.gz.asc -fSL https://github.com/roundcube/roundcubemail/releases/download/${ROUNDCUBEMAIL_VERSION}/roundcubemail-${ROUNDCUBEMAIL_VERSION}-complete.tar.gz.asc; \
 	export GNUPGHOME="$(mktemp -d)"; \
@@ -106,9 +103,8 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME" roundcubemail.tar.gz.asc roundcubemail.tar.gz; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
-	apk del .fetch-deps; \
 # Create the config dir
-	mkdir -p /var/roundcube/config
+	mkdir -p /var/roundcube/config /var/roundcube/enigma
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
