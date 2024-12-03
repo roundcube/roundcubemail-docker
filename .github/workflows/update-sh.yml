@@ -24,12 +24,14 @@ jobs:
       run: ./update.sh
     - name: Commit files
       run: |
+        BRANCH="changes-from-update.sh-$(date +'%Y-%m-%d')"
+        git show-ref --quiet "$BRANCH" && { "ERROR: Branch $BRANCH already exists";  exit 1; }
+        git switch -C "$BRANCH"
         git config --local user.email "workflow@github.com"
         git config --local user.name "GitHub Workflow"
-        git switch -C changes-from-update.sh
         git add -A
         git commit -m "Update roundcube version (via update.sh)" || echo "Nothing to update"
-        git push --set-upstream origin changes-from-update.sh
+        git push --set-upstream origin "$BRANCH"
     - name: Create Pull Request
       run: gh pr create -B master -H changes-from-update.sh --title 'Changes from update.sh' --assignee pabzm
       env:
