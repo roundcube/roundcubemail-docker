@@ -34,6 +34,6 @@ jobs:
         git commit -m "Update roundcube version (via update.sh)" || echo "Nothing to update"
         git push --set-upstream origin "$BRANCH"
     - name: Create Pull Request
-      run: gh pr create -B master -H changes-from-update.sh --title 'Changes from update.sh' --assignee pabzm
+      run: gh pr create -B master -H changes-from-update.sh --title 'Changes from update.sh' --body "These are the changes of the automated run of ./update.sh" --assignee pabzm
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
