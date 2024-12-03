@@ -3,6 +3,7 @@ name: update.sh
 permissions:
   # Git push permissions are needed
   contents: write
+  pull-requests: write
 
 on:
   push:
