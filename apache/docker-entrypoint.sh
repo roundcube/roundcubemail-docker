@@ -150,6 +150,11 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
     echo "\$config['spellcheck_uri'] = '${ROUNDCUBEMAIL_SPELLCHECK_URI}';" >> config/config.docker.inc.php
   fi
 
+  # If the "enigma" plugin is enabled but has no storage configured, inject a default value for the mandatory setting.
+  if $(echo $ROUNDCUBEMAIL_PLUGINS | grep -Eq '\benigma\b') && ! grep -qr enigma_pgp_homedir /var/roundcube/config/; then
+    echo "$config['enigma_pgp_homedir'] = '/var/roundcube/enigma';" >> config/config.docker.inc.php
+  fi
+
   # include custom config files
   for fn in `ls /var/roundcube/config/*.php 2>/dev/null || true`; do
     echo "include('$fn');" >> config/config.docker.inc.php
