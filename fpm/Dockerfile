@@ -2,6 +2,11 @@ FROM php:8.1-fpm
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
 
+# This should be done by the upstream images, but as long as they don't do it,
+# we rather use our own hands than suffer from outdated packages.
+# Kept as standalone command to make it stand out and be easy to remove.
+RUN apt-get update && apt-get upgrade && apt-get clean
+
 RUN set -ex; \
 	if [ "fpm" = "apache" ]; then a2enmod rewrite; fi; \
 	apt-get update; \
