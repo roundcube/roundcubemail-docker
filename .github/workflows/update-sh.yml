@@ -38,4 +38,4 @@ jobs:
         git add -A
         git commit -m "Update roundcube version (via update.sh)"
         git push --set-upstream origin "$BRANCH"
-        gh pr create -B master -H changes-from-update.sh --title 'Changes from update.sh' --body "These are the changes of the automated run of ./update.sh" --assignee pabzm
+        gh pr create -B master -H "$BRANCH" --title 'Changes from update.sh' --body "These are the changes of the automated run of ./update.sh" --assignee pabzm
