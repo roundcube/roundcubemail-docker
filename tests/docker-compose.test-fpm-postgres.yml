@@ -27,6 +27,7 @@ services:
       - ROUNDCUBEMAIL_DB_NAME=roundcube # same as pgsql POSTGRES_DB env name
       - ROUNDCUBEMAIL_DB_USER=roundcube # same as pgsql POSTGRES_USER env name
       - ROUNDCUBEMAIL_DB_PASSWORD=roundcube # same as pgsql POSTGRES_PASSWORD env name
+      - ROUNDCUBEMAIL_SKIN=larry # Install non-default skin
 
   roundcubedb:
     image: postgres:alpine
