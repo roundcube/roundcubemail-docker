@@ -56,6 +56,8 @@ RUN set -ex; \
 	; \
 	docker-php-ext-enable imagick opcache redis; \
 	docker-php-source delete; \
+# Header files ".h"
+	rm -r /usr/local/include/php/ext; \
 	rm -r /tmp/pear; \
 # Display installed modules
 	php -m; \
