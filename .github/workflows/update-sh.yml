@@ -30,7 +30,7 @@ jobs:
         # Exit early if no changes are present.
         test $(git status --porcelain | wc -l) -gt 0 || { echo "No changes to commit, happily cancelling this script."; exit 0; }
         # Use a distinct branch-name (nano-seconds should be good enough).
-        BRANCH="changes-from-update.sh-$(date -I ns)"
+        BRANCH="changes-from-update.sh-$(date +'%Y-%m-%d_%H%M%S_%N')"
         git switch -C "$BRANCH"
         git config --local user.email "workflow@github.com"
         git config --local user.name "GitHub Workflow"
