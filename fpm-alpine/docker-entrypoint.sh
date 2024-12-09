@@ -102,6 +102,21 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
       ${ROUNDCUBEMAIL_COMPOSER_PLUGINS_SH};
   fi
 
+  if [ ! -d skins/${ROUNDCUBEMAIL_SKIN} ]; then
+    # Installing missing skin
+    echo "Installing missing skin: ${ROUNDCUBEMAIL_SKIN}"
+    composer \
+      --working-dir=${INSTALLDIR} \
+      --prefer-dist \
+      --prefer-stable \
+      --update-no-dev \
+      --no-interaction \
+      --optimize-autoloader \
+      require \
+      -- \
+      roundcube/${ROUNDCUBEMAIL_SKIN};
+  fi
+
   if [ ! -e config/config.inc.php ]; then
     GENERATED_DES_KEY=`head /dev/urandom | base64 | head -c 24`
     touch config/config.inc.php
