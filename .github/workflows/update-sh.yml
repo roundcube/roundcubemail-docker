@@ -30,11 +30,11 @@ jobs:
         # Exit early if no changes are present.
         test $(git status --porcelain | wc -l) -gt 0 || { echo "No changes to commit, happily cancelling this script."; exit 0; }
         # Use a distinct branch-name (nano-seconds should be good enough).
-        BRANCH="changes-from-update.sh-$(date -I ns)"
+        BRANCH="changes-from-update.sh-$(date +'%Y-%m-%d_%H%M%S_%N')"
         git switch -C "$BRANCH"
         git config --local user.email "workflow@github.com"
         git config --local user.name "GitHub Workflow"
         git add -A
         git commit -m "Update roundcube version (via update.sh)"
         git push --set-upstream origin "$BRANCH"
-        gh pr create -B master -H changes-from-update.sh --title 'Changes from update.sh' --body "These are the changes of the automated run of ./update.sh" --assignee pabzm
+        gh pr create -B master -H "$BRANCH" --title 'Changes from update.sh' --body "These are the changes of the automated run of ./update.sh" --assignee pabzm
