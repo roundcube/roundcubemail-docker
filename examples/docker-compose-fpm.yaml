@@ -38,8 +38,6 @@ services:
     # restart: unless-stopped
     ports:
       - 9009:80
-      # If you need SSL connection
-      # - '443:443'
     depends_on:
       - roundcubemail
     links:
@@ -49,9 +47,6 @@ services:
       - ./nginx/templates:/etc/nginx/templates
       # Provide a custom nginx conf
       # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      # If you need SSL connection, you can provide your own certificates
-      # - ./certs:/etc/letsencrypt
-      # - ./certs-data:/data/letsencrypt
     environment:
       - NGINX_HOST=localhost  # set your local domain or your live domain
       - NGINX_PHP_CGI=roundcubemail:9000  # same as roundcubemail container name
