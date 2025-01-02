@@ -2,7 +2,7 @@ version: '2'
 
 services:
   roundcubedb:
-    image: mysql:5.7
+    image: mysql:latest
     container_name: roundcubedb
 #    restart: unless-stopped
     volumes:
