@@ -3,6 +3,16 @@
 
 # PWD=`pwd`
 
+# prepare TLS truststore with custom certificates
+if [ -d /certs ]
+then
+    if compgen -G "/certs/*.crt" >/dev/null
+    then
+        cp -v /certs/*.crt /usr/local/share/ca-certificates/
+        update-ca-certificates
+    fi
+fi
+
 if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   INSTALLDIR=`pwd`
   # docroot is empty
