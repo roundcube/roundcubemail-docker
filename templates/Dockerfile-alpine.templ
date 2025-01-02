@@ -109,5 +109,7 @@ RUN set -ex; \
 # Create the config dir
 	mkdir -p /var/roundcube/config /var/roundcube/enigma
 
+VOLUME /certs
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["%%CMD%%"]
