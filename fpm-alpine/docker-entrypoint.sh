@@ -189,9 +189,8 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
 
   : "${ROUNDCUBEMAIL_LOCALE:=en_US.UTF-8 UTF-8}"
 
-  if [ -e /usr/sbin/locale-gen ] && [ ! -z "${ROUNDCUBEMAIL_LOCALE}" ]; then
-    echo "${ROUNDCUBEMAIL_LOCALE}" > /etc/locale.gen
-    /usr/sbin/locale-gen
+  if [ -e /usr/sbin/locale-gen ] && [ ! -f /etc/locale.gen ] && [ ! -z "${ROUNDCUBEMAIL_LOCALE}" ]; then
+    echo "${ROUNDCUBEMAIL_LOCALE}" > /etc/locale.gen && /usr/sbin/locale-gen
   fi
 
   if [ ! -z "${ROUNDCUBEMAIL_ASPELL_DICTS}" ]; then

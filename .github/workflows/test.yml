@@ -20,12 +20,27 @@ jobs:
           - variant: 'apache'
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:test-apache
+            target: 'root'
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:test-fpm
+            target: 'root'
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:test-fpm-alpine
+            target: 'root'
+          - variant: 'apache'
+            test-files: 'apache-postgres'
+            docker-tag: roundcube/roundcubemail:test-apache-nonroot
+            target: 'nonroot'
+          - variant: 'fpm'
+            test-files: 'fpm-postgres'
+            docker-tag: roundcube/roundcubemail:test-fpm-nonroot
+            target: 'nonroot'
+          - variant: 'fpm-alpine'
+            test-files: 'fpm-postgres'
+            docker-tag: roundcube/roundcubemail:test-fpm-alpine-nonroot
+            target: 'nonroot'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,7 +55,7 @@ jobs:
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
 
       - name: Build image for "${{ matrix.variant }}"
-        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }}
+        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }} --target ${{ matrix.target }}
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}

@@ -30,14 +30,32 @@ jobs:
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.10-apache,roundcube/roundcubemail:latest-apache,roundcube/roundcubemail:latest
             test-tag: roundcube/roundcubemail:latest-apache
+            target: 'root'
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm,roundcube/roundcubemail:1.6.10-fpm,roundcube/roundcubemail:latest-fpm
             test-tag: roundcube/roundcubemail:latest-fpm
+            target: 'root'
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine,roundcube/roundcubemail:1.6.10-fpm-alpine,roundcube/roundcubemail:latest-fpm-alpine
             test-tag: roundcube/roundcubemail:latest-fpm-alpine
+            target: 'root'
+          - variant: 'apache'
+            test-files: 'apache-postgres'
+            docker-tag: roundcube/roundcubemail-nonroot:1.6.x-apache,roundcube/roundcubemail-nonroot:1.6.9-apache,roundcube/roundcubemail-nonroot:latest-apache,roundcube/roundcubemail-nonroot:latest
+            test-tag: roundcube/roundcubemail-nonroot:latest-apache
+            target: 'nonroot'
+          - variant: 'fpm'
+            test-files: 'apache-postgres'
+            docker-tag: roundcube/roundcubemail-nonroot:1.6.x-fpm,roundcube/roundcubemail-nonroot:1.6.9-fpm,roundcube/roundcubemail-nonroot:latest-fpm
+            test-tag: roundcube/roundcubemail-nonroot:latest-fpm
+            target: 'nonroot'
+          - variant: 'fpm-alpine'
+            test-files: 'apache-postgres'
+            docker-tag: roundcube/roundcubemail-nonroot:1.6.x-fpm-alpine,roundcube/roundcubemail-nonroot:1.6.9-fpm-alpine,roundcube/roundcubemail-nonroot:latest-fpm-alpine
+            test-tag: roundcube/roundcubemail-nonroot:latest-fpm-alpine
+            target: 'nonroot'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -65,6 +83,7 @@ jobs:
           platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
           push: true
           tags: ${{ matrix.docker-tag }}
+          target: ${{ matrix.target }}
           # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
 
       - name: Run tests
