@@ -139,6 +139,11 @@ For example:
   ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
 ```
 
+## HTTPS
+
+Currently all images are configured to speak HTTP. To provide HTTPS please run an additional reverse proxy in front of them, which handles certificates and terminates TLS. Alternatively you could derive from our images (or use the advanced configuration methods) to make Apache or nginx provide HTTPS – but please refrain from opening issues asking for support with such a setup.
+
+
 ## Examples
 
 A few example setups using `docker-compose` can be found in our [Github repository](https://github.com/roundcube/roundcubemail-docker/tree/master/examples).
