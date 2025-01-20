@@ -50,7 +50,8 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 By default, the image will use a local SQLite database for storing user account metadata.
 It'll be created inside the container directory `/var/roundcube/db`. In order to persist the database, a volume
-mount should be added to this path. Please note that this option should not be used for production environments.
+mount should be added to this path.
+(For production environments, please assess individually if SQLite is the right database choice.)
 
 ### Connect to a Database
 
