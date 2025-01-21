@@ -43,18 +43,18 @@ jobs:
             target: 'root'
           - variant: 'apache'
             test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail-nonroot:1.6.x-apache,roundcube/roundcubemail-nonroot:1.6.9-apache,roundcube/roundcubemail-nonroot:latest-apache,roundcube/roundcubemail-nonroot:latest
-            test-tag: roundcube/roundcubemail-nonroot:latest-apache
+            docker-tag: roundcube/roundcubemail:1.6.x-apache-nonroot,roundcube/roundcubemail:1.6.9-apache-nonroot,roundcube/roundcubemail:latest-apache-nonroot,roundcube/roundcubemail:latest-nonroot
+            test-tag: roundcube/roundcubemail:latest-apache-nonroot
             target: 'nonroot'
           - variant: 'fpm'
             test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail-nonroot:1.6.x-fpm,roundcube/roundcubemail-nonroot:1.6.9-fpm,roundcube/roundcubemail-nonroot:latest-fpm
-            test-tag: roundcube/roundcubemail-nonroot:latest-fpm
+            docker-tag: roundcube/roundcubemail:1.6.x-fpm-nonroot,roundcube/roundcubemail:1.6.9-fpm-nonroot,roundcube/roundcubemail:latest-fpm-nonroot
+            test-tag: roundcube/roundcubemail:latest-fpm-nonroot
             target: 'nonroot'
           - variant: 'fpm-alpine'
             test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail-nonroot:1.6.x-fpm-alpine,roundcube/roundcubemail-nonroot:1.6.9-fpm-alpine,roundcube/roundcubemail-nonroot:latest-fpm-alpine
-            test-tag: roundcube/roundcubemail-nonroot:latest-fpm-alpine
+            docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine-nonroot,roundcube/roundcubemail:1.6.9-fpm-alpine-nonroot,roundcube/roundcubemail:latest-fpm-alpine-nonroot
+            test-tag: roundcube/roundcubemail:latest-fpm-alpine-nonroot
             target: 'nonroot'
     steps:
       - name: Checkout repository
