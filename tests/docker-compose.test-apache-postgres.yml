@@ -3,6 +3,8 @@ version: "2"
 services:
   roundcubemail:
     image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube/roundcubemail:latest-apache}
+    ports:
+      - 80:${HTTP_PORT:-80}
     healthcheck:
       # To make it obvious in logs "ping=ping" is added
       test: ["CMD", "curl", "--fail", "http://localhost/?ping=ping"]

@@ -33,6 +33,7 @@ jobs:
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:test-apache-nonroot
             target: 'nonroot'
+            http-port: '8000'
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:test-fpm-nonroot
@@ -54,11 +55,12 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
 
-      - name: Build image for "${{ matrix.variant }}"
+      - name: Build image for "${{ matrix.variant }} / ${{ matrix.target }}"
         run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }} --target ${{ matrix.target }}
       - name: Run tests
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
+          HTTP_PORT: ${{ matrix.http-port || '80' }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
