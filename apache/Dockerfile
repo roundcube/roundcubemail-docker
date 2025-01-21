@@ -135,7 +135,11 @@ CMD ["apache2-foreground"]
 FROM root as nonroot
 
 # Prepare locale config for locale-gen
-RUN	echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
 	/usr/sbin/locale-gen
+
+RUN sed -i 's/^Listen 80$/Listen 8000/' /etc/apache2/ports.conf
+
+EXPOSE 8000
 
 USER 33:33
