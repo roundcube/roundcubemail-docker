@@ -31,6 +31,12 @@ for variant in apache fpm fpm-alpine; do
 		s/%%CMD%%/'"${CMD[$variant]}"'/;
 	' $template | tr '¬' '\n' > "$dir/Dockerfile"
 
+	if [[ -f "$dir/nonroot-add.txt" ]]; then
+		sed -i -e '/%%NONROOT_ADD%%/ {' -e 'r '"$dir/nonroot-add.txt" -e 'd' -e '}' $dir/Dockerfile
+	else
+		sed -i 's/%%NONROOT_ADD%%//' $dir/Dockerfile
+	fi
+
 	echo "✓ Wrote $dir/Dockerfile"
 done
 
