@@ -15,6 +15,7 @@ on:
   schedule:
     # Rebuild images each monday early morning to ensure a fresh base OS.
     - cron: "23 2 * * 1"
+  workflow_dispatch:
 
 jobs:
   build-and-testvariants:
