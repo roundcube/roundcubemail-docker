@@ -13,6 +13,7 @@ RUN set -ex; \
 	mv /usr/src/roundcubemail-master /usr/src/roundcubemail; \
 	cd /usr/src/roundcubemail; \
 	rm -rf installer tests .ci .github .gitignore .editorconfig .tx .travis.yml; \
+	[ -f  public_html/installer.php ] && rm -f public_html/installer.php; \
 	make css-elastic; \
 	composer require kolab/net_ldap3 --no-install; \
 	composer require bjeavons/zxcvbn-php --no-install; \
