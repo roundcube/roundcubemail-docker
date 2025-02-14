@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: nightly
-          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/s390x,linux/ppc64le,linux/386,linux/amd64,"
+          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
           push: true
           tags: roundcube/roundcubemail:nightly
           # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
