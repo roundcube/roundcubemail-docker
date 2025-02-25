@@ -8,7 +8,13 @@ LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemai
 RUN apt-get update && apt-get -y upgrade && apt-get clean
 
 RUN set -ex; \
-	if [ "apache" = "apache" ]; then a2enmod rewrite; fi; \
+	if [ "apache" = "apache" ]; then \
+		a2enmod rewrite; \
+		# Make Apache use public_html/ as document root to protect files outside of it \
+		# against unauthorized access. \
+		# This is possible and recommended since a while, and will be required for Roundcubemail v1.7. \
+		sed -i -e 's|\(DocumentRoot /var/www/html\)$|\1/public_html|' /etc/apache2/sites-available/000-default.conf; \
+	fi; \
 	apt-get update; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
