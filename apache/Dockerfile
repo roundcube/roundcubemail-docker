@@ -90,6 +90,9 @@ RUN set -ex; \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Use the default production configuration
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
 # use custom PHP settings
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
