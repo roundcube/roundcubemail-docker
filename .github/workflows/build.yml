@@ -38,6 +38,10 @@ jobs:
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine,roundcube/roundcubemail:1.6.10-fpm-alpine,roundcube/roundcubemail:latest-fpm-alpine
             test-tag: roundcube/roundcubemail:latest-fpm-alpine
+          - variant: 'development'
+            test-files: 'development'
+            docker-tag: roundcube/roundcubemail:development
+            test-tag: roundcube/roundcubemail:development
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
