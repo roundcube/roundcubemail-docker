@@ -1,4 +1,4 @@
-FROM php:8.1-%%VARIANT%%
+FROM php:8.1-%%VARIANT%% as root
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
 
@@ -122,7 +122,22 @@ RUN set -ex; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
 # Create the config dir
-	mkdir -p /var/roundcube/config /var/roundcube/enigma
+	mkdir -p /var/roundcube/config /var/roundcube/enigma; \
+	chown -R www-data:www-data /var/roundcube; \
+	chmod +t /var/roundcube
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["%%CMD%%"]
+
+
+#### non-root stage
+
+FROM root as nonroot
+
+# Prepare locale config for locale-gen
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
+	/usr/sbin/locale-gen
+
+%%NONROOT_ADD%%
+
+USER 33:33

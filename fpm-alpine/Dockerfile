@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.1-fpm-alpine as root
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
 
@@ -110,7 +110,16 @@ RUN set -ex; \
 	rm -rf /usr/src/roundcubemail/installer; \
 	chown -R www-data:www-data /usr/src/roundcubemail/logs; \
 # Create the config dir
-	mkdir -p /var/roundcube/config /var/roundcube/enigma
+	mkdir -p /var/roundcube/config /var/roundcube/enigma; \
+	chown -R www-data:www-data /var/roundcube; \
+	chmod +t /var/roundcube
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["php-fpm"]
+
+
+#### non-root stage
+
+FROM root as nonroot
+
+USER 82:82
