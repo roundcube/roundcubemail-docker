@@ -135,7 +135,9 @@ CMD ["php-fpm"]
 FROM root as nonroot
 
 # Prepare locale config for locale-gen
-RUN	echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
 	/usr/sbin/locale-gen
+
+
 
 USER 33:33
