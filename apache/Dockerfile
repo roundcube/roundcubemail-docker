@@ -139,6 +139,7 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
 	/usr/sbin/locale-gen
 
 RUN sed -i 's/^Listen 80$/Listen 8000/' /etc/apache2/ports.conf
+RUN sed -i /etc/apache2/sites-enabled/000-default.conf -e 's/:80>/:8000>/'
 
 EXPOSE 8000
 
