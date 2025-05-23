@@ -18,6 +18,8 @@ RUN install -d -o www-data -g www-data /var/roundcube
 # Pre-download js dependencies (these don't change much over time).
 ENV CACHEDIR=/var/cache/roundcubemail/jsdeps
 RUN install -o www-data -d "$CACHEDIR"
+# Create NPM's home directory so it can write cache files and logs.
+RUN install -o www-data -d /var/www/.npm
 
 USER www-data
 
