@@ -57,6 +57,10 @@ jobs:
             docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine-nonroot,roundcube/roundcubemail:1.6.11-fpm-alpine-nonroot,roundcube/roundcubemail:latest-fpm-alpine-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm-alpine-nonroot
             target: 'nonroot'
+          - variant: 'development'
+            test-files: 'development'
+            docker-tag: roundcube/roundcubemail:development
+            test-tag: roundcube/roundcubemail:development
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
