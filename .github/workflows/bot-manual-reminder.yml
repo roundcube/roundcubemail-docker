@@ -1,0 +1,18 @@
+name: 'Notify manually requested reminders'
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  reminder:
+    if: github.repository == 'roundcube/roundcubemail-docker'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check reminders and notify
+        uses: agrc/reminder-action@96f2ec2e1a7a53ead156504922e9bc36d64f49ee # v1.0.16

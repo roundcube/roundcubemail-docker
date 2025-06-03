@@ -9,8 +9,6 @@ services:
       - roundcubedb
     links:
       - roundcubedb
-    ports:
-      - 9000:9000
     volumes:
       - ./www:/var/www/html
     environment:
@@ -27,8 +25,6 @@ services:
     image: postgres:latest
     container_name: roundcubedb
     # restart: unless-stopped
-    ports:
-      - 5432:5432
     volumes:
       - ./db/postgres:/var/lib/postgresql/data
     environment:
@@ -42,8 +38,6 @@ services:
     # restart: unless-stopped
     ports:
       - 9009:80
-      # If you need SSL connection
-      # - '443:443'
     depends_on:
       - roundcubemail
     links:
@@ -53,9 +47,6 @@ services:
       - ./nginx/templates:/etc/nginx/templates
       # Provide a custom nginx conf
       # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      # If you need SSL connection, you can provide your own certificates
-      # - ./certs:/etc/letsencrypt
-      # - ./certs-data:/data/letsencrypt
     environment:
       - NGINX_HOST=localhost  # set your local domain or your live domain
       - NGINX_PHP_CGI=roundcubemail:9000  # same as roundcubemail container name

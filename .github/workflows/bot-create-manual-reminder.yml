@@ -1,0 +1,18 @@
+name: 'Create reminder from comment'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  reminder:
+    if: github.repository == 'roundcube/roundcubemail-docker'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 👀 check for reminder
+        uses: agrc/create-reminder-action@9ff30cde74284045941af16a04362938957253b1 # v1.1.17

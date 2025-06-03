@@ -2,10 +2,12 @@ version: "2"
 
 services:
   roundcubemail:
-    image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube-test-apache}
+    image: ${ROUNDCUBEMAIL_TEST_IMAGE:-roundcube/roundcubemail:latest-apache}
+    ports:
+      - 80:${HTTP_PORT:-80}
     healthcheck:
       # To make it obvious in logs "ping=ping" is added
-      test: ["CMD", "curl", "--fail", "http://localhost/?ping=ping"]
+      test: ["CMD", "curl", "--fail", "http://localhost:${HTTP_PORT:-80}/?ping=ping"]
       interval: 2s
       timeout: 3s
       retries: 30
@@ -23,6 +25,7 @@ services:
       - ROUNDCUBEMAIL_DB_NAME=roundcube # same as pgsql POSTGRES_DB env name
       - ROUNDCUBEMAIL_DB_USER=roundcube # same as pgsql POSTGRES_USER env name
       - ROUNDCUBEMAIL_DB_PASSWORD=roundcube # same as pgsql POSTGRES_PASSWORD env name
+      - ROUNDCUBEMAIL_SKIN=larry # Install non-default skin
 
   roundcubedb:
     image: postgres:alpine
@@ -54,6 +57,8 @@ services:
       roundcubedb:
         condition: service_healthy
     command: /tests/run.sh
+    environment:
+      - ROUNDCUBE_URL=http://roundcubemail:${HTTP_PORT:-80}/
     volumes:
       - ./run.sh:/tests/run.sh:ro
     working_dir: /tests

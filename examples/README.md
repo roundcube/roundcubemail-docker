@@ -16,12 +16,12 @@ See [docker-compose-mysql.yaml](./docker-compose-mysql.yaml).
 Directly serves Roundcube webmail via HTTP and connects to a MySQL database container.
 The Roundcube sources and the database files are stored on connected volumes.
 
-## Roundcube served from PHP-FPM via Nginx using a Postrgres DB
+## Roundcube served from PHP-FPM via Nginx using a Postgres DB
 
 See [docker-compose-fpm.yaml](./docker-compose-fpm.yaml) or [docker-compose-fpm-alpine.yaml](./docker-compose-fpm-alpine.yaml).
 
 An Nginx webserver serves Roundcube from a PHP-FPM container via CGI and static files from the shared Roundcube sources.
-A Posrgres database container is used to store Roundcube's session and user data.
+A Postgres database container is used to store Roundcube's session and user data.
 The Roundcube sources and the database files are stored on connected volumes.
 
 ## Installing Roundcube Plugins
