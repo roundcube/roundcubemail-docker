@@ -1,6 +1,11 @@
 FROM php:7.4-fpm-alpine
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
+# This should be done by the upstream images, but as long as they don't do it,
+# we rather use our own hands than suffer from outdated packages.
+# Kept as standalone command to make it stand out and be easy to remove.
+RUN apk upgrade --no-cache
+
 # entrypoint.sh and installto.sh dependencies
 RUN set -ex; \
 	\

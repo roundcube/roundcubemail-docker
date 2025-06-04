@@ -1,6 +1,11 @@
 FROM php:7.4-fpm
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 
+# This should be done by the upstream images, but as long as they don't do it,
+# we rather use our own hands than suffer from outdated packages.
+# Kept as standalone command to make it stand out and be easy to remove.
+RUN apt-get update && apt-get -y upgrade && apt-get clean
+
 RUN set -ex; \
 	apt-get update; \
 	\
