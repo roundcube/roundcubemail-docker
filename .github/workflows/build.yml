@@ -10,6 +10,9 @@ on:
     paths-ignore:
       - 'README.md'
       - 'examples/**'
+      - 'apache-1.5.x/**'
+      - 'fpm-1.5.x/**'
+      - 'fpm-alpine-1.5.x/**'
     tags:
       - '1.6.*'
   schedule:
