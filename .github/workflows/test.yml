@@ -4,14 +4,18 @@ permissions:
   contents: read
 
 on:
-  pull_request: {}
-  push:
-    branches:
-      - '!master'
+  pull_request:
     paths-ignore:
+      - "development/**"
+      - "nightly/**"
+      - "examples/**"
+      - "README.md"
       - apache-1.5.x/**
       - fpm-1.5.x/**
       - fpm-alpine-1.5.x/**
+  push:
+    branches:
+      - '!master'
 
 jobs:
   build-and-testvariants:
