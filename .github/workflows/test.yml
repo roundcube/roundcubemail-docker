@@ -4,10 +4,16 @@ permissions:
   contents: read
 
 on:
-  pull_request: {}
+  pull_request:
+      paths-ignore:
+          - "development/**"
+          - "nightly/**"
+          - "examples/**"
+          - "README.md"
   push:
     branches:
       - '!master'
+
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
