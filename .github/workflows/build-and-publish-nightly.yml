@@ -32,12 +32,11 @@ jobs:
         with:
           buildkitd-flags: --debug
 
-      - name: Build and push nightly image"
+      - name: Build nightly image for tests"
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
         with:
           context: nightly
-          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
-          push: true
+          load: true
           tags: roundcube/roundcubemail:nightly
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -47,3 +46,11 @@ jobs:
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: roundcube/roundcubemail:nightly
         run: docker compose -f ./tests/docker-compose.test-apache-postgres.yml up --exit-code-from=sut --abort-on-container-exit
+
+      - name: Build and push nightly images for all platforms
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: nightly
+          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64"
+          push: true
+          tags: roundcube/roundcubemail:nightly

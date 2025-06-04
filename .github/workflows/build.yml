@@ -89,8 +89,7 @@ jobs:
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
         with:
           context: ${{ matrix.variant }}
-          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
-          push: true
+          load: true
           tags: ${{ matrix.docker-tag }}
           target: ${{ matrix.target }}
           cache-from: type=gha
@@ -108,3 +107,12 @@ jobs:
             docker compose -f ./tests/docker-compose.test-${testFile}.yml \
             up --exit-code-from=sut --abort-on-container-exit
           done
+
+      - name: Build and push images for "${{ matrix.variant }} for all platforms"
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: ${{ matrix.variant }}
+          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
+          push: true
+          tags: ${{ matrix.docker-tag }}
+          target: ${{ matrix.target }}
