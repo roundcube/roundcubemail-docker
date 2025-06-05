@@ -24,6 +24,7 @@ RUN set -ex; \
 		libicu-dev \
 		libjpeg62-turbo-dev \
 		libldap2-dev \
+		libsasl2-dev \
 		libmagickwand-dev \
 		libpng-dev \
 		libpq-dev \
@@ -46,7 +47,7 @@ RUN set -ex; \
 	pecl bundle -d /usr/src/php/ext redis; \
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
 	docker-php-ext-configure gd --with-jpeg --with-freetype; \
-	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch"; \
+	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch" --with-ldap-sasl; \
 	docker-php-ext-install \
 		exif \
 		gd \

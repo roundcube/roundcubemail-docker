@@ -31,6 +31,7 @@ RUN set -ex; \
 		libzip-dev \
 		libtool \
 		openldap-dev \
+		cyrus-sasl-dev \
 		postgresql-dev \
 		sqlite-dev \
 		aspell-dev \
@@ -40,7 +41,7 @@ RUN set -ex; \
 	pecl bundle -d /usr/src/php/ext imagick; \
 	pecl bundle -d /usr/src/php/ext redis; \
 	docker-php-ext-configure gd --with-jpeg --with-freetype; \
-	docker-php-ext-configure ldap; \
+	docker-php-ext-configure ldap --with-ldap-sasl; \
 	docker-php-ext-install \
 		exif \
 		gd \
