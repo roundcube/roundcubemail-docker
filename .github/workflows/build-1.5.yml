@@ -30,8 +30,8 @@ jobs:
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:1.5.x-apache,roundcube/roundcubemail:1.5.10-apache,roundcube/roundcubemail:latest-apache,roundcube/roundcubemail:latest
             test-tag: roundcube/roundcubemail:latest-apache
-          - variant: 'fpm'
-            test-files: 'fpm-postgres-1.5.x'
+          - variant: 'fpm-1.5.x'
+            test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.5.x-fpm,roundcube/roundcubemail:1.5.10-fpm,roundcube/roundcubemail:latest-fpm
             test-tag: roundcube/roundcubemail:latest-fpm
           - variant: 'fpm-alpine-1.5.x'
