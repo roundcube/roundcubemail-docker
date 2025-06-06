@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build & Test 1.5.x
 
 permissions:
   contents: read
@@ -8,10 +8,10 @@ on:
   push:
     branches:
       - '!master'
-    paths-ignore:
+    paths:
       - apache-1.5.x/**
       - fpm-1.5.x/**
-      - fpm-alpine-1.5.x/**
+      - fpm-alpin-1.5.x/**
 
 jobs:
   build-and-testvariants:
@@ -22,31 +22,15 @@ jobs:
       max-parallel: 10
       matrix:
         include:
-          - variant: 'apache'
+          - variant: 'apache-1.5.x'
             test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail:test-apache
-            target: 'root'
-          - variant: 'fpm'
+            docker-tag: roundcube/roundcubemail:test-apache-1.5.x
+          - variant: 'fpm-1.5.x'
             test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:test-fpm
-            target: 'root'
-          - variant: 'fpm-alpine'
+            docker-tag: roundcube/roundcubemail:test-fpm-1.5.x
+          - variant: 'fpm-alpine-1.5.x'
             test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:test-fpm-alpine
-            target: 'root'
-          - variant: 'apache'
-            test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail:test-apache-nonroot
-            target: 'nonroot'
-            http-port: '8000'
-          - variant: 'fpm'
-            test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:test-fpm-nonroot
-            target: 'nonroot'
-          - variant: 'fpm-alpine'
-            test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:test-fpm-alpine-nonroot
-            target: 'nonroot'
+            docker-tag: roundcube/roundcubemail:test-fpm-alpine-1.5.x
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -60,14 +44,14 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
 
-      - name: Build image for "${{ matrix.variant }} / ${{ matrix.target }}"
-        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }} --target ${{ matrix.target }}
+      - name: Build image "${{ matrix.variant }}
+        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }}
       - name: Run tests
-        env:
-          ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
-          HTTP_PORT: ${{ matrix.http-port || '80' }}
         run: |
           set -exu;
+          # Set these here so the values are visible in the logs for debugging.
+          export ROUNDCUBEMAIL_TEST_IMAGE="${{ matrix.docker-tag }}"
+          export HTTP_PORT="${{ matrix.http-port || '80' }}"
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
             docker compose -f ./tests/docker-compose.test-${testFile}.yml \
