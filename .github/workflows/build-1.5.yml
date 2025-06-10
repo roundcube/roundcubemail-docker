@@ -11,6 +11,7 @@ on:
       - 'apache-1.5.x/**'
       - 'fpm-1.5.x/**'
       - 'fpm-alpine-1.5.x/**'
+      - '.github/workflows/*-1.5.yml'
 
   schedule:
     # Rebuild images each monday early morning to ensure a fresh base OS.
