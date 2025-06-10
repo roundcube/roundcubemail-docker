@@ -122,6 +122,6 @@ CMD ["php-fpm"]
 
 #### non-root stage
 
-FROM root as nonroot
+FROM root AS nonroot
 
 USER 82:82

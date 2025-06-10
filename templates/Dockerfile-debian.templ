@@ -134,7 +134,7 @@ CMD ["%%CMD%%"]
 
 #### non-root stage
 
-FROM root as nonroot
+FROM root AS nonroot
 
 # Prepare locale config for locale-gen
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
