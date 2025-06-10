@@ -92,6 +92,8 @@ jobs:
           push: true
           tags: ${{ matrix.docker-tag }}
           target: ${{ matrix.target }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
 
       - name: Run tests
