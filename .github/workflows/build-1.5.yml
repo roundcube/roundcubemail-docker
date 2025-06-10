@@ -66,6 +66,8 @@ jobs:
           push: false
           load: true
           tags: ${{ matrix.docker-tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run tests
         env:
