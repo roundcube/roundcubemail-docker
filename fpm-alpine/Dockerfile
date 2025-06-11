@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine as root
+FROM php:8.1-fpm-alpine3.21 as root
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
 
