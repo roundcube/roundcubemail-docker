@@ -25,28 +25,16 @@ jobs:
           - variant: 'apache'
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:test-apache
-            target: 'root'
+            docker-tag-nonroot: roundcube/roundcubemail:test-apache-nonroot
+            http-port-nonroot: '8000'
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:test-fpm
-            target: 'root'
+            docker-tag-nonroot: roundcube/roundcubemail:test-fpm-nonroot
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:test-fpm-alpine
-            target: 'root'
-          - variant: 'apache'
-            test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail:test-apache-nonroot
-            target: 'nonroot'
-            http-port: '8000'
-          - variant: 'fpm'
-            test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:test-fpm-nonroot
-            target: 'nonroot'
-          - variant: 'fpm-alpine'
-            test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:test-fpm-alpine-nonroot
-            target: 'nonroot'
+            docker-tag-nonroot: roundcube/roundcubemail:test-fpm-alpine-nonroot
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -60,12 +48,40 @@ jobs:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PULL_PASSWORD }}
 
-      - name: Build image for "${{ matrix.variant }} / ${{ matrix.target }}"
-        run: cd ${{ matrix.variant }} && docker buildx build ./ -t ${{ matrix.docker-tag }} --target ${{ matrix.target }}
-      - name: Run tests
+      - name: Build rootful image for "${{ matrix.variant }}"
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: ${{ matrix.variant }}
+          load: true
+          tags: ${{ matrix.docker-tag }}
+          target: root
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Test rootful image
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag }}
-          HTTP_PORT: ${{ matrix.http-port || '80' }}
+          HTTP_PORT: '80'
+        run: |
+          set -exu;
+          for testFile in ${{ join(matrix.test-files, ' ') }};
+          do
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
+            up --exit-code-from=sut --abort-on-container-exit
+          done
+
+      - name: Build nonroot image for "${{ matrix.variant }}"
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: ${{ matrix.variant }}
+          load: true
+          tags: ${{ matrix.docker-tag-nonroot }}
+          target: nonroot
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Test nonroot image
+        env:
+          ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.docker-tag-nonroot }}
+          HTTP_PORT: ${{ matrix.http-port-nonroot || '80' }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};

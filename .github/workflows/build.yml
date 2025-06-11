@@ -33,34 +33,22 @@ jobs:
           - variant: 'apache'
             test-files: 'apache-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-apache,roundcube/roundcubemail:1.6.11-apache,roundcube/roundcubemail:latest-apache,roundcube/roundcubemail:latest
+            docker-tag-nonroot: roundcube/roundcubemail:1.6.x-apache-nonroot,roundcube/roundcubemail:1.6.11-apache-nonroot,roundcube/roundcubemail:latest-apache-nonroot,roundcube/roundcubemail:latest-nonroot
             test-tag: roundcube/roundcubemail:latest-apache
-            target: 'root'
+            test-tag-nonroot: roundcube/roundcubemail:latest-apache-nonroot
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm,roundcube/roundcubemail:1.6.11-fpm,roundcube/roundcubemail:latest-fpm
+            docker-tag-nonroot: roundcube/roundcubemail:1.6.x-fpm-nonroot,roundcube/roundcubemail:1.6.11-fpm-nonroot,roundcube/roundcubemail:latest-fpm-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm
-            target: 'root'
+            test-tag-nonroot: roundcube/roundcubemail:latest-fpm-nonroot
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
             docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine,roundcube/roundcubemail:1.6.11-fpm-alpine,roundcube/roundcubemail:latest-fpm-alpine
+            docker-tag-nonroot: roundcube/roundcubemail:1.6.x-fpm-alpine-nonroot,roundcube/roundcubemail:1.6.11-fpm-alpine-nonroot,roundcube/roundcubemail:latest-fpm-alpine-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm-alpine
+            test-tag-nonroot: roundcube/roundcubemail:latest-fpm-alpine-nonroot
             target: 'root'
-          - variant: 'apache'
-            test-files: 'apache-postgres'
-            docker-tag: roundcube/roundcubemail:1.6.x-apache-nonroot,roundcube/roundcubemail:1.6.11-apache-nonroot,roundcube/roundcubemail:latest-apache-nonroot,roundcube/roundcubemail:latest-nonroot
-            test-tag: roundcube/roundcubemail:latest-apache-nonroot
-            target: 'nonroot'
-            http-port: '8000'
-          - variant: 'fpm'
-            test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:1.6.x-fpm-nonroot,roundcube/roundcubemail:1.6.11-fpm-nonroot,roundcube/roundcubemail:latest-fpm-nonroot
-            test-tag: roundcube/roundcubemail:latest-fpm-nonroot
-            target: 'nonroot'
-          - variant: 'fpm-alpine'
-            test-files: 'fpm-postgres'
-            docker-tag: roundcube/roundcubemail:1.6.x-fpm-alpine-nonroot,roundcube/roundcubemail:1.6.11-fpm-alpine-nonroot,roundcube/roundcubemail:latest-fpm-alpine-nonroot
-            test-tag: roundcube/roundcubemail:latest-fpm-alpine-nonroot
-            target: 'nonroot'
           - variant: 'development'
             test-files: 'development'
             docker-tag: roundcube/roundcubemail:development
@@ -85,21 +73,20 @@ jobs:
         with:
           buildkitd-flags: --debug
 
-      - name: Build and push image for "${{ matrix.variant }} / {{ matrix.target }}"
+      - name: Build rootful image to test for "${{ matrix.variant }}"
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
         with:
           context: ${{ matrix.variant }}
           load: true
           tags: ${{ matrix.docker-tag }}
-          target: ${{ matrix.target }}
+          target: root
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # does not work linux/arm/v5 AND linux/mips64le - composer does not support  mips64le or armv5 nor does the php image support them on the alpine variant
 
-      - name: Run tests
+      - name: Test rootful image for "${{ matrix.variant }}"
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.test-tag }}
-          HTTP_PORT: ${{ matrix.http-port || '80' }}
+          HTTP_PORT: ${{ matrix.http-port-nonroot || '80' }}
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
@@ -108,11 +95,46 @@ jobs:
             up --exit-code-from=sut --abort-on-container-exit
           done
 
-      - name: Build and push images for "${{ matrix.variant }} for all platforms"
+      - name: Build and push rootful images for "${{ matrix.variant }} for all platforms"
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
         with:
           context: ${{ matrix.variant }}
           platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
           push: true
           tags: ${{ matrix.docker-tag }}
-          target: ${{ matrix.target }}
+          target: root
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build nonroot image to test for "${{ matrix.variant }}"
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: ${{ matrix.variant }}
+          load: true
+          tags: ${{ matrix.docker-tag-nonroot }}
+          target: nonroot
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test nonroot image for "${{ matrix.variant }}"
+        env:
+          ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.test-tag-nonroot }}
+          HTTP_PORT: ${{ matrix.http-port-nonroot || '80' }}
+        run: |
+          set -exu;
+          for testFile in ${{ join(matrix.test-files, ' ') }};
+          do
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
+            up --exit-code-from=sut --abort-on-container-exit
+          done
+
+      - name: Build and push nonroot images for "${{ matrix.variant }} for all platforms"
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: ${{ matrix.variant }}
+          platforms: "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64,"
+          push: true
+          tags: ${{ matrix.docker-tag-nonroot }}
+          target: nonroot
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
