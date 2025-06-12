@@ -45,6 +45,7 @@ jobs:
               roundcube/roundcubemail:latest-nonroot
             test-tag: roundcube/roundcubemail:latest-apache
             test-tag-nonroot: roundcube/roundcubemail:latest-apache-nonroot
+            http-port-nonroot: '8000'
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: |
@@ -108,7 +109,7 @@ jobs:
       - name: Test rootful image for "${{ matrix.variant }}"
         env:
           ROUNDCUBEMAIL_TEST_IMAGE: ${{ matrix.test-tag }}
-          HTTP_PORT: ${{ matrix.http-port-nonroot || '80' }}
+          HTTP_PORT: '80'
         run: |
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
