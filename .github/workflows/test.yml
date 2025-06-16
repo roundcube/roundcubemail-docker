@@ -12,6 +12,7 @@ on:
       - apache-1.5.x/**
       - fpm-1.5.x/**
       - fpm-alpine-1.5.x/**
+      - .github/workflows/*-1.5.yml
 
 jobs:
   build-and-testvariants:
