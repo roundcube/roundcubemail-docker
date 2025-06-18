@@ -1,4 +1,4 @@
-FROM php:8.1-apache as root
+FROM php:8.4-apache AS root
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
 
@@ -45,6 +45,7 @@ RUN set -ex; \
 # Extract sources to avoid using pecl (https://github.com/docker-library/php/issues/374#issuecomment-690698974)
 	pecl bundle -d /usr/src/php/ext imagick; \
 	pecl bundle -d /usr/src/php/ext redis; \
+	pecl bundle -d /usr/src/php/ext pspell; \
 	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
 	docker-php-ext-configure gd --with-jpeg --with-freetype; \
 	docker-php-ext-configure ldap --with-libdir="lib/$debMultiarch" --with-ldap-sasl; \
@@ -133,7 +134,7 @@ CMD ["apache2-foreground"]
 
 #### non-root stage
 
-FROM root as nonroot
+FROM root AS nonroot
 
 # Prepare locale config for locale-gen
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen; \
