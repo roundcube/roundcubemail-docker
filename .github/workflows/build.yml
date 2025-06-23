@@ -14,6 +14,8 @@ on:
       - 'fpm-1.5.x/**'
       - 'fpm-alpine-1.5.x/**'
       - '.github/workflows/*-1.5.yml'
+      - 'development/**'
+      - 'nightly/**'
     tags:
       - '1.6.*'
   schedule:
@@ -71,10 +73,6 @@ jobs:
             test-tag: roundcube/roundcubemail:latest-fpm-alpine
             test-tag-nonroot: roundcube/roundcubemail:latest-fpm-alpine-nonroot
             target: 'root'
-          - variant: 'development'
-            test-files: 'development'
-            docker-tag: roundcube/roundcubemail:development
-            test-tag: roundcube/roundcubemail:development
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
