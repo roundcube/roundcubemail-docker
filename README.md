@@ -34,6 +34,8 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_USERNAME_DOMAIN` - Automatically add this domain to user names for login. See [defaults.inc.php](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php) for more information.
 
+`ROUNDCUBEMAIL_MAIL_DOMAIN` - This domain will be used to form e-mail addresses of new users. See [defaults.inc.php](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php) for more information.
+
 `ROUNDCUBEMAIL_REQUEST_PATH` - Specify request path with reverse proxy; defaults to `/`. See [defaults.inc.php](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php) for possible values.
 
 `ROUNDCUBEMAIL_PLUGINS` - List of built-in plugins to activate. Defaults to `archive,zipdownload`
