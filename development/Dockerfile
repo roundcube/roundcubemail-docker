@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 USER root
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends npm git sudo \
+ && apt-get install -y --no-install-recommends npm git sudo sqlite3 \
  && apt-get clean
 
 COPY --chmod=0755 docker-entrypoint.sh /
