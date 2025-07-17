@@ -42,11 +42,11 @@ The following env variables can be set to configure your Roundcube Docker instan
 
 `ROUNDCUBEMAIL_SKIN` - Configures the default theme. Defaults to `elastic`
 
-`ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`
+`ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` - File upload size limit; defaults to `5M`. (*Note: this variable does not work in the `nonroot`-image!*)
 
 `ROUNDCUBEMAIL_SPELLCHECK_URI` - Fully qualified URL to a Google XML spell check API like [google-spell-pspell](https://github.com/roundcube/google-spell-pspell)
 
-`ROUNDCUBEMAIL_ASPELL_DICTS` - List of aspell dictionaries to install for spell checking (comma-separated, e.g. `de,fr,pl`).
+`ROUNDCUBEMAIL_ASPELL_DICTS` - List of aspell dictionaries to install for spell checking (comma-separated, e.g. `de,fr,pl`). (*Note: this variable does not work in the `nonroot`-image!*)
 
 By default, the image will use a local SQLite database for storing user account metadata.
 It'll be created inside the container directory `/var/roundcube/db`. In order to persist the database, a volume
@@ -77,6 +77,15 @@ Run it with a link to the MySQL host and the username/password variables:
 ```sh
 docker run --link=mysql:mysql -d roundcube/roundcubemail
 ```
+
+## Nonroot image
+
+We provide `nonroot`-images that run all processes as a normal user instead of as root. This limits possible damage in case of a mis-configuration or breach.
+
+Not running any process as root disables a few features that require to install packages or write to system files on container start. Specifically you cannot use the environment variables `ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE` and `ROUNDCUBEMAIL_ASPELL_DICTS`.
+
+* To specify a maximum upload filesize, write the required php configuration options into a file and bind-mount that to `/usr/local/etc/php/conf.d/$filename`. See `examples/docker-compose-nonroot.yaml` and `examples/nonroot-custom-php-config.ini` for an example.
+* To install additionall aspell dictionaries you will have to build your own container image on top of ours and install them during the build.
 
 ## Persistent data
 
