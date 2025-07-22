@@ -152,6 +152,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   \$config['imap_host'] = '${ROUNDCUBEMAIL_DEFAULT_HOST}:${ROUNDCUBEMAIL_DEFAULT_PORT}';
   \$config['smtp_host'] = '${ROUNDCUBEMAIL_SMTP_SERVER}:${ROUNDCUBEMAIL_SMTP_PORT}';
   \$config['username_domain'] = '${ROUNDCUBEMAIL_USERNAME_DOMAIN}';
+  \$config['mail_domain'] = '${ROUNDCUBEMAIL_MAIL_DOMAIN}';
   \$config['temp_dir'] = '${ROUNDCUBEMAIL_TEMP_DIR}';
   \$config['skin'] = '${ROUNDCUBEMAIL_SKIN}';
   \$config['request_path'] = '${ROUNDCUBEMAIL_REQUEST_PATH}';
