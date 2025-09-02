@@ -48,6 +48,6 @@ fi
 bin/updatecss.sh
 
 # Initialize or update the database.
-sudo -u www-data bin/initdb.sh --dir=$PWD/SQL --update || echo "Failed to initialize/update the database. Please start with an empty database and restart the container."
+bin/initdb.sh --dir=$PWD/SQL --update || echo "Failed to initialize/update the database. Please start with an empty database and restart the container."
 
 exec apache2-foreground
