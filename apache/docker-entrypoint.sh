@@ -144,6 +144,10 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
     echo "include(__DIR__ . '/config.docker.inc.php');" >> config/config.inc.php
   fi
 
+  if [ ! -e config/defaults.inc.php ]; then
+    wget -P config/ https://raw.githubusercontent.com/roundcube/roundcubemail/refs/heads/master/config/defaults.inc.php
+  fi
+
   ROUNDCUBEMAIL_PLUGINS_PHP=`echo "${ROUNDCUBEMAIL_PLUGINS}" | sed -E "s/[, ]+/', '/g"`
   echo "Write Docker config to $PWD/config/config.docker.inc.php"
   echo "<?php
