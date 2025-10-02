@@ -53,6 +53,7 @@ jobs:
           # Set these here so the values are visible in the logs for debugging.
           export ROUNDCUBEMAIL_TEST_IMAGE="${{ matrix.docker-tag }}"
           export HTTP_PORT="${{ matrix.http-port || '80' }}"
+          export SKIP_POST_SETUP_SCRIPT_TEST="yes"
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
             docker compose -f ./tests/docker-compose.test-${testFile}.yml \

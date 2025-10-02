@@ -21,6 +21,8 @@ services:
           - roundcubemail-fpm
     volumes:
       - www-vol:/var/www/html
+      - "./pre-setup/:/entrypoint-tasks/pre-setup/"
+      - "./post-setup/:/entrypoint-tasks/post-setup/"
     environment:
       - ROUNDCUBEMAIL_DB_TYPE=pgsql
       - ROUNDCUBEMAIL_DB_HOST=roundcubedb # same as pgsql container name
@@ -89,6 +91,7 @@ services:
     working_dir: /tests
     environment:
       ROUNDCUBE_URL: http://roundcubenginx/
+      SKIP_POST_SETUP_SCRIPT_TEST: ${SKIP_POST_SETUP_SCRIPT_TEST:-no}
 networks:
   roundcube_test_net:
 

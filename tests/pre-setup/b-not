@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+# This script should not be run by the entrypoint-script!
+#
+# Create a regular file, so we can check that it doesn't exist in a later running script.
+touch /tmp/shouldnotexist

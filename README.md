@@ -149,6 +149,19 @@ For example:
   ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
 ```
 
+To overwrite the default config of a plugin you might need to use a post-setup script (see below) that moves a custom config file into the plugin's directory.
+
+## Pre-setup and post-setup tasks
+
+In order to execute custom tasks before or after Roundcubemail is set up in the container, you can bind-mount directories to `/entrypoint-tasks/pre-setup/` and `/entrypoint-tasks/post-setup/`. Then all executable files in those directories are executed at the beginning or the end of the actual entrypoint-script, respectively. If an executable exits with a code > 1, the entrypoint script exits, too.
+
+Each executable receives the container's `CMD` as arguments.
+
+They are executed in alphabetical order (the way `bash` understands it in `en_US` locale).
+
+If the Roundcubemail-setup is skipped due to a custom `CMD`, these tasks are skipped as well.
+
+
 ## HTTPS
 
 Currently all images are configured to speak HTTP. To provide HTTPS please run an additional reverse proxy in front of them, which handles certificates and terminates TLS. Alternatively you could derive from our images (or use the advanced configuration methods) to make Apache or nginx provide HTTPS – but please refrain from opening issues asking for support with such a setup.

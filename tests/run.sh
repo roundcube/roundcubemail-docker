@@ -31,4 +31,11 @@ findText 'Login' "${HOMEPAGE_TEXT}"
 findText 'Warning: This webmail service requires Javascript!' "${HOMEPAGE_TEXT}"
 echo 'Homepage is okay'
 
+if test "$SKIP_POST_SETUP_SCRIPT_TEST" != "yes"; then
+    echo 'Checking post-setup-script marker'
+    POST_SETUP_SCRIPT_TEXT=$(curl -s --fail "${ROUNDCUBE_URL}post_setup_script.txt")
+    findText 'yes' "${POST_SETUP_SCRIPT_TEXT}"
+    echo 'post-setup-script marker is ok'
+fi
+
 echo 'End.'
