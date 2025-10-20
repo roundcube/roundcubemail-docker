@@ -14,7 +14,7 @@ findText () {
     return 1
 }
 
-echo 'Installing pckages'
+echo 'Installing packages'
 
 apk add --no-cache --update html2text curl
 
