@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Remove a file we previously created in "a-script.sh". If this fails, there's a problem in the order of script
+# execution.
+rm /tmp/anotherfile
+
+if test -f /tmp/shouldnotexist; then
+   echo "Error: File /tmp/shouldnotexist should not exist but does!"
+   exit 1
+fi

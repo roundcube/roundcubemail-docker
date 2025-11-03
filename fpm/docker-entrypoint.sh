@@ -3,7 +3,36 @@
 
 # PWD=`pwd`
 
+run_entrypoint_tasks() {
+    phase="$1"
+    shift
+    shopt -s nullglob
+    echo "Running $phase-setup tasks:"
+    for file in /entrypoint-tasks/"$phase-setup"/*; do
+        if test ! -f "$file"; then
+            echo "Ignoring $file because it is not a regular file."
+            continue;
+        fi
+        if test ! -x "$file"; then
+            echo "Ignoring $file because it is not executable."
+            continue;
+        fi
+        echo "Running $phase-setup task $file:"
+        "$file" "$@"
+        # Exit in case of an error in an executable.
+        exit_code=$?
+        if test $exit_code -ne 0; then
+            echo "The task exited with code $exit_code, thus the entrypoint script is exiting, too!"
+            exit $exit_code
+        fi
+        echo 'Done.'
+    done
+    shopt -u nullglob
+}
+
 if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
+  run_entrypoint_tasks pre "$@"
+
   INSTALLDIR=`pwd`
   # docroot is empty
   if ! [ -e index.php -a -e bin/installto.sh ]; then
@@ -207,6 +236,7 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
     which apk && apk add --no-cache $ASPELL_PACKAGES
   fi
 
+  run_entrypoint_tasks post "$@"
 fi
 
 exec "$@"

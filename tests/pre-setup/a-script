@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+touch /tmp/something
+touch /tmp/anotherfile

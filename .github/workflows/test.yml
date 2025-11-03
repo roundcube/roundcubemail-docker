@@ -70,8 +70,8 @@ jobs:
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
-            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
-            up --exit-code-from=sut --abort-on-container-exit
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml down -v
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml up --exit-code-from=sut --abort-on-container-exit
           done
 
       - name: Build nonroot image for "${{ matrix.variant }}"
@@ -91,6 +91,6 @@ jobs:
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
-            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
-            up --exit-code-from=sut --abort-on-container-exit
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml down -v
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml up --exit-code-from=sut --abort-on-container-exit
           done
