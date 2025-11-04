@@ -112,8 +112,8 @@ jobs:
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
-            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
-            up --exit-code-from=sut --abort-on-container-exit
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml down -v
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml up --exit-code-from=sut --abort-on-container-exit
           done
 
       # Only log into docker now, so we benefit from the automatic caching of upstream images.
@@ -156,8 +156,8 @@ jobs:
           set -exu;
           for testFile in ${{ join(matrix.test-files, ' ') }};
           do
-            docker compose -f ./tests/docker-compose.test-${testFile}.yml \
-            up --exit-code-from=sut --abort-on-container-exit
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml down -v
+            docker compose -f ./tests/docker-compose.test-${testFile}.yml up --exit-code-from=sut --abort-on-container-exit
           done
 
       - name: Build and push nonroot images for "${{ matrix.variant }} for all platforms"
