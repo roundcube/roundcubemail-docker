@@ -4,7 +4,7 @@ services:
     container_name: roundcubemail
     volumes:
       - ./db/sqlite:/var/roundcube/db
-      - ./nonroot-custom-php-config.ini:/usr/local/etc/php/conf.d/nonroot-custom-php-config.ini
+      - ./nonroot-custom-php-config.ini:/usr/local/etc/php/conf.d/zzz-nonroot-custom-php-config.ini
     ports:
       - 9003:8000
     environment:
