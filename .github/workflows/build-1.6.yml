@@ -7,17 +7,13 @@ on:
   push:
     branches:
       - 'master'
-    paths-ignore:
-      - 'README.md'
-      - 'examples/**'
+    paths:
       - 'apache-1.6.x/**'
       - 'fpm-1.6.x/**'
       - 'fpm-alpine-1.6.x/**'
       - '.github/workflows/*-1.6.yml'
-      - 'development/**'
-      - 'nightly/**'
     tags:
-      - '1.7.*'
+      - '1.6.*'
   schedule:
     # Rebuild images each monday early morning to ensure a fresh base OS.
     - cron: "23 2 * * 1"
@@ -36,13 +32,13 @@ jobs:
           - variant: 'apache'
             test-files: 'apache-postgres'
             docker-tag: |
-              roundcube/roundcubemail:1.7.x-apache
-              roundcube/roundcubemail:1.7.0-apache
+              roundcube/roundcubemail:1.6.x-apache
+              roundcube/roundcubemail:1.6.15-apache
               roundcube/roundcubemail:latest-apache
               roundcube/roundcubemail:latest
             docker-tag-nonroot: |
-              roundcube/roundcubemail:1.7.x-apache-nonroot
-              roundcube/roundcubemail:1.7.0-apache-nonroot
+              roundcube/roundcubemail:1.6.x-apache-nonroot
+              roundcube/roundcubemail:1.6.15-apache-nonroot
               roundcube/roundcubemail:latest-apache-nonroot
               roundcube/roundcubemail:latest-nonroot
             test-tag: roundcube/roundcubemail:latest-apache
@@ -51,24 +47,24 @@ jobs:
           - variant: 'fpm'
             test-files: 'fpm-postgres'
             docker-tag: |
-              roundcube/roundcubemail:1.7.x-fpm
-              roundcube/roundcubemail:1.7.0-fpm
+              roundcube/roundcubemail:1.6.x-fpm
+              roundcube/roundcubemail:1.6.15-fpm
               roundcube/roundcubemail:latest-fpm
             docker-tag-nonroot: |
-              roundcube/roundcubemail:1.7.x-fpm-nonroot
-              roundcube/roundcubemail:1.7.0-fpm-nonroot
+              roundcube/roundcubemail:1.6.x-fpm-nonroot
+              roundcube/roundcubemail:1.6.15-fpm-nonroot
               roundcube/roundcubemail:latest-fpm-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm
             test-tag-nonroot: roundcube/roundcubemail:latest-fpm-nonroot
           - variant: 'fpm-alpine'
             test-files: 'fpm-postgres'
             docker-tag: |
-              roundcube/roundcubemail:1.7.x-fpm-alpine
-              roundcube/roundcubemail:1.7.0-fpm-alpine
+              roundcube/roundcubemail:1.6.x-fpm-alpine
+              roundcube/roundcubemail:1.6.15-fpm-alpine
               roundcube/roundcubemail:latest-fpm-alpine
             docker-tag-nonroot: |
-              roundcube/roundcubemail:1.7.x-fpm-alpine-nonroot
-              roundcube/roundcubemail:1.7.0-fpm-alpine-nonroot
+              roundcube/roundcubemail:1.6.x-fpm-alpine-nonroot
+              roundcube/roundcubemail:1.6.15-fpm-alpine-nonroot
               roundcube/roundcubemail:latest-fpm-alpine-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm-alpine
             test-tag-nonroot: roundcube/roundcubemail:latest-fpm-alpine-nonroot

@@ -5,12 +5,7 @@ permissions:
 
 on:
   pull_request:
-    paths-ignore:
-      - "development/**"
-      - .github/workflows/*-development.yml
-      - "nightly/**"
-      - "examples/**"
-      - "README.md"
+    paths:
       - apache-1.6.x/**
       - fpm-1.6.x/**
       - fpm-alpine-1.6.x/**
