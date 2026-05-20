@@ -13,10 +13,11 @@ declare -A BASE=(
 	[fpm-alpine]='alpine'
 )
 
-VERSION="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
+VERSION_STABLE="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
+VERSION_LTS="${1:-$(curl -fLsS https://raw.githubusercontent.com/roundcube/roundcube.github.com/refs/heads/master/_data/downloads.json | yq '.lts.packages[0].version')}"
 
 #set -x
-echo "Generating files for version $VERSION..."
+echo "Generating files for stable version $VERSION_STABLE..."
 
 for variant in apache fpm fpm-alpine; do
 	dir="$variant"
@@ -27,7 +28,7 @@ for variant in apache fpm fpm-alpine; do
 	cp templates/php.ini "$dir/php.ini"
 	sed -E -e '
 		s/%%VARIANT%%/'"$variant"'/;
-		s/%%VERSION%%/'"$VERSION"'/;
+		s/%%VERSION%%/'"$VERSION_STABLE"'/;
 		s/%%CMD%%/'"${CMD[$variant]}"'/;
 	' $template | tr '¬' '\n' > "$dir/Dockerfile"
 
@@ -42,7 +43,7 @@ done
 
 # Use perl to avoid problems with BSD vs. GNU sed, which have incompatible
 # argument syntax for editing files in-place.
-perl -pi -e "s/1\.[0-9]\.[0-9]+-/${VERSION}-/" .github/workflows/build.yml
-echo "Updating version in build.yml workflow"
+perl -pi -e "s/version: \['1\.[0-9]\.[0-9]+',\s*'1\.[0-9]\.[0-9]+'\]/version: ['${VERSION_STABLE}', '${VERSION_LTS}']/" .github/workflows/build.yml
+echo "Updating version numbers in build.yml workflow"
 
 echo "Done."
