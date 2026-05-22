@@ -9,8 +9,9 @@ services:
       - roundcubedb
     links:
       - roundcubedb
-    volumes:
-      - ./www:/var/www/html
+    #volumes:
+    #  - ./data/config/:/var/roundcube/config
+    #  - ./data/plugins:/var/www/html/plugins
     environment:
       - ROUNDCUBEMAIL_DB_TYPE=pgsql
       - ROUNDCUBEMAIL_DB_HOST=roundcubedb # same as pgsql container name
@@ -43,7 +44,6 @@ services:
     links:
       - roundcubemail
     volumes:
-      - ./www:/var/www/html
       - ./nginx/templates:/etc/nginx/templates
       # Provide a custom nginx conf
       # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
