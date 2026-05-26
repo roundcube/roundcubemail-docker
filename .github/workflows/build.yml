@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 jobs:
   build-and-testvariants:
-    name: Build image variants and run tests
+    name: Build, test and push all image variants
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
