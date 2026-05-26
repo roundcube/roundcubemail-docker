@@ -29,11 +29,11 @@ jobs:
       max-parallel: 10
       matrix:
         variant: ['apache', 'fpm', 'fpm-alpine']
-        version: ['1.7.0', '1.6.15']
+        version: ['1.7.1', '1.6.16']
         target: ['root', 'nonroot']
         include:
           - variant: apache
-            version: '1.7.0'
+            version: '1.7.1'
             tag_as_latest_arg: "--tag-as-latest"
     steps:
       - name: Checkout repository
