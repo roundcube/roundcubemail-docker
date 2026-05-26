@@ -14,7 +14,7 @@ declare -A BASE=(
 )
 
 VERSION_STABLE="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
-VERSION_LTS="${1:-$(curl -fLsS https://raw.githubusercontent.com/roundcube/roundcube.github.com/refs/heads/master/_data/downloads.json | yq '.lts.packages[0].version')}"
+VERSION_LTS="${2:-$(curl -fLsS https://raw.githubusercontent.com/roundcube/roundcube.github.com/refs/heads/master/_data/downloads.json | yq '.lts.packages[0].version')}"
 
 if test -z "$VERSION_STABLE" -o -z "$VERSION_LTS"; then
 	echo "Failed to get version numbers, cancelling this script run."
