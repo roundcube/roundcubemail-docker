@@ -3,6 +3,8 @@ services:
     image: roundcube/roundcubemail:latest-nonroot
     container_name: roundcubemail
     volumes:
+    #  - ./data/config/:/var/roundcube/config
+    #  - ./data/plugins:/var/www/html/plugins
       - ./db/sqlite:/var/roundcube/db
       - ./nonroot-custom-php-config.ini:/usr/local/etc/php/conf.d/zzz-nonroot-custom-php-config.ini
     ports:

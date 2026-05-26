@@ -19,8 +19,9 @@ services:
       - roundcubedb
     links:
       - roundcubedb
-    volumes:
-      - ./www:/var/www/html
+    #volumes:
+    #  - ./data/config/:/var/roundcube/config
+    #  - ./data/plugins:/var/www/html/plugins
     ports:
       - 9001:80
     environment:

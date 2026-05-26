@@ -5,9 +5,9 @@ services:
     image: roundcube/roundcubemail:latest
     container_name: roundcubemail
 #    restart: unless-stopped
-    volumes:
-      - ./www:/var/www/html
-      - ./db/sqlite:/var/roundcube/db
+    #volumes:
+    #  - ./data/config/:/var/roundcube/config
+    #  - ./data/plugins:/var/www/html/plugins
     ports:
       - 9002:80
     environment:
