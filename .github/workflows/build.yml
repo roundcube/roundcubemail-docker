@@ -68,4 +68,4 @@ jobs:
           password: ${{ secrets.DOCKER_PUSH_PASSWORD }}
       - name: Build and push "${{ matrix.version }}" "${{ matrix.variant }} "${{ matrix.target }}"
         run: |
-          ./build-image.sh --variant "${{ matrix.variant }}" --version "${{ matrix.version }}" --target "${{ matrix.target }}" ${{ matrix.tag_as_latest_arg }} --platforms "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64" --push
+          ./build-image.sh --variant "${{ matrix.variant }}" --version "${{ matrix.version }}" --target "${{ matrix.target }}" ${{ matrix.tag_as_latest_arg }} --platform "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64" --push
