@@ -1,5 +1,6 @@
 #!/bin/bash
-# set -eu
+
+set -eu
 
 declare -A CMD=(
 	[apache]='apache2-foreground'
@@ -13,10 +14,16 @@ declare -A BASE=(
 	[fpm-alpine]='alpine'
 )
 
-VERSION="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
+VERSION_STABLE="${1:-$(curl -fsS https://roundcube.net/VERSION.txt)}"
+VERSION_LTS="${2:-$(curl -fLsS https://raw.githubusercontent.com/roundcube/roundcube.github.com/refs/heads/master/_data/downloads.json | yq '.lts.packages[0].version')}"
+
+if test -z "$VERSION_STABLE" -o -z "$VERSION_LTS"; then
+	echo "Failed to get version numbers, cancelling this script run."
+	exit 1
+fi
 
 #set -x
-echo "Generating files for version $VERSION..."
+echo "Generating files for stable version $VERSION_STABLE..."
 
 for variant in apache fpm fpm-alpine; do
 	dir="$variant"
@@ -27,7 +34,7 @@ for variant in apache fpm fpm-alpine; do
 	cp templates/php.ini "$dir/php.ini"
 	sed -E -e '
 		s/%%VARIANT%%/'"$variant"'/;
-		s/%%VERSION%%/'"$VERSION"'/;
+		s/%%VERSION%%/'"$VERSION_STABLE"'/;
 		s/%%CMD%%/'"${CMD[$variant]}"'/;
 	' $template | tr '¬' '\n' > "$dir/Dockerfile"
 
@@ -40,9 +47,10 @@ for variant in apache fpm fpm-alpine; do
 	echo "✓ Wrote $dir/Dockerfile"
 done
 
-# Use perl to avoid problems with BSD vs. GNU sed, which have incompatible
-# argument syntax for editing files in-place.
-perl -pi -e "s/1\.[0-9]\.[0-9]+-/${VERSION}-/" .github/workflows/build.yml
-echo "Updating version in build.yml workflow"
+export VERSION_STABLE VERSION_LTS
+yq -i '.jobs.build-and-testvariants.strategy.matrix.version = [strenv(VERSION_STABLE), strenv(VERSION_LTS)]' .github/workflows/test.yml
+yq -i '.jobs.build-and-testvariants.strategy.matrix.version = [strenv(VERSION_STABLE), strenv(VERSION_LTS)]' .github/workflows/build.yml
+yq -i '.jobs.build-and-testvariants.strategy.matrix.include[0].version = strenv(VERSION_STABLE)' .github/workflows/build.yml
+echo "Updated version numbers in build.yml and test.yml workflows"
 
 echo "Done."
