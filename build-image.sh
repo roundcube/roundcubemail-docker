@@ -121,5 +121,7 @@ fi
 
 if test "$push" = 'yes'; then
     # Push all the images with all the tags
-    docker push --all-tags "${main_image_ref}"
+    for tag in ${image_tags[@]}; do
+        docker push "${image_name}:${tag}"
+    done
 fi
