@@ -105,7 +105,7 @@ if test -n "$platforms"; then
 fi
 
 # Build image
-docker buildx build ${args[*]} $variant
+docker buildx build --load ${args[*]} $variant
 
 if test "$run_tests" = 'yes'; then
     # Test the native image.
