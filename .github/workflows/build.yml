@@ -1,8 +1,6 @@
 name: Build & Publish
-
 permissions:
   contents: read
-
 on:
   push:
     branches:
@@ -19,7 +17,6 @@ on:
     # Rebuild images each monday early morning to ensure a fresh base OS.
     - cron: "23 2 * * 1"
   workflow_dispatch:
-
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
@@ -55,11 +52,9 @@ jobs:
         uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
         with:
           buildkitd-flags: --debug
-
       - name: Build and test "${{ matrix.version }}" "${{ matrix.variant }} "${{ matrix.target }}"
         run: |
           ./build-image.sh --variant "${{ matrix.variant }}" --version "${{ matrix.version }}" --target "${{ matrix.target }}" --run-tests
-
       # Only log into docker now, so we benefit from the automatic caching of upstream images. (Apparently we
       # can only benefit from cached upstream images if the job is not authenticated.)
       - name: Get docker hub username
@@ -71,7 +66,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PUSH_PASSWORD }}
-
       - name: Build and push "${{ matrix.version }}" "${{ matrix.variant }} "${{ matrix.target }}"
         run: |
           ./build-image.sh --variant "${{ matrix.variant }}" --version "${{ matrix.version }}" --target "${{ matrix.target }}" ${{ matrix.tag_as_latest_arg }} --platforms "linux/arm64,linux/arm/v6,linux/arm/v7,linux/386,linux/amd64" --push

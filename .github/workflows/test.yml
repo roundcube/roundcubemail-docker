@@ -1,8 +1,6 @@
 name: Build & Test
-
 permissions:
   contents: read
-
 on:
   pull_request:
     paths-ignore:
@@ -11,7 +9,6 @@ on:
       - "nightly/**"
       - "examples/**"
       - "README.md"
-
 jobs:
   build-and-testvariants:
     name: Build image variants and run tests
