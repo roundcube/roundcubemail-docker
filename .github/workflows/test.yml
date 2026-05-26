@@ -28,13 +28,12 @@ jobs:
         uses: docker/setup-docker-action@efe9e3891a4f7307e689f2100b33a155b900a608 # v4.5.0
         with:
           daemon-config: |
-           {
-             "debug": true,
-             "features": {
-               "containerd-snapshotter": true
-             }
-           }
-
+            {
+              "debug": true,
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
       - name: Build and test "${{ matrix.version }}" "${{ matrix.variant }} "${{ matrix.target }}"
         run: |
           ./build-image.sh --variant "${{ matrix.variant }}" --version "${{ matrix.version }}" --target "${{ matrix.target }}" --run-tests
