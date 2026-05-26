@@ -15,6 +15,8 @@ push=no
 platforms=''
 run_tests=no
 tag_suffix=''
+variant=""
+version=""
 
 while [[ $# -gt 0 ]]; do
     ARG="$1"
