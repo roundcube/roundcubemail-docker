@@ -1,5 +1,6 @@
 #!/bin/bash
-# set -eu
+
+set -eu
 
 declare -A CMD=(
 	[apache]='apache2-foreground'
