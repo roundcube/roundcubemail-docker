@@ -3,8 +3,8 @@
 set -eu
 
 usage() {
-    echo "Usage $(basename $0) [--tag-as-latest] [--run-tests] [--push] [--target root|nonroot] [--platforms PLATFORM,…] --variant VARIANT --version VERSION"
-    echo "E.g.:  $(basename $0) --variant apache --version 1.7.0 --tag-as-latest --platforms x86_64,arm64 --push"
+    echo "Usage $(basename $0) [--tag-as-latest] [--run-tests] [--push] [--target root|nonroot] [--platform PLATFORM,…] --variant VARIANT --version VERSION"
+    echo "E.g.:  $(basename $0) --variant apache --version 1.7.0 --tag-as-latest --platform x86_64,arm64 --push"
     echo "Or:    $(basename $0) --variant fpm --version 1.2.3 --target nonroot --run-tests"
     exit 1
 }
@@ -12,7 +12,7 @@ usage() {
 tag_as_latest=no
 target=root
 push=no
-platforms=''
+platform=''
 run_tests=no
 tag_suffix=''
 variant=""
@@ -40,8 +40,8 @@ while [[ $# -gt 0 ]]; do
             target="$1"
             shift
             ;;
-        --platforms)
-            platforms="$1"
+        --platform)
+            platform="$1"
             shift
             ;;
         --push)
@@ -100,8 +100,8 @@ done
 
 set -eu
 
-if test -n "$platforms"; then
-    args+=("--platforms ${platforms}")
+if test -n "$platform"; then
+    args+=("--platform ${platform}")
 fi
 
 # Build image
