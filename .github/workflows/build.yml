@@ -37,12 +37,12 @@ jobs:
             test-files: 'apache-postgres'
             docker-tag: |
               roundcube/roundcubemail:1.7.x-apache
-              roundcube/roundcubemail:1.7.0-apache
+              roundcube/roundcubemail:1.7.1-apache
               roundcube/roundcubemail:latest-apache
               roundcube/roundcubemail:latest
             docker-tag-nonroot: |
               roundcube/roundcubemail:1.7.x-apache-nonroot
-              roundcube/roundcubemail:1.7.0-apache-nonroot
+              roundcube/roundcubemail:1.7.1-apache-nonroot
               roundcube/roundcubemail:latest-apache-nonroot
               roundcube/roundcubemail:latest-nonroot
             test-tag: roundcube/roundcubemail:latest-apache
@@ -52,11 +52,11 @@ jobs:
             test-files: 'fpm-postgres'
             docker-tag: |
               roundcube/roundcubemail:1.7.x-fpm
-              roundcube/roundcubemail:1.7.0-fpm
+              roundcube/roundcubemail:1.7.1-fpm
               roundcube/roundcubemail:latest-fpm
             docker-tag-nonroot: |
               roundcube/roundcubemail:1.7.x-fpm-nonroot
-              roundcube/roundcubemail:1.7.0-fpm-nonroot
+              roundcube/roundcubemail:1.7.1-fpm-nonroot
               roundcube/roundcubemail:latest-fpm-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm
             test-tag-nonroot: roundcube/roundcubemail:latest-fpm-nonroot
@@ -64,11 +64,11 @@ jobs:
             test-files: 'fpm-postgres'
             docker-tag: |
               roundcube/roundcubemail:1.7.x-fpm-alpine
-              roundcube/roundcubemail:1.7.0-fpm-alpine
+              roundcube/roundcubemail:1.7.1-fpm-alpine
               roundcube/roundcubemail:latest-fpm-alpine
             docker-tag-nonroot: |
               roundcube/roundcubemail:1.7.x-fpm-alpine-nonroot
-              roundcube/roundcubemail:1.7.0-fpm-alpine-nonroot
+              roundcube/roundcubemail:1.7.1-fpm-alpine-nonroot
               roundcube/roundcubemail:latest-fpm-alpine-nonroot
             test-tag: roundcube/roundcubemail:latest-fpm-alpine
             test-tag-nonroot: roundcube/roundcubemail:latest-fpm-alpine-nonroot
