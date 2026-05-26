@@ -47,9 +47,10 @@ for variant in apache fpm fpm-alpine; do
 	echo "✓ Wrote $dir/Dockerfile"
 done
 
-# Use perl to avoid problems with BSD vs. GNU sed, which have incompatible
-# argument syntax for editing files in-place.
-perl -pi -e "s/version: \['1\.[0-9]\.[0-9]+',\s*'1\.[0-9]\.[0-9]+'\]/version: ['${VERSION_STABLE}', '${VERSION_LTS}']/" .github/workflows/build.yml
-echo "Updating version numbers in build.yml workflow"
+export VERSION_STABLE VERSION_LTS
+yq -i '.jobs.build-and-testvariants.strategy.matrix.version = [strenv(VERSION_STABLE), strenv(VERSION_LTS)]' .github/workflows/test.yml
+yq -i '.jobs.build-and-testvariants.strategy.matrix.version = [strenv(VERSION_STABLE), strenv(VERSION_LTS)]' .github/workflows/build.yml
+yq -i '.jobs.build-and-testvariants.strategy.matrix.include[0].version = strenv(VERSION_STABLE)' .github/workflows/build.yml
+echo "Updated version numbers in build.yml and test.yml workflows"
 
 echo "Done."
