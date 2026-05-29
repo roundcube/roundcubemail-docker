@@ -105,7 +105,7 @@ if test -n "$platform"; then
 fi
 
 # Build image
-docker buildx build --load ${args[*]} $variant
+echo docker buildx build --load ${args[*]} $variant
 
 if test "$run_tests" = 'yes'; then
     # Test the native image.
@@ -116,12 +116,12 @@ if test "$run_tests" = 'yes'; then
     fi
     export ROUNDCUBEMAIL_TEST_IMAGE=${main_image_ref}
     export HTTP_PORT=${http_port}
-    docker compose -f ./tests/docker-compose.test-${test_file_name_suffix}.yml up --exit-code-from=sut --abort-on-container-exit
+    echo docker compose -f ./tests/docker-compose.test-${test_file_name_suffix}.yml up --exit-code-from=sut --abort-on-container-exit
 fi
 
 if test "$push" = 'yes'; then
     # Push all the images with all the tags
     for tag in ${image_tags[@]}; do
-        docker push "${image_name}:${tag}"
+        echo docker push "${image_name}:${tag}"
     done
 fi
