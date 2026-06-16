@@ -1,0 +1,15 @@
+---
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      # Do updates once per week (on Monday)
+      interval: "weekly"
+    groups:
+      # Make sure that a single PR is created for all GH Action updates.
+      # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
+      ci:
+        patterns:
+          - "*"
