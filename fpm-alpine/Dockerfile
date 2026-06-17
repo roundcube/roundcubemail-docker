@@ -1,6 +1,16 @@
 FROM php:8.4-fpm-alpine3.21 AS root
+
+# Define Roundcubemail version
+# Use an ARG to make it overwritable from a build argument and not leak into the container runtime
+# environment.
+ARG ROUNDCUBEMAIL_VERSION=1.7.1
+
+# Define the GPG key used for the bundle verification process
+ARG ROUNDCUBEMAIL_KEYID="F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
+
 LABEL maintainer="Thomas Bruederli <thomas@roundcube.net>"
 LABEL org.opencontainers.image.source="https://github.com/roundcube/roundcubemail-docker"
+LABEL org.opencontainers.image.version="${ROUNDCUBEMAIL_VERSION}"
 
 # This should be done by the upstream images, but as long as they don't do it,
 # we rather use our own hands than suffer from outdated packages.
@@ -86,14 +96,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY php.ini /usr/local/etc/php/conf.d/roundcube-defaults.ini
 
 COPY --chmod=0755 docker-entrypoint.sh /
-
-# Define Roundcubemail version
-# Use an ARG to make it overwritable from a build argument and not leak into the container runtime
-# environment.
-ARG ROUNDCUBEMAIL_VERSION=1.7.1
-
-# Define the GPG key used for the bundle verification process
-ARG ROUNDCUBEMAIL_KEYID="F3E4 C04B B3DB 5D42 15C4  5F7F 5AB2 BAA1 41C4 F7D5"
 
 # Download package and extract to web volume
 RUN set -ex; \
