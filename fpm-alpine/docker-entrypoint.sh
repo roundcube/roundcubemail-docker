@@ -36,11 +36,13 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   INSTALLDIR=`pwd`
   # docroot is empty
   if ! [ -e index.php -a -e bin/installto.sh ]; then
-    echo >&2 "roundcubemail not found in $PWD - copying now..."
-    if [ "$(ls -A)" ]; then
-      echo >&2 "WARNING: $PWD is not empty - press Ctrl+C now if this is an error!"
-      ( set -x; ls -A; sleep 10 )
+    if [ -z "${SKIP_CHECK_EMPTY_DOCROOT}" ]; then
+      if find . -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
+        echo >&2 "ERROR: $PWD is not empty; export SKIP_CHECK_EMPTY_DOCROOT=yes to ignore this"
+        exit 1
+      fi
     fi
+    echo >&2 "roundcubemail not found in $PWD - copying now..."
     tar cf - --one-file-system -C /usr/src/roundcubemail . | tar xf -
     echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $INSTALLDIR"
   # update Roundcube in docroot
