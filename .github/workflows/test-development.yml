@@ -16,15 +16,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Build development image for tests"
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
         with:
-          context: development
-          load: true
-          tags: roundcube/roundcubemail:development
+          buildkitd-flags: --debug
 
-      - name: Test built image
-        env:
-          ROUNDCUBEMAIL_TEST_IMAGE: roundcube/roundcubemail:development
-        run: ./development/test.sh
+      - name: Build and test development image
+        run: ./development/build-and-test.sh
