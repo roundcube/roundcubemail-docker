@@ -3,6 +3,47 @@
 
 # PWD=`pwd`
 
+check_empty_docroot() {
+    local dirty_docroot_timeout=60
+
+    # check if ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT is valid
+    case "$(echo "${ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT}" | tr '[:upper:]' '[:lower:]')" in
+        yes|y|true|t|on|1)
+            # valid and truish: nothing to do
+            return 0
+            ;;
+        no|n|false|f|off|0|"")
+            # valid and either falsish or unset: proceed to the test
+            ;;
+        *)
+            # invalid; proceed
+            cat >&2 <<EOF
+NOTE: ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT should either be 'yes' or 'no'
+EOF
+            ;;
+    esac
+    if find . -mindepth 1 -maxdepth 1 -print -quit | grep -q .; then
+        # non-empty docroot
+        if [ -z "${ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT}" ]; then
+            cat >&2 <<EOF
+WARNING: '$PWD' is not empty
+NOTE: set ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT to 'no' to stop immediately.
+      set ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT to 'yes' to proceed immediately.
+NOTE: press Ctrl+C within ${dirty_docroot_timeout} seconds if this is an error!
+
+EOF
+            ( set -x; ls -A )
+            sleep "${dirty_docroot_timeout}"
+        else
+            cat >&2 <<EOF
+ERROR: $PWD is not empty
+NOTE: set ROUNDCUBEMAIL_ALLOW_DIRTY_DOCROOT to 'yes' to ignore this.
+EOF
+            exit 1
+        fi
+    fi
+}
+
 run_entrypoint_tasks() {
     phase="$1"
     shift
@@ -37,10 +78,9 @@ if  [[ "$1" == apache2* || "$1" == php-fpm || "$1" == bin* ]]; then
   # docroot is empty
   if ! [ -e index.php -a -e bin/installto.sh ]; then
     echo >&2 "roundcubemail not found in $PWD - copying now..."
-    if [ "$(ls -A)" ]; then
-      echo >&2 "WARNING: $PWD is not empty - press Ctrl+C now if this is an error!"
-      ( set -x; ls -A; sleep 10 )
-    fi
+
+    check_empty_docroot
+
     tar cf - --one-file-system -C /usr/src/roundcubemail . | tar xf -
     echo >&2 "Complete! ROUNDCUBEMAIL has been successfully copied to $INSTALLDIR"
   # update Roundcube in docroot
