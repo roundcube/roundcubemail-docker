@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine AS root
+FROM php:8.4-fpm-alpine3.21 AS root
 
 # Define Roundcubemail version
 # Use an ARG to make it overwritable from a build argument and not leak into the container runtime
