@@ -1,4 +1,4 @@
-FROM php:8.4-apache AS root
+FROM php:8.4.27-apache AS root
 
 # Define Roundcubemail version
 # Use an ARG to make it overwritable from a build argument and not leak into the container runtime
