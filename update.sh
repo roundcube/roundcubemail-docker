@@ -10,8 +10,36 @@ if test -z "$VERSION_STABLE" -o -z "$VERSION_LTS"; then
 	exit 1
 fi
 
+# Resolve the latest stable release tag (X.Y.Z) of a GitHub repository.
+latest_github_tag() {
+	git ls-remote --tags --refs "https://github.com/$1.git" \
+		| sed -e 's|.*refs/tags/||' \
+		| grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
+		| sort -V \
+		| tail -n 1
+}
+
+# Compute the sha256 checksum of a GitHub tag's source tarball.
+github_tag_sha256() {
+	curl -fsSL "https://github.com/$1/archive/refs/tags/$2.tar.gz" | sha256sum | cut -d' ' -f1
+}
+
+# PHP extensions not bundled with PHP. Versions can be pinned via environment variables.
+IMAGICK_VERSION="${IMAGICK_VERSION:-$(latest_github_tag Imagick/imagick)}"
+REDIS_VERSION="${REDIS_VERSION:-$(latest_github_tag phpredis/phpredis)}"
+PSPELL_VERSION="${PSPELL_VERSION:-$(latest_github_tag php/pecl-text-pspell)}"
+
+if test -z "$IMAGICK_VERSION" -o -z "$REDIS_VERSION" -o -z "$PSPELL_VERSION"; then
+	echo "Failed to get PHP extension version numbers, cancelling this script run."
+	exit 1
+fi
+
+IMAGICK_SHA256="$(github_tag_sha256 Imagick/imagick "$IMAGICK_VERSION")"
+REDIS_SHA256="$(github_tag_sha256 phpredis/phpredis "$REDIS_VERSION")"
+PSPELL_SHA256="$(github_tag_sha256 php/pecl-text-pspell "$PSPELL_VERSION")"
+
 #set -x
-echo "Generating files for stable version $VERSION_STABLE..."
+echo "Generating files for stable version $VERSION_STABLE (imagick $IMAGICK_VERSION, redis $REDIS_VERSION, pspell $PSPELL_VERSION)..."
 
 update_build_files_from_templates() {
     variant="$1"
@@ -27,6 +55,12 @@ update_build_files_from_templates() {
 		s/%%VARIANT%%/'"$variant"'/;
 		s/%%VERSION%%/'"$VERSION_STABLE"'/;
 		s/%%CMD%%/'"${cmd}"'/;
+		s/%%IMAGICK_VERSION%%/'"$IMAGICK_VERSION"'/;
+		s/%%IMAGICK_SHA256%%/'"$IMAGICK_SHA256"'/;
+		s/%%REDIS_VERSION%%/'"$REDIS_VERSION"'/;
+		s/%%REDIS_SHA256%%/'"$REDIS_SHA256"'/;
+		s/%%PSPELL_VERSION%%/'"$PSPELL_VERSION"'/;
+		s/%%PSPELL_SHA256%%/'"$PSPELL_SHA256"'/;
 	' $template | tr '¬' '\n' > "$dir/Dockerfile"
 
 	if [[ -f "$dir/nonroot-add.txt" ]]; then
