@@ -20,9 +20,10 @@ latest_github_tag() {
 }
 
 # Compute the sha256 checksum of a GitHub tag's source tarball.
-github_tag_sha256() {
+github_tag_sha256() (
+	set -o pipefail
 	curl -fsSL "https://github.com/$1/archive/refs/tags/$2.tar.gz" | sha256sum | cut -d' ' -f1
-}
+)
 
 # PHP extensions not bundled with PHP. Versions can be pinned via environment variables.
 IMAGICK_VERSION="${IMAGICK_VERSION:-$(latest_github_tag Imagick/imagick)}"
