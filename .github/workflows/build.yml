@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Docker
         # This step is required to enable the containerd image store, which is required by the cache type=gha
-        uses: docker/setup-docker-action@7ec28a010822b4626af4874f9448a4b05ac6f3e5 # v5.6.0
+        uses: docker/setup-docker-action@3f1ab1ab0e29231562e4db4ca600c1a49653bac6 # v5.7.0
         with:
           daemon-config: |
             {
@@ -61,7 +61,7 @@ jobs:
         run: echo 'username=${{ secrets.DOCKER_PULL_USERNAME }}' >> $GITHUB_OUTPUT
       - name: Login to Docker Hub
         if: steps.creds.outputs.username != ''
-        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
         with:
           username: ${{ secrets.DOCKER_PULL_USERNAME }}
           password: ${{ secrets.DOCKER_PUSH_PASSWORD }}
