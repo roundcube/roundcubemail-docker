@@ -5,14 +5,8 @@ server {
     access_log /var/log/nginx/access.log;
     root /var/www/html/public_html;
 
-    location ~ /(temp|logs)/ {
-        deny all;
-        return 403;
-    }
-
-    location ~ \.php$ {
-        try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    location ~ ^(.+\.php)(.*)$ {
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
         fastcgi_pass ${NGINX_PHP_CGI};
         fastcgi_index index.php;
         include fastcgi_params;
