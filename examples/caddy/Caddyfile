@@ -1,0 +1,10 @@
+:443 {
+    tls internal {
+        on_demand
+    }
+    root /srv
+    php_fastcgi roundcubemail:9000 {
+        root /var/www/html/public_html/
+    }
+    file_server
+}

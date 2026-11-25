@@ -93,9 +93,8 @@ The Roundcube containers do not store any data persistently by default. There ar
 some directories that could be mounted as volume or bind mount to share data between containers
 or to inject additional data into the container:
 
-* `/var/www/html`: Roundcube installation directory
-  This is the document root of Roundcube. Plugins and additional skins are stored here amongst the Roundcube sources.
-  Share this directory when using the FPM variant and let a webserver container serve the static files from here.
+* `/var/www/html/public_html`: Roundcube document root directory
+  Share this directory when using the FPM variant and let a webserver container serve the files from here.
 
 * `/var/roundcube/config`: Location for additional config files
   See the [Advanced configuration](#advanced-configuration) section for details.
